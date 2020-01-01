@@ -1,1 +1,4 @@
 boxsdk
+luigi
+numpy
+neo
