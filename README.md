@@ -1,17 +1,20 @@
 # EMU
 
-## Usage
-Make sure you are in the emu directory
+## Installation
+From command line clone the repository and/or navigate to its directory
+
 ```bash
+$ git clone https://github.com/elijahc/emu
+
 $ cd emu
 ```
 
-Get patient info using the info subcommand
-```bash
-$ python cli.py info --patient_id=001
-```
+## Usage
 
-Download a file with a fileid
+Download some test files using the Box DeveloperClient
+
+see [build.py](build.py) for more details
+
 ```bash
-$ python download.py 562127657379
+$ python build.py
 ```
