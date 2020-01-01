@@ -7,11 +7,9 @@ files = [
     '562128317953',
 ]
 
-# task = DownloadRaw(raw_dir=os.path.expanduser('~/dev/emu/raw'), file_ids=files)
+tasks = [DownloadRaw(raw_dir=os.path.expanduser('~/projects/emu/raw'), file_id=fid) for fid in files]
 
-luigi.build([DownloadRaw(raw_dir=os.path.expanduser('~/dev/emu/raw'), file_id=fid) for fid in files],local_scheduler=True)
-# outputs = [t.path for t in task.output()]
-# print(outputs)
+luigi.build(tasks, local_scheduler=True)
 
 # class RunAll(luigi.Task):
 #     def run(self):

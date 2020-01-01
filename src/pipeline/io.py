@@ -23,7 +23,7 @@ class DownloadRaw(luigi.Task):
         fp = os.path.join(self.raw_dir,file_name)
 
         with open(fp, 'wb') as open_file:
-            client.file(str(fid)).download_to(open_file)
+            client.file(str(self.file_id)).download_to(open_file)
             open_file.close()
             # file_info = client.file(fid).get()
             # print()
