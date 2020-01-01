@@ -1,0 +1,6 @@
+---
+patients:
+  - id: "001"
+    box_folder_id: "94102978809"
+  - id: "002"
+    box_folder_id: None
