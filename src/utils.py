@@ -2,7 +2,7 @@ import os
 import re
 import fnmatch
 import pandas as pd
-import StringIO
+import io
 from tqdm import tqdm as tqdm
 from boxsdk.object.file import File
 from boxsdk.object.folder import Folder
@@ -13,8 +13,8 @@ _get_block = lambda f: _parse_ch(f).group('block')
 
 def load_patients(client, file_id):
     pt_manifest = client.file(file_id).get()
-    f = StringIO.StringIO()
-    f.write(pt_manifest.content())
+    f = io.StringIO()
+    f.write(str(pt_manifest.content()))
     f.seek(0)
     return pd.read_csv(f)
 

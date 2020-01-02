@@ -1,4 +1,6 @@
 boxsdk
+boxsdk[jwt]
 luigi
 numpy
 neo
+pandas

@@ -9,7 +9,7 @@ class FileManifest(luigi.Task):
     data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
 
     def requires(self):
-        return Patients(self.data_root)
+        return Patients(data_root=self.data_root)
 
     def run(self):
         client = jwt()
