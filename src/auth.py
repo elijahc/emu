@@ -1,20 +1,25 @@
 import os
 from boxsdk import JWTAuth
-from boxsdk import Client
+from boxsdk import Client, DevelopmentClient
 
-class Auth(object):
+def jwt(cred_fp='~/.emu/config.json'):
+    # Load JWT config file from default location
+    config = JWTAuth.from_settings_file(os.path.expanduser(cred_fp))
+    return Client(config)
 
-    def __init__(self):
-        pass
+# class EMU(Client):
 
-    def jwt(self, cred_fp='~/.emu/credentials.json'):
-        # Load JWT config file from default location
-        config = JWTAuth.from_settings_file(os.path.expanduser(cred_fp))
-        print(config)
+#     def get_file_manifest(self, folder_id, out):
+#         recs = []
+#         for f in self.folder(folder_id):
+#             if f.type == 'folder'
+#             recs.append({''})
 
-        self.config = config
+#     def tree(self, folder_id):
+#         folder = self.folder(folder_id)
+#         folder.get_items()
 
-        return Client(config)
+
 
 if __name__ == "__main__":
 
