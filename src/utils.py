@@ -8,8 +8,10 @@ from boxsdk.object.file import File
 from boxsdk.object.folder import Folder
 
 _parse_ch = lambda fn: re.match('CSC(?P<channel>[0-9]+)(?P<block>_[0-9]{4})?\.ncs',fn)
-_get_ch = lambda f: _parse_ch(f).group('channel')
+_get_ch = lambda f: int(_parse_ch(f).group('channel'))
 _get_block = lambda f: _parse_ch(f).group('block')
+
+channel_fn_rgx = 'CSC(?P<channel>[0-9]+)(?P<block>_[0-9]{4})?\.ncs'
 
 def load_patients(client, file_id):
     pt_manifest = client.file(file_id).get()
@@ -26,14 +28,24 @@ def get_file_manifest(folder, parent=None, prog_bar=False, **kwargs):
 
     folder_info = folder.get()
     total_count = folder_info.item_collection['total_count']
+    file_types={
+        '.ncs':'Channel',
+        '.nev':'Event',
+        '.nde': 'Error',
+    }
     for f in tqdm(folder.get_items(**kwargs),total=total_count):
         if isinstance(f,Folder):
             get_file_manifest(f, parent=parent)
         elif isinstance(f, File):
+            if f.name[-4:] in file_types.keys():
+                ftype = file_types[f.name[-4:]]
+            else:
+                ftype = None
             rec = {
                 'filename':f.name,
                 'id':f.id,
                 'path':os.path.join(parent,f.name),
+                'type': ftype
             }
             yield rec
 

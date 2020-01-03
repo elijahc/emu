@@ -2,7 +2,9 @@ import os
 from boxsdk import JWTAuth
 from boxsdk import Client, DevelopmentClient
 
-def jwt(cred_fp='~/.emu/config.json'):
+DEFAULT_CONFIG_FP=os.path.expanduser('~/.emu/config.json')
+
+def jwt(cred_fp=DEFAULT_CONFIG_FP):
     # Load JWT config file from default location
     config = JWTAuth.from_settings_file(os.path.expanduser(cred_fp))
     return Client(config)

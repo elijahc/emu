@@ -1,37 +1,38 @@
 import os
 import luigi
+import pandas as pd
+from ..auth import jwt
+from ..utils import get_file_manifest, channel_fn_rgx
 from boxsdk import DevelopmentClient
+from .utils import file_ids_by_channel
+from ..luigi.box import BoxTarget
 
-class GetDevelopmentClient(luigi.Task):
-    def run(self):
-        pass
-
-    def output(self):
-        return client
-
-class DownloadRaw(luigi.Task):
-    file_id = luigi.Parameter()
-    raw_dir = luigi.Parameter(default=os.path.expanduser('~/.emu/raw'))
-    file_type = luigi.Parameter(default='ncs')
-
-    # def requires(self):
-        # return GetDevelopmentClient()
-
-    def run(self):
-        client = DevelopmentClient()
-        file_name = self.file_id + '.' + self.file_type
-        fp = os.path.join(self.raw_dir,file_name)
-
-        with open(fp, 'wb') as open_file:
-            client.file(str(self.file_id)).download_to(open_file)
-            open_file.close()
-            # file_info = client.file(fid).get()
-            # print()
-            # print(file_info)
+class Patients(luigi.ExternalTask):
+    file_id = luigi.IntParameter(default=588757437066)
 
     def output(self):
-        fp = os.path.join(self.raw_dir,self.file_id + '.' + self.file_type)
-        print(fp)
+        return BoxTarget('/Doubt/patient_manifest.csv')
+
+class FileManifest(luigi.Task):
+    patient_id = luigi.IntParameter(default=1)
+    data_root = luigi.IntParameter(default=os.path.expanduser('~/.emu/'))
+
+    def requires(self):
+        return BoxPatients()
+
+    def run(self):
+        client = jwt()
+        fp = os.path.join(self.data_root,'pt{}_manifest.csv'.format(self.patient_id))
+        with self.input().open('r') as infile:
+            patients = pd.read_csv(infile)
+            folder_id = patients.query('patient_id == {}'.format(self.patient_id)).iloc[0].folder_id
+            folder = client.folder(folder_id)
+            file_recs = list(get_file_manifest(folder))
+            files = pd.DataFrame.from_records(file_recs)
+            files.to_csv(fp,index=False)
+
+    def output(self):
+        fp = os.path.expanduser('~/.emu/pt{}_manifest.csv'.format(self.patient_id))
         return luigi.LocalTarget(fp)
 
 if __name__ == "__main__":
