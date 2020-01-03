@@ -53,14 +53,14 @@ class Channel(luigi.Task):
 
     def run(self):
         with self.input().open('r') as infile:
-            files = pd.read_csv(infile,dtype={'channel_id':np.int,'patient_id':np.int, 'file_id':np.int,'type':str})
-            ch_files = file_ids_by_channel(files,channel_ids=[self.channel_id])
-            target_dir = os.path.join(self.data_root,'raw','pt{}'.format(self.patient_id))
-            raw_files = []
-            for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
-                f = yield Raw(file_id=fid,save_to=target_dir,file_name=fn)
-                raw_files.append(f)
-            print('Loaded all files!')
+            files = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
+        ch_files = file_ids_by_channel(files,channel_ids=[self.channel_id])
+        target_dir = os.path.join(self.data_root,'raw','pt{}'.format(self.patient_id))
+        raw_files = []
+        for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
+            f = yield Raw(file_id=fid,save_to=target_dir,file_name=fn)
+            raw_files.append(f)
+        print('Loaded all files!')
 
     def output(self):
         pass

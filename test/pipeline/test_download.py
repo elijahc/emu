@@ -16,4 +16,4 @@ tasks = [
     Channel(patient_id=1, channel_id=6),
 ]
 
-luigi.build(tasks, local_scheduler=True)
+luigi.build(tasks, local_scheduler=True, workers=2, no_lock=False)
