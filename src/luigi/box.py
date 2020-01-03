@@ -106,10 +106,10 @@ class BoxClient(FileSystem):
         return True
 
     def download_as_bytes(self, fid):
-        content = self.conn.file(fid).content()
-        if isinstance(content,str):
-            content = unicode(content, 'utf-8')
-        return content
+        # content = self.conn.file(fid).content()
+        # if isinstance(content,str):
+        #     content = unicode(content, 'utf-8')
+        return self.conn.file(fid).content()
 
     def upload(self, folder_id, file_path):
         folder = self.conn.folder(folder_id).get()
@@ -245,6 +245,7 @@ class BoxTarget(FileSystemTarget):
             raise ValueError("Unsupported open mode '%s'" % mode)
         if mode == 'r':
             self.fid = path_to_fid(self.client.conn, self.path)
+            # return io.StringIO(ReadableBoxFile(self.fid,self.client))
             return self.format.pipe_reader(ReadableBoxFile(self.fid, self.client))
             # fp = rbf.download_to_tmp()
             # print('downloading to:\n {}'.format(rbf.download_file_location))

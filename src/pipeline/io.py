@@ -1,5 +1,7 @@
 import os
 import luigi
+import io
+import numpy as np
 import pandas as pd
 from ..auth import jwt
 from ..utils import get_file_manifest, channel_fn_rgx
@@ -15,7 +17,7 @@ class Patients(luigi.ExternalTask):
 
 class FileManifest(luigi.Task):
     patient_id = luigi.IntParameter(default=1)
-    data_root = luigi.IntParameter(default=os.path.expanduser('~/.emu/'))
+    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
 
     def requires(self):
         return Patients()
@@ -23,13 +25,18 @@ class FileManifest(luigi.Task):
     def run(self):
         client = jwt()
         fp = os.path.join(self.data_root,'pt{}_manifest.csv'.format(self.patient_id))
-        with self.input().open('r') as infile:
-            patients = pd.read_csv(infile)
-            folder_id = patients.query('patient_id == {}'.format(self.patient_id)).iloc[0].folder_id
-            folder = client.folder(folder_id)
-            file_recs = list(get_file_manifest(folder))
-            files = pd.DataFrame.from_records(file_recs)
-            files.to_csv(fp,index=False)
+        pt_str = self.input().open('r').read()
+        with io.StringIO(pt_str) as infile:
+            # print(infile)
+            patients = pd.read_csv(infile,dtype={'patient_id':np.int,'folder_id':np.int,'start_date':str})
+        print(patients.dtypes)
+        print(patients)
+        pt_rec = patients.query('patient_id == {}'.format(self.patient_id)).iloc[0]
+        print(pt_rec)
+        folder = client.folder(pt_rec.folder_id)
+        file_recs = list(get_file_manifest(folder))
+        files = pd.DataFrame.from_records(file_recs)
+        files.to_csv(fp,index=False)
 
     def output(self):
         fp = os.path.expanduser('~/.emu/pt{}_manifest.csv'.format(self.patient_id))

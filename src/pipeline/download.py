@@ -1,5 +1,6 @@
 import luigi
 import os
+import numpy as np
 import pandas as pd
 from ..auth import jwt
 from .utils import file_ids_by_channel
@@ -52,7 +53,7 @@ class Channel(luigi.Task):
 
     def run(self):
         with self.input().open('r') as infile:
-            files = pd.read_csv(infile)
+            files = pd.read_csv(infile,dtype={'channel_id':np.int,'patient_id':np.int, 'file_id':np.int,'type':str})
             ch_files = file_ids_by_channel(files,channel_ids=[self.channel_id])
             target_dir = os.path.join(self.data_root,'raw','pt{}'.format(self.patient_id))
             raw_files = []

@@ -6,7 +6,7 @@ from ..utils import get_file_manifest, _get_ch
 from ..luigi.box import BoxTarget
 
 def file_ids_by_channel(file_manifest, channel_ids=[16]):
-    channels = file_manifest.query('"type" == "Channel"')
+    channels = file_manifest[file_manifest.type=="Channel"].copy()
     channels['ch'] = map(_get_ch, channels.filename.values)
 
     return channels[channels.ch.isin(channel_ids)]
