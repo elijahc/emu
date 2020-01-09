@@ -3,7 +3,7 @@ import luigi
 import io
 import numpy as np
 import pandas as pd
-from ..auth import jwt
+from ..auth import jwt, DEFAULT_ROOT
 from ..utils import get_file_manifest, channel_fn_rgx
 from boxsdk import DevelopmentClient
 from .utils import file_ids_by_channel
@@ -32,7 +32,6 @@ class FileManifest(luigi.Task):
         print(patients.dtypes)
         print(patients)
         pt_rec = patients.query('patient_id == {}'.format(self.patient_id)).iloc[0]
-        print(pt_rec)
         folder = client.folder(pt_rec.folder_id)
         file_recs = list(get_file_manifest(folder))
         files = pd.DataFrame.from_records(file_recs)

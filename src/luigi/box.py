@@ -7,9 +7,12 @@ import tempfile
 import time
 import io
 from contextlib import contextmanager
-from ..auth import jwt, DEFAULT_CONFIG_FP
+from ..auth import jwt, DEFAULT_CONFIG
 from luigi.target import FileSystem, FileSystemTarget, AtomicLocalFile
 from boxsdk import JWTAuth, Client
+
+# TODO: Rename all instances of DEFAULT_CONFIG_FP to DEFAULT_CONFIG
+DEFAULT_CONFIG_FP = DEFAULT_CONFIG
 
 logger = logging.getLogger('luigi-interface')
 
