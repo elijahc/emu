@@ -43,12 +43,10 @@ class Raw(luigi.Task):
     overwrite = luigi.Parameter(default=False)
 
     def run(self):
-        if not os.path.exists(self.save_to):
-            os.mkdir(self.save_to)
+        check_or_create(self.save_to)
 
         client = jwt()
         file = client.file(self.file_id)
-        check_or_create(self.save_to)
         fp = os.path.join(self.save_to,self.file_name)
 
         with open(fp, 'wb') as open_file:
