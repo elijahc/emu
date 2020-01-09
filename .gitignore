@@ -132,3 +132,5 @@ dmypy.json
 raw/
 
 .vscode/
+
+.DS_Store
