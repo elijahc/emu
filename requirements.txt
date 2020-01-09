@@ -4,3 +4,4 @@ luigi
 numpy
 neo
 pandas
+tqdm
