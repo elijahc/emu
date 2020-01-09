@@ -48,6 +48,7 @@ class Raw(luigi.Task):
 
         client = jwt()
         file = client.file(self.file_id)
+        check_or_create(self.save_to)
         fp = os.path.join(self.save_to,self.file_name)
 
         with open(fp, 'wb') as open_file:
