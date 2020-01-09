@@ -9,6 +9,16 @@ $ git clone https://github.com/elijahc/emu
 $ cd emu
 ```
 
+Install the python requirements
+```bash
+$ pip install -r requirements.txt
+```
+
+Install the optional jwt plugin
+```bash
+$ pip install boxsdk[jwt]
+```
+
 ## Access
 
 In order to use the Box API you'll need a credentials file (Contact Elijah)
