@@ -40,15 +40,5 @@ class FileManifest(luigi.Task):
         fp = os.path.expanduser('~/.emu/pt{}_manifest.csv'.format(self.patient_id))
         return luigi.LocalTarget(fp)
 
-class Timestamps(luigi.Task):
-    patient_id = luigi.IntParameter(default=1)
-    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
-
-    def requires(self):
-        return C
-
-    def output(self):
-
-
 if __name__ == "__main__":
     luigi.run()
