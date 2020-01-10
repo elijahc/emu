@@ -89,33 +89,3 @@ class Raw(luigi.Task):
         fp = os.path.join(self.save_to,self.file_name)
         return luigi.LocalTarget(fp)
 
-class ChannelTimestamp(luigi.Task):
-    patient_id = luigi.IntParameter()
-    channel_id = luigi.IntParameter()
-    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
-
-    def load_ch_files(self):
-        fm = FileManifest(patient_id=self.patient_id,data_root=self.data_root)
-        if not os.path.exists(fm.output().path):
-            fm.run()
-        with fm.output().open('r') as infile:
-            files = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
-        ch_files = file_ids_by_channel(files,channel_ids=[self.channel_id])
-        return ch_files
-
-    def requires(self):
-        raw_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/raw')
-        ch_files = self.load_ch_files()
-        fetch_channels = []
-        for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
-            fetch_channels.append(Raw(file_id=fid, save_to=raw_dir, file_name=fn))
-        return fetch_channels
-
-    def run(self):
-        files = [f.output().path for f in self.input()]
-        files = sorted(files)
-        print(files)
-
-    def output(self):
-        t_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/data_1')
-        return luigi.LocalTarget(os.path.join(t_dir,'timestamp_{}'.format(self.channel_id)))

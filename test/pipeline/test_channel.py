@@ -1,5 +1,5 @@
 import luigi
-from src.pipeline.download import Channel
+from src.pipeline.process import ChannelTimestamp as Channel
 
 c = Channel(patient_id=1, channel_id=3)
 
