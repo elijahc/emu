@@ -10,32 +10,7 @@ import warnings
 from .download import FileManifest,Raw
 from .utils import file_ids_by_channel
 from ..neuralynx_io import load_ncs
-
-def gen_load_timestamps(fp_list,raw_root,downsample=4,ignore_warnings=True):
-    with warnings.catch_warnings():
-        if ignore_warnings:
-            warnings.simplefilter("ignore")
-
-        for fp in fp_list:
-            ncs = load_ncs(os.path.join(raw_root,fp))
-            yield signal.decimate(ncs['timestamp'],q=downsample)
-
-class sEEGTask(luigi.Task):
-    patient_id = luigi.IntParameter()
-    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
-
-    def ch_files(self,ch_ids):
-        fm = FileManifest(patient_id=self.patient_id,data_root=self.data_root)
-        if not os.path.exists(fm.output().path):
-            fm.run()
-        with fm.output().open('r') as infile:
-            files = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
-        ch_files = file_ids_by_channel(files,channel_ids=ch_ids)
-        return ch_files
-
-    def sEEG_root(self):
-        path = os.path.join(self.data_root,'pt{}/sEEG'.format(self.patient_id))
-        return path
+from .process import sEEGTask
 
 class ChannelTimestamp(sEEGTask):
     channel_id = luigi.IntParameter()
