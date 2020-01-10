@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from ..auth import jwt, DEFAULT_ROOT
 from .utils import file_ids_by_channel
+from ..utils import get_file_manifest
 from ..luigi.box import BoxTarget
 
 def check_or_create(dir_path):
@@ -88,7 +89,7 @@ class Raw(luigi.Task):
         fp = os.path.join(self.save_to,self.file_name)
         return luigi.LocalTarget(fp)
 
-class Channel(luigi.Task):
+class ChannelTimestamp(luigi.Task):
     patient_id = luigi.IntParameter()
     channel_id = luigi.IntParameter()
     data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
@@ -103,18 +104,18 @@ class Channel(luigi.Task):
         return ch_files
 
     def requires(self):
-        return FileManifest(data_root=self.data_root, patient_id=self.patient_id)
-
-    def run(self):
         raw_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/raw')
         ch_files = self.load_ch_files()
         fetch_channels = []
         for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
-            yield Raw(file_id=fid,save_to=raw_dir,file_name=fn)
+            fetch_channels.append(Raw(file_id=fid, save_to=raw_dir, file_name=fn))
+        return fetch_channels
+
+    def run(self):
+        files = [f.output().path for f in self.input()]
+        files = sorted(files)
+        print(files)
 
     def output(self):
-        raw_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/raw')
-        ch_files = self.load_ch_files()
-        out_files = [os.path.join(raw_dir,fn) for fn in ch_files.filename.values]
-        out_targets = [luigi.LocalTarget(fp) for fp in out_files]
-        return out_targets
+        t_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/data_1')
+        return luigi.LocalTarget(os.path.join(t_dir,'timestamp_{}'.format(self.channel_id)))
