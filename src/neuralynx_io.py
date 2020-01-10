@@ -1,4 +1,5 @@
 # coding=utf-8
+# Originally sourced from https://github.com/alafuzof/NeuralynxIO
 
 from __future__ import division
 

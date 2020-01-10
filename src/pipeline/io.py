@@ -29,7 +29,6 @@ class FileManifest(luigi.Task):
         with io.StringIO(pt_str) as infile:
             # print(infile)
             patients = pd.read_csv(infile,dtype={'patient_id':np.int,'folder_id':np.int,'start_date':str})
-        print(patients.dtypes)
         print(patients)
         pt_rec = patients.query('patient_id == {}'.format(self.patient_id)).iloc[0]
         folder = client.folder(pt_rec.folder_id)
@@ -40,6 +39,16 @@ class FileManifest(luigi.Task):
     def output(self):
         fp = os.path.expanduser('~/.emu/pt{}_manifest.csv'.format(self.patient_id))
         return luigi.LocalTarget(fp)
+
+class Timestamps(luigi.Task):
+    patient_id = luigi.IntParameter(default=1)
+    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
+
+    def requires(self):
+        return C
+
+    def output(self):
+
 
 if __name__ == "__main__":
     luigi.run()

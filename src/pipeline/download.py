@@ -62,19 +62,28 @@ class Channel(luigi.Task):
     channel_id = luigi.IntParameter()
     data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
 
-    def requires(self):
-        return FileManifest(data_root=self.data_root, patient_id=self.patient_id)
-
-    def run(self):
-        with self.input().open('r') as infile:
+    def load_ch_files(self):
+        fm = FileManifest(data_root=self.data_root, patient_id=self.patient_id)
+        fm_output = fm.output()
+        with fm_output.open('r') as infile:
             files = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
         ch_files = file_ids_by_channel(files,channel_ids=[self.channel_id])
-        target_dir = os.path.join(self.data_root,'raw','pt{}'.format(self.patient_id))
-        raw_files = []
+        return ch_files
+
+    def requires(self):
+        raw_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/raw')
+        ch_files = self.load_ch_files()
+        fetch_channels = []
         for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
-            f = yield Raw(file_id=fid,save_to=target_dir,file_name=fn)
-            raw_files.append(f)
-        print('Loaded all files!')
+            fetch_channels.append(Raw(file_id=fid,save_to=raw_dir,file_name=fn))
+        return fetch_channels
+
+    def run(self):
+        pass
 
     def output(self):
-        pass
+        raw_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/raw')
+        ch_files = self.load_ch_files()
+        out_files = [os.path.join(raw_dir,fn) for fn in ch_files.filename.values]
+        out_targets = [luigi.LocalTarget(fp) for fp in out_files]
+        return out_targets
