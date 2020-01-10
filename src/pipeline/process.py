@@ -5,15 +5,20 @@ import numpy as np
 import src.neuralynx_io
 import scipy.signal as signal
 from tqdm import tqdm
+import warnings
 
 from .download import FileManifest,Raw
 from .utils import file_ids_by_channel
 from ..neuralynx_io import load_ncs
 
-def gen_load_timestamps(fp_list,raw_root,downsample=4):
-    for fp in fp_list:
-        ncs = load_ncs(os.path.join(raw_root,fp))
-        yield signal.decimate(ncs['timestamp'],q=downsample)
+def gen_load_timestamps(fp_list,raw_root,downsample=4,ignore_warnings=True):
+    with warnings.catch_warnings():
+        if ignore_warnings:
+            warnings.simplefilter("ignore")
+
+        for fp in fp_list:
+            ncs = load_ncs(os.path.join(raw_root,fp))
+            yield signal.decimate(ncs['timestamp'],q=downsample)
 
 class ChannelTimestamp(luigi.Task):
     patient_id = luigi.IntParameter()
@@ -48,7 +53,7 @@ class ChannelTimestamp(luigi.Task):
 
         ncs_timestamps = []
         t_iter = gen_load_timestamps(files,raw_dir,4)
-        for ts in tqdm(t_iter,total=len(files)):
+        for ts in tqdm(t_iter,total=len(files),desc='CH{}'.format(self.channel_id)):
             ncs_timestamps.append(ts)
 
         timestamp = np.concatenate(ncs_timestamps).astype(int)
@@ -59,4 +64,5 @@ class ChannelTimestamp(luigi.Task):
     def output(self):
         t_dir = self.save_path()
         return luigi.LocalTarget(os.path.join(t_dir,'timestamp_{}'.format(self.channel_id)))
+
 
