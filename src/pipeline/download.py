@@ -33,7 +33,7 @@ class FileManifest(luigi.Task):
     data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
 
     def requires(self):
-        return Patients()
+        return PatientsLocal()
 
     def run(self):
         client = jwt()
