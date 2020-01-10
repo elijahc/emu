@@ -20,27 +20,32 @@ def gen_load_timestamps(fp_list,raw_root,downsample=4,ignore_warnings=True):
             ncs = load_ncs(os.path.join(raw_root,fp))
             yield signal.decimate(ncs['timestamp'],q=downsample)
 
-class ChannelTimestamp(luigi.Task):
+class sEEGTask(luigi.Task):
     patient_id = luigi.IntParameter()
-    channel_id = luigi.IntParameter()
     data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
 
-    def load_ch_files(self):
+    def ch_files(self,ch_ids):
         fm = FileManifest(patient_id=self.patient_id,data_root=self.data_root)
         if not os.path.exists(fm.output().path):
             fm.run()
         with fm.output().open('r') as infile:
             files = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
-        ch_files = file_ids_by_channel(files,channel_ids=[self.channel_id])
+        ch_files = file_ids_by_channel(files,channel_ids=ch_ids)
         return ch_files
 
+    def sEEG_root(self):
+        path = os.path.join(self.data_root,'pt{}/sEEG'.format(self.patient_id))
+        return path
+
+class ChannelTimestamp(sEEGTask):
+    channel_id = luigi.IntParameter()
+
     def save_path(self):
-        save_path = os.path.join(self.data_root,'pt{}/sEEG/data_1'.format(self.patient_id))
-        return save_path
+        return os.path.join(self.sEEG_root(),'data_1')
 
     def requires(self):
-        raw_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/raw')
-        ch_files = self.load_ch_files()
+        raw_dir = os.path.join(self.sEEG_root(),'raw')
+        ch_files = self.ch_files([self.channel_id])
         fetch_channels = []
         for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
             fetch_channels.append(Raw(file_id=fid, save_to=raw_dir, file_name=fn))
@@ -49,7 +54,7 @@ class ChannelTimestamp(luigi.Task):
     def run(self):
         files = [f.path for f in self.input()]
         files = sorted(files)
-        raw_dir = os.path.join(self.data_root,'pt{}'.format(self.patient_id),'sEEG/raw')
+        raw_dir = os.path.join(self.sEEG_root(),'raw')
 
         ncs_timestamps = []
         t_iter = gen_load_timestamps(files,raw_dir,4)
@@ -64,5 +69,3 @@ class ChannelTimestamp(luigi.Task):
     def output(self):
         t_dir = self.save_path()
         return luigi.LocalTarget(os.path.join(t_dir,'timestamp_{}'.format(self.channel_id)))
-
-
