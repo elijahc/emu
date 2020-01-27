@@ -8,11 +8,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [taskoutput] = PDil_AT_V2(opponent)
+function [taskoutput] = PDil_AT_V3(opponent)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Experimental parameters
 clearvars; close all; clc;
+
 
 mode = 'testrun'; %either testrun or experiment
 opponent = 'human'; %either human or computer
@@ -22,7 +23,7 @@ taskoutput = struct();
 wholesession = tic;
 dbstop if error
 
-DisableKeysForKbCheck(40)
+DisableKeysForKbCheck(40)%this is used for keys that are stuck so that that specific keyboard output is ignored
 taskoutput = struct();
 
 txtsize = 20;
@@ -47,6 +48,17 @@ Key1=KbName('LeftArrow'); Key2=KbName('RightArrow');
 spaceKey = KbName('space'); escKey = KbName('ESCAPE');
 cKey = KbName('c');
 dKey = KbName('d');
+
+Key_1 = KbName('1!');
+Key_2 = KbName('2@');
+Key_3 = KbName('3#');
+Key_4 = KbName('4$');
+Key_5 = KbName('5%');
+Key_6 = KbName('6^');
+Key_7 = KbName('7&');
+Key_8 = KbName('8*');
+Key_9 = KbName('9(');
+
 corrkey = [80, 79]; % left and right arrow, %AT; note, this will need to be changed most likely if going between Mac and windows
 %can use KbDemo to test out some key names and other timing things
 
@@ -85,6 +97,8 @@ fprintf(outfile, 'subid\t subage\t gender\t group\t keyboardOrMouse\t blockNumbe
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Screen parameters
+ListenChar(1)
+
 Screen('Preference', 'SkipSyncTests', 1);
 
 screens=Screen('Screens');
@@ -468,13 +482,99 @@ for a = 1:str2num(nBlocks)
         %         fprintf(outfile, '%s\t %s\t %s\t %s\t %s\t %d\t %d\t %d\t %d\t %6.2f\t \n', subid, ...,
         %             subage, gender, group, blocktype, a, i, answer, correct, rt);
         WaitSecs(interTrialInterval);
+        
+        
+        
+        %AT 1/25/20 below are probe trials for how trusthworthy player 1
+        %thinks player 2 is.
+        if i == round(nTrialsPerBlock/2) || i == nTrialsPerBlock
+            
+            linea = ('Player 1: How fair do you think your opponent is being?');
+            lineb = ('\n 1 corresponds to least trustworthy'); %
+            linec = ('\n\n 9 corresponds to most trustworthy'); %
+            lined = ('\n\n\n');
+            linee = ('\n\n\n\n Press a key (1-9) now'); %
+            %         lined = ('\n Push spacebar to start trial.');
+            Screen('TextSize', mainwin, txtsize);
+            DrawFormattedText(mainwin, [linea lineb linec lined linee],...
+                center(1)+y_offset,center(2),textcolor);
+            Screen('Flip', mainwin)
+            
+            keyIsDown=0;
+            proberxntime_player1 = tic;
+            
+            while 1
+                [keyIsDown, secs, keyCode] = KbCheck;
+                55if keyIsDown
+                    toc_rxntime_player1 = toc(proberxntime_player1);
+                    
+                    
+                    
+                    
+                    
+                    
+                    if keyCode(spaceKey)
+                        break ;
+                    elseif keyCode(Key_1)
+                        player1_probeResponse = '1';
+                        break ;
+                    elseif keyCode(Key_2)
+                        player1_probeResponse = '2';
+                        break ;
+                    elseif keyCode(Key_3)
+                        player1_probeResponse = '3';
+                        break ;
+                    elseif keyCode(Key_4)
+                        player1_probeResponse = '4';
+                        break ;
+                    elseif keyCode(Key_5)
+                        player1_probeResponse = '5';
+                        break ;
+                    elseif keyCode(Key_6)
+                        player1_probeResponse = '6';
+                        break ;
+                    elseif keyCode(Key_7)
+                        player1_probeResponse = '7';
+                        break ;
+                    elseif keyCode(Key_8)
+                        player1_probeResponse = '8';
+                        break ;
+                    elseif keyCode(Key_9)
+                        player1_probeResponse = '9';
+                        break ;
+                    elseif keyCode(escKey)
+                        ShowCursor;
+                        fclose(outfile);
+                        Screen('CloseAll');
+                        return;
+                    end
+                    
+                end
+            end
+            
+            FlushEvents();
+            
+            WaitSecs(.5);
+            
+            
+            
+            
+            if i == round(nTrialsPerBlock/2)
+                probeResponse(1) = player1_probeResponse;
+            elseif i == nTrialsPerBlock
+                probeResponse(2) = player1_probeResponse;
+            end
+            
+        end
+        
+        
     end  % end of trial loop
 end % end of block loop
 
 
 Screen('CloseAll');
 fclose(outfile);
-fprintf('\n\n\n\n\nFINISHED this part! PLEASE GET THE EXPERIMENTER...\n\n');
+fprintf('\n\n\n\n\nThis block is now concluded! We appreciate your participation...\n\n');
 wholesessionT = toc(wholesession);
 
 
@@ -488,8 +588,8 @@ taskoutput.rxnTime_player2 = rxnTime_player2;
 
 taskoutput.durationWholeSession = wholesessionT;
 
-
-
+taskoutput.probeResponse = probeResponse;
+ListenChar(0)
 
 
 end
