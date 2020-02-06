@@ -1,3 +1,6 @@
+%V4 on 1/29/20 - 
+%V3 as of 1/29/20; works pretty ok, but need to make several formatting
+%changes to have it be a prettier display, so creating V4
 %V2 on 1/23/20; purpose is to integrate playing a computer or another human
 %opponent. Note that for naming convention, player 1 is always going to be
 %the patient while player 2 is the opponent

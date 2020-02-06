@@ -1,3 +1,6 @@
+%V4 on 1/29/20 -
+%V3 as of 1/29/20; works pretty ok, but need to make several formatting
+%changes to have it be a prettier display, so creating V4
 %V2 on 1/23/20; purpose is to integrate playing a computer or another human
 %opponent. Note that for naming convention, player 1 is always going to be
 %the patient while player 2 is the opponent
@@ -8,27 +11,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [taskoutput] = PDil_AT_V3(opponent)
+function [taskoutput] = PDil_AT_V4(opponent)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Experimental parameters
-clearvars; close all; clc;
-
-
-mode = 'testrun'; %either testrun or experiment
-opponent = 'human'; %either human or computer
-taskoutput = struct();
-
-
+sca; clearvars; close all; clc;
 wholesession = tic;
-dbstop if error
 
-DisableKeysForKbCheck(40)%this is used for keys that are stuck so that that specific keyboard output is ignored
+
+mode = 'testrun'; %either 'testrun' or 'experiment'
+opponent = 'human'; %either 'human' or 'computer'
 taskoutput = struct();
+dbstop if error
+PsychDefaultSetup(2);
+DisableKeysForKbCheck(40)%this is used for keys that are stuck so that that specific keyboard output is ignored
 
 txtsize = 20;
-y_offset = -150;
-% mode = 'experiment';
+
 
 if strcmp(opponent, 'computer')
     choice_matrix_player1 = zeros(1,10);
@@ -41,14 +40,17 @@ end
 % rand('state', sum(100*clock)); %AT this is no longer recommended
 rng('shuffle');% At this is recommended in the ^'s place
 
-ErrorDelay=1; interTrialInterval = .1; nTrialsPerBlock = 10;
+ErrorDelay=1;
+interTrialInterval = .1;
+nTrialsPerBlock = 10;
+Player1_pts_summary = zeros(1,nTrialsPerBlock);
 
 KbName('UnifyKeyNames');
-Key1=KbName('LeftArrow'); Key2=KbName('RightArrow');
-spaceKey = KbName('space'); escKey = KbName('ESCAPE');
-cKey = KbName('c');
-dKey = KbName('d');
-
+% Key1=KbName('LeftArrow'); Key_rtArrow=KbName('RightArrow');
+Key_spacebar = KbName('space');
+Key_esc = KbName('ESCAPE');
+Key_c = KbName('c');
+Key_d = KbName('d');
 Key_1 = KbName('1!');
 Key_2 = KbName('2@');
 Key_3 = KbName('3#');
@@ -59,20 +61,32 @@ Key_7 = KbName('7&');
 Key_8 = KbName('8*');
 Key_9 = KbName('9(');
 
-corrkey = [80, 79]; % left and right arrow, %AT; note, this will need to be changed most likely if going between Mac and windows
+% corrkey = [80, 79]; % left and right arrow, %AT; note, this will need to be changed most likely if going between Mac and windows
 %can use KbDemo to test out some key names and other timing things
 
-gray = [127 127 127 ]; white = [ 255 255 255]; black = [ 0 0 0];
-bgcolor = white; textcolor = black;
+gray = [.5 .5 .5];
+white = [1 1 1];
+black = [0 0 0];
+%below is for red
+str_color = '#FF401b';
+red = sscanf(str_color(2:end),'%2x%2x%2x',[1 3])/255;
+%below is for green
+str_color = '#58de49';
+green = sscanf(str_color(2:end),'%2x%2x%2x',[1 3])/255;
+
+bgcolor = white;
+textcolor_black = black;
+textcolor_red = red;
+textcolor_green = green;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Sound feedback
-BeepFreq = [800 1300 2000]; BeepDur = [.1 .1 .1];
-Beep1 = MakeBeep(BeepFreq(1), BeepDur(1));
-Beep2 = MakeBeep(BeepFreq(2), BeepDur(2));
-Beep3 = MakeBeep(BeepFreq(3), BeepDur(3));
-Beep4 = [Beep1 Beep2 Beep3];
+% % Sound feedback
+% BeepFreq = [800 1300 2000]; BeepDur = [.1 .1 .1];
+% Beep1 = MakeBeep(BeepFreq(1), BeepDur(1));
+% Beep2 = MakeBeep(BeepFreq(2), BeepDur(2));
+% Beep3 = MakeBeep(BeepFreq(3), BeepDur(3));
+% Beep4 = [Beep1 Beep2 Beep3];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,12 +111,12 @@ fprintf(outfile, 'subid\t subage\t gender\t group\t keyboardOrMouse\t blockNumbe
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Screen parameters
-ListenChar(1)
+ListenChar(0)
 
 Screen('Preference', 'SkipSyncTests', 1);
 
 screens=Screen('Screens');
-%     screenNumber=max(screens);
+screenNumber=max(screens);
 screenNumber = 0;
 
 if strcmp(mode, 'testrun')
@@ -127,6 +141,8 @@ end
 % Screen('TextStyle', mainwin, 1+2);
 % Screen('FillRect', mainwin, bgcolor);
 center = [screenrect(3)/2 screenrect(4)/2];
+x_offset = -(center(1)/2);
+y_offset = -(center(2)/2);
 Screen(mainwin, 'Flip');
 
 % %   load images
@@ -146,19 +162,26 @@ Screen(mainwin, 'Flip');
 %   Experimental instructions, wait for a spacebar response to start
 Screen('FillRect', mainwin ,bgcolor);
 Screen('TextSize', mainwin, txtsize);
-% Screen('DrawText',mainwin,['Report the color of the star. Press spacebar to start the experiment.'] ,center(1)-350,center(2)-20,textcolor);
 
 
-Screen('DrawText',mainwin,('Press spacebar to begin the study.') ,center(1)-350,center(2)-20,textcolor);
+
+linea = '\n  Press spacebar to begin the study.';
+Screen('TextSize', mainwin, txtsize);
+DrawFormattedText(mainwin, [linea],...
+    center(1)+x_offset,center(2)+y_offset,textcolor_black);
+
+
+ListenChar(1)
 Screen('Flip',mainwin );
 
 keyIsDown=0;
+
 while 1
     [keyIsDown, secs, keyCode] = KbCheck;
     if keyIsDown
-        if keyCode(spaceKey)
+        if keyCode(Key_spacebar)
             break ;
-        elseif keyCode(escKey)
+        elseif keyCode(Key_esc)
             ShowCursor;
             fclose(outfile);
             Screen('CloseAll');
@@ -167,6 +190,7 @@ while 1
     end
 end
 
+ListenChar(0)
 FlushEvents();
 WaitSecs(0.5);
 
@@ -189,20 +213,18 @@ for a = 1:str2num(nBlocks)
     blocktype = 'keyboard';
     %         Screen('DrawText', mainwin, ['Keyboard response: left arrow for red, right arrow for blue'], center(1)-300, center(2)+130, textcolor);
     %     Screen('DrawText', mainwin, ('Keyboard response: \n c for cooperate, d for defect') ,center(1)-300, center(2)+130, textcolor);
-    linea = '  You will be playing against:  ';
+    linea = 'Directions:';
+    lineb = '\n\n     This is a two-player game (Player 1, Player 2), the goal of which is for you (Player 1) to accumulate as many points as you can over ten trials. For each trial, you (Player 1) will choose to either "cooperate" with or "defect" on the other player (Player 2). ';
+    linec = 'Points are awarded separatedly for each player at the end of each trial. The number of points you receive depends on your choice, as well as the other player''s choice. You will have access to a ''pay-off matrix'' throughout the game, which shows how different combinations of choices are rewarded.';
+    lined = 'Between trials, you will be shown your point total as well as past choices you and the other player made.';
+    %     lined = ' You are Player 1, while the role of Player 2 will be filled by a computer.';
     
-    if strcmp(opponent, 'computer')
-        lineb = ('\n    A computer opponent'); %
-    elseif strcmp(opponent, 'human')
-        lineb = ('\n    A human opponent'); %
-    end
-    
-    linec = '\n';
-    lined = '\n Press spacebar to begin the study.';
     Screen('TextSize', mainwin, txtsize);
-    DrawFormattedText(mainwin, [linea  lineb linec lined],...
-        center(1)+y_offset,center(2),textcolor);
-    
+    DrawFormattedText(mainwin, [linea  lineb linec lined linee linef],...
+        'left',center(2)+y_offset,textcolor_black,...
+        80);
+    ListenChar(1)
+
     Screen('Flip', mainwin)
     
     
@@ -224,9 +246,9 @@ for a = 1:str2num(nBlocks)
     while 1
         [keyIsDown, secs, keyCode] = KbCheck;
         if keyIsDown
-            if keyCode(spaceKey)
+            if keyCode(Key_spacebar)
                 break ;
-            elseif keyCode(escKey)
+            elseif keyCode(Key_esc)
                 ShowCursor;
                 fclose(outfile);
                 Screen('CloseAll');
@@ -235,8 +257,63 @@ for a = 1:str2num(nBlocks)
         end
     end
     
+    ListenChar(0)
     FlushEvents();
+    WaitSecs(.5);
     
+    
+    
+    
+    
+    
+    if strcmp(opponent, 'computer')
+        linea = '\n\n For this block, "Player 2" is played by a computer.'; %
+    elseif strcmp(opponent, 'human')
+        linea = '\n\n For this block, "Player 2" is played by another person.'; %
+    end
+    
+    lineb = '';
+    
+    linef = '\n\n Press spacebar to begin a trial.';
+    Screen('TextSize', mainwin, txtsize);
+    DrawFormattedText(mainwin, [linea  lineb linef],...
+        'left',center(2)+y_offset,textcolor_black,...
+        80);
+    ListenChar(1)
+    Screen('Flip', mainwin)
+    
+    
+    
+    % %     else
+    %         %         blocktype = 'mouse';
+    %         %         Screen('DrawText', mainwin, ['Mouse response: left click for red, right click for blue'], center(1)-300, center(2)+130, textcolor);
+    %         blocktype = 'keyboard';
+    %         Screen('DrawText', mainwin, ['Keyboard response: left arrow for red, right arrow for blue'], center(1)-300, center(2)+130, textcolor);
+    %
+    % %     end
+    
+    %     Screen('DrawText', mainwin, ['Click to start'], center(1)-300, center(2)+30, textcolor);
+    %     Screen('DrawText', mainwin, ('Spacebar to start'), center(1)-300, center(2)+30, textcolor);
+    
+    %     Screen('Flip', mainwin);
+    %     GetClicks;
+    keyIsDown=0;
+    while 1
+        [keyIsDown, secs, keyCode] = KbCheck;
+        if keyIsDown
+            if keyCode(Key_spacebar)
+                break ;
+            elseif keyCode(Key_esc)
+                ShowCursor;
+                fclose(outfile);
+                Screen('CloseAll');
+                return;
+            end
+        end
+    end
+    
+    ListenChar(0)
+    FlushEvents();
     WaitSecs(.5);
     
     trialorder = Shuffle(1:nTrialsPerBlock); % randomize trial order for each block
@@ -250,28 +327,37 @@ for a = 1:str2num(nBlocks)
         %         Screen('FillRect', mainwin ,bgcolor);
         
         % present the stimulus
-        percentcomplete = floor(100*((i-1)/length(choice_matrix_player1)));
         
         
         
-        
-        
-        
-        linea = (['Block #: ' mat2str(a) '          Trial #: ' mat2str(i)]);
-        lineb = (['\n TIME:  ' num2str(toc(wholesession)) ' seconds elapsed']); %
-        linec = (['\n Percent complete:   ' num2str(percentcomplete)]); %
-        lined = ('\n Push spacebar to start trial.');
+        linea = (['Trial ' mat2str(i)  ' out of 10']);
+        %         linec = (['\n TIME:  ' num2str(round(toc(wholesession))) ' seconds elapsed']); %
+        linec = (''); %
+        lined = ('\n\n Push spacebar to begin a trial.');
         Screen('TextSize', mainwin, txtsize);
-        DrawFormattedText(mainwin, [linea lineb linec],...
-            center(1)+y_offset,center(2),textcolor);
+        DrawFormattedText(mainwin, [linea  linec lined],...
+            'center',center(2)+y_offset,textcolor_black);
+        
+            ListenChar(1)
+
         Screen('Flip', mainwin)
+        
         keyIsDown = 0;
         while 1
-            [keyIsDown, secs, keyCode] = KbCheck;
+            [keyIsDown, secs, keyCode] = KbCheck; %keyIsDown returns a '1' if any key has been pressed, secs is time key was pressed
+            
+            %Note, for when we want to get fancier and include the wireless
+            %keyboards, see below:
+            %              [keyIsDown, secs, keyCode, deltaSecs] = KbCheck([deviceNumber])
+            % % %             which device are we listening to?
+            % % % use PsychHID('Devices') to list all devices
+            % % %
+            % % % GetKeyboardIndices() will return the device numbers of all keyboard devices
+            
             if keyIsDown
-                if keyCode(spaceKey)
+                if keyCode(Key_spacebar)
                     break ;
-                elseif keyCode(escKey)
+                elseif keyCode(Key_esc)
                     ShowCursor;
                     fclose(outfile);
                     Screen('CloseAll');
@@ -279,9 +365,48 @@ for a = 1:str2num(nBlocks)
                 end
             end
         end
+            ListenChar(0)
+        FlushEvents()
+        WaitSecs(.5);
         
+        
+        
+        
+        
+        linea = (['\n\n Your cumulative points: ' mat2str(sum(Player1_pts_summary))]);
+        %         linec = (['\n TIME:  ' num2str(round(toc(wholesession))) ' seconds elapsed']); %
+        linec = (''); %
+        lined = ('\n\n Push spacebar to begin a trial.');
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea linec lined],...
+            'center',center(2)+y_offset,textcolor_black);
+        Screen('Flip', mainwin)
+        
+        keyIsDown = 1;
+        while 1
+            [keyIsDown, secs, keyCode] = KbCheck; %keyIsDown returns a '1' if any key has been pressed, secs is time key was pressed
+            
+            %Note, for when we want to get fancier and include the wireless
+            %keyboards, see below:
+            %              [keyIsDown, secs, keyCode, deltaSecs] = KbCheck([deviceNumber])
+            % % %             which device are we listening to?
+            % % % use PsychHID('Devices') to list all devices
+            % % %
+            % % % GetKeyboardIndices() will return the device numbers of all keyboard devices
+            
+            if keyIsDown
+                if keyCode(Key_spacebar)
+                    break ;
+                elseif keyCode(Key_esc)
+                    ShowCursor;
+                    fclose(outfile);
+                    Screen('CloseAll');
+                    return;
+                end
+            end
+        end
+        ListenChar(0)
         FlushEvents();
-        
         WaitSecs(.5);
         
         
@@ -291,13 +416,38 @@ for a = 1:str2num(nBlocks)
         
         
         
-        linea = ('Player 1: Please provide a keyboard response');
+        linea = ('  Player 1: Do you choose to cooperate or defect?');
         lineb = ('\n'); %
-        linec = ('Press key c for cooperate, or key d for defect'); %
-        %         lined = ('\n Push spacebar to start trial.');
+        linec = ('\n  Press the       key for                 , or       key for       '); %
         Screen('TextSize', mainwin, txtsize);
-        DrawFormattedText(mainwin, [linea lineb linec],...
-            center(1)+y_offset,center(2),textcolor);
+        DrawFormattedText(mainwin, [linea  lineb  linec],...
+            'center', center(2)+y_offset,textcolor_black);
+        
+        linea = ('');
+        lineb = ('\n'); % 
+        linec = ('\n                                                  "D"             defect'); %
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea  lineb  linec],...
+            center(1)+y_offset, center(2)+y_offset,textcolor_red);
+        
+        linea = ('');
+        lineb = ('\n'); %
+        linec = ('\n              "C"             cooperate'); %
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea  lineb  linec],...
+            center(1)+y_offset, center(2)+y_offset,textcolor_green);
+        
+        
+        
+        %         linea = ('  Player 1: Please provide a keyboard response');
+        %         lineb = ('\n'); %
+        %         linec = ('\n  Press the "C" key for cooperate, or "D" key for defect'); %
+        %         %         lined = ('\n Push spacebar to start trial.');
+        %         Screen('TextSize', mainwin, txtsize);
+        %         DrawFormattedText(mainwin, [linea lineb linec],...
+        %             center(1)+y_offset,center(2),textcolor_black);
+        %
+                ListenChar(1)
         Screen('Flip', mainwin)
         
         keyIsDown=0;
@@ -308,15 +458,15 @@ for a = 1:str2num(nBlocks)
             if keyIsDown
                 toc_rxntime_player1 = toc(rxntime_player1);
                 
-                if keyCode(spaceKey)
+                if keyCode(Key_spacebar)
                     break ;
-                elseif keyCode(cKey)
+                elseif keyCode(Key_c)
                     player1_response = 'c';
                     break ;
-                elseif keyCode(dKey)
+                elseif keyCode(Key_d)
                     player1_response = 'd';
                     break ;
-                elseif keyCode(escKey)
+                elseif keyCode(Key_esc)
                     ShowCursor;
                     fclose(outfile);
                     Screen('CloseAll');
@@ -326,25 +476,31 @@ for a = 1:str2num(nBlocks)
             end
         end
         
+        ListenChar(0)
         FlushEvents();
-        
         WaitSecs(.5);
         
         
         
         
+        if strcmp(player1_response, 'd')
+            linea = ('Your response: defect');
+        elseif strcmp(player1_response, 'c')
+            linea = ('Your response: cooperate');
+        end
+        lineb = ('\n\n  Player 2''s turn, awaiting Player 2''s response...');
+        %             lineb = ('\n'); %
+        %             linec = ('\n  Press the       key for                 , or       key for       '); %
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea],...
+            'center',center(2)+y_offset,textcolor_black);
+        
+        Screen('Flip', mainwin)
+        
         if strcmp(opponent, 'computer')
+            WaitSecs(2)
             player2_response = choice_matrix_player2(i);
         elseif strcmp(opponent,'human')
-            linea = ('Player 2: Please provide a keyboard response');
-            lineb = ('\n'); %
-            linec = ('Press key c for cooperate, or key d for defect'); %
-            %         lined = ('\n Push spacebar to start trial.');
-            Screen('TextSize', mainwin, txtsize);
-            DrawFormattedText(mainwin, [linea lineb linec],...
-                center(1)+y_offset,center(2),textcolor);
-            Screen('Flip', mainwin)
-            
             keyIsDown=0;
             rxntime_player2 = tic;
             while 1
@@ -352,15 +508,15 @@ for a = 1:str2num(nBlocks)
                 if keyIsDown
                     toc_rxntime_player2 = toc(rxntime_player2);
                     
-                    if keyCode(spaceKey)
+                    if keyCode(Key_spacebar)
                         break ;
-                    elseif keyCode(cKey)
+                    elseif keyCode(Key_c)
                         player2_response = 'c';
                         break ;
-                    elseif keyCode(dKey)
+                    elseif keyCode(Key_d)
                         player2_response = 'd';
                         break ;
-                    elseif keyCode(escKey)
+                    elseif keyCode(Key_esc)
                         ShowCursor;
                         fclose(outfile);
                         Screen('CloseAll');
@@ -371,71 +527,34 @@ for a = 1:str2num(nBlocks)
             
             FlushEvents();
             
-            WaitSecs(.5);
+                        WaitSecs(.5);
         end
         
-        
-        rxnTime_player1(i) = toc_rxntime_player1;
         if strcmp(opponent, 'human')
             rxnTime_player2(i) = toc_rxntime_player2;
         end
         
         
         
-        if strcmp(player2_response, 'c') && strcmp(player1_response,'c') %mod(trialorder(i),2)==0
-            %             Screen('DrawTexture', mainwin, redStar, [], itemloc);
-            linea = ' Player 1 choice: cooperate';
-            lineb = '\n Player 2 choice: cooperate'; %
-            linec = '\n Both players receive 4 point'; %
-            lined = '\n Press spacebar to proceed';
-            Screen('TextSize', mainwin, txtsize);
-            DrawFormattedText(mainwin, [linea lineb linec lined],...
-                center(1)+y_offset,center(2),textcolor);
-            Screen('Flip', mainwin)
-            answer=1;
-        elseif strcmp(player2_response, 'd') && strcmp(player1_response,'d') %mod(trialorder(i),2)==0
-            linea = ' Player 1 choice: defect';
-            lineb = '\n Player 2 choice: defect'; %
-            linec = '\n Both players receive 2 points'; %
-            lined = '\n Press spacebar to proceed';
-            Screen('TextSize', mainwin, txtsize);
-            DrawFormattedText(mainwin, [linea lineb linec lined],...
-                center(1)+y_offset,center(2),textcolor);
-            Screen('Flip', mainwin)
-            answer=2;
-        elseif strcmp(player2_response, 'd') && strcmp(player1_response,'c') %mod(trialorder(i),2)==0
-            linea = ' Player 1 choice: cooperate';
-            lineb = '\n Player 2 choice: defect'; %
-            linec = '\n You receive 1 point; Opponent receives 6 points'; %
-            lined = '\n Press spacebar to proceed';
-            Screen('TextSize', mainwin, txtsize);
-            DrawFormattedText(mainwin, [linea lineb linec lined],...
-                center(1)+y_offset,center(2),textcolor);
-            Screen('Flip', mainwin)
-            answer=3;
-        elseif strcmp(player2_response, 'c') && strcmp(player1_response,'d') %mod(trialorder(i),2)==0
-            linea = ' Player 1 choice: defect';
-            lineb = '\n Player 2 choice: cooperate'; %
-            linec = '\n You receive 6 points; Opponent receives 1 point'; %
-            lined = '\n Press spacebar to proceed';
-            Screen('TextSize', mainwin, txtsize);
-            DrawFormattedText(mainwin, [linea lineb linec lined],...
-                center(1)+y_offset,center(2),textcolor);
-            Screen('Flip', mainwin)
-            answer=4;
-        end
         
-        choice_matrix_player1(i) = player1_response;
-        choice_matrix_player2(i) = player2_response;
+                  linea = 'Player 2''s answer received';
+
         
-        
+                  lineb = '\n\n Press spacebar to view Player 2'' response';
+            Screen('TextSize', mainwin, txtsize);
+            DrawFormattedText(mainwin, [linea lineb linec lined],...
+                center(1)+x_offset,center(2),textcolor_black);
+            Screen('Flip', mainwin)
+            
+                           ListenChar(1)
+     
         keyIsDown=0;
         while 1
             [keyIsDown, secs, keyCode] = KbCheck;
             if keyIsDown
-                if keyCode(spaceKey)
+                if keyCode(Key_spacebar)
                     break ;
-                elseif keyCode(escKey)
+                elseif keyCode(Key_esc)
                     ShowCursor;
                     fclose(outfile);
                     Screen('CloseAll');
@@ -443,9 +562,85 @@ for a = 1:str2num(nBlocks)
                 end
             end
         end
-        
+                ListenChar(0)
+
         FlushEvents();
-        WaitSecs(0.5);
+         WaitSecs(0.5);
+            
+            
+            
+            
+            
+            
+            
+            
+        
+        if strcmp(player2_response, 'c') && strcmp(player1_response,'c') %mod(trialorder(i),2)==0
+            %             Screen('DrawTexture', mainwin, redStar, [], itemloc);
+            linea = ' Your choice: cooperate';
+            lineb = '\n Player 2''s choice: cooperate'; %
+            linec = '\n\n You receive 4 point'; %
+            lined = '\n\n Press spacebar to proceed';
+            Screen('TextSize', mainwin, txtsize);
+            DrawFormattedText(mainwin, [linea lineb linec lined],...
+                center(1)+x_offset,center(2),textcolor_black);
+            Screen('Flip', mainwin)
+            Player1_pts = 4;
+        elseif strcmp(player2_response, 'd') && strcmp(player1_response,'d') %mod(trialorder(i),2)==0
+            linea = ' Your choice: defect';
+            lineb = '\n Player 2''s choice: defect'; %
+            linec = '\n\n You receive 2 points'; %
+            lined = '\n\n Press spacebar to proceed';
+            Screen('TextSize', mainwin, txtsize);
+            DrawFormattedText(mainwin, [linea lineb linec lined],...
+                center(1)+x_offset,center(2),textcolor_black);
+            Screen('Flip', mainwin)
+            Player1_pts = 2;
+        elseif strcmp(player2_response, 'd') && strcmp(player1_response,'c') %mod(trialorder(i),2)==0
+            linea = ' Your choice: cooperate';
+            lineb = '\n Player 2''s choice: defect'; %
+            linec = '\n\n You receive 1 point'; %
+            lined = '\n\n Press spacebar to proceed';
+            Screen('TextSize', mainwin, txtsize);
+            DrawFormattedText(mainwin, [linea lineb linec lined],...
+                center(1)+x_offset,center(2),textcolor_black);
+            Screen('Flip', mainwin)
+            Player1_pts = 1;
+        elseif strcmp(player2_response, 'c') && strcmp(player1_response,'d') %mod(trialorder(i),2)==0
+            linea = ' Your choice: defect';
+            lineb = '\n Player 2''s choice: cooperate'; %
+            linec = '\n\n You receive 6 points'; %
+            lined = '\n\n Press spacebar to proceed';
+            Screen('TextSize', mainwin, txtsize);
+            DrawFormattedText(mainwin, [linea lineb linec lined],...
+                center(1)+x_offset,center(2),textcolor_black);
+            Screen('Flip', mainwin)
+            Player1_pts = 6;
+        end
+        
+        choice_matrix_player1(i) = player1_response;
+        choice_matrix_player2(i) = player2_response;
+        
+                        ListenChar(1)
+
+        keyIsDown=0;
+        while 1
+            [keyIsDown, secs, keyCode] = KbCheck;
+            if keyIsDown
+                if keyCode(Key_spacebar)
+                    break ;
+                elseif keyCode(Key_esc)
+                    ShowCursor;
+                    fclose(outfile);
+                    Screen('CloseAll');
+                    return;
+                end
+            end
+        end
+                        ListenChar(0)
+
+        FlushEvents();
+                 WaitSecs(0.5);
         
         %
         %         % now record  response
@@ -491,29 +686,25 @@ for a = 1:str2num(nBlocks)
             
             linea = ('Player 1: How fair do you think your opponent is being?');
             lineb = ('\n 1 corresponds to least trustworthy'); %
-            linec = ('\n\n 9 corresponds to most trustworthy'); %
-            lined = ('\n\n\n');
-            linee = ('\n\n\n\n Press a key (1-9) now'); %
+            linec = ('\n 9 corresponds to most trustworthy'); %
+            lined = ('');
+            linee = ('\n\n Press a key (1-9) now'); %
             %         lined = ('\n Push spacebar to start trial.');
             Screen('TextSize', mainwin, txtsize);
             DrawFormattedText(mainwin, [linea lineb linec lined linee],...
-                center(1)+y_offset,center(2),textcolor);
+                center(1)+x_offset,center(2),textcolor_black);
             Screen('Flip', mainwin)
-            
+                            ListenChar(1)
+
             keyIsDown=0;
-            proberxntime_player1 = tic;
+            player1_probeRrxntime = tic;
             
             while 1
                 [keyIsDown, secs, keyCode] = KbCheck;
-                55if keyIsDown
-                    toc_rxntime_player1 = toc(proberxntime_player1);
+                if keyIsDown
+                    player1_probeRrxntime = toc(player1_probeRrxntime);
                     
-                    
-                    
-                    
-                    
-                    
-                    if keyCode(spaceKey)
+                    if keyCode(Key_spacebar)
                         break ;
                     elseif keyCode(Key_1)
                         player1_probeResponse = '1';
@@ -542,7 +733,7 @@ for a = 1:str2num(nBlocks)
                     elseif keyCode(Key_9)
                         player1_probeResponse = '9';
                         break ;
-                    elseif keyCode(escKey)
+                    elseif keyCode(Key_esc)
                         ShowCursor;
                         fclose(outfile);
                         Screen('CloseAll');
@@ -551,7 +742,8 @@ for a = 1:str2num(nBlocks)
                     
                 end
             end
-            
+                            ListenChar(0)
+
             FlushEvents();
             
             WaitSecs(.5);
@@ -560,14 +752,17 @@ for a = 1:str2num(nBlocks)
             
             
             if i == round(nTrialsPerBlock/2)
-                probeResponse(1) = player1_probeResponse;
+                probeResponse_report(1) = player1_probeResponse;
+                probeResponse_rxntime(1) = player1_probeRrxntime;
             elseif i == nTrialsPerBlock
-                probeResponse(2) = player1_probeResponse;
+                probeResponse_report(2) = player1_probeResponse;
+                probeResponse_rxntime(2) = player1_probeRrxntime;
+                
             end
             
         end
         
-        
+        Player1_pts_summary(i) = Player1_pts;
     end  % end of trial loop
 end % end of block loop
 
@@ -588,8 +783,10 @@ taskoutput.rxnTime_player2 = rxnTime_player2;
 
 taskoutput.durationWholeSession = wholesessionT;
 
-taskoutput.probeResponse = probeResponse;
-ListenChar(0)
+taskoutput.probeResponse_report = probeResponse_report;
+taskoutput.probeResponse_rxntime = probeResponse_rxntime;
+
+ListenChar(1)
 
 
 end
