@@ -1,6 +1,7 @@
 %V8 - transitioning to a more put-together form of this task
 
 sca; clearvars; close all; clc;
+RestrictKeysForKbCheck([])
 
 
 wholesession = tic;
@@ -12,11 +13,19 @@ practiceblock = 'no';
 if strcmp(practiceblock, 'yes')
     nTrialsPerBlock = 8;
 elseif strcmp(practiceblock, 'no')
-    nTrialsPerBlock = 10;
+    nTrialsPerBlock = 9;
 end
 
 mode = 'testrun'; %either 'testrun' or 'experiment'
 opponent = 'human'; %either 'human' or 'computer'
+strategy = 'TT_coop'; % TT_coop/TT_defect/none
+
+if strcmp(strategy, 'TT_coop')
+    strategy_pick = {"c";"c";"c";"d";"c";"c"};
+elseif  strcmp(strategy, 'TT_defect')
+    strategy_pick = {"d";"d";"d";"d";"c";"d"};
+end
+
 taskoutput = struct();
 dbstop if error
 PsychDefaultSetup(2);
@@ -24,13 +33,12 @@ DisableKeysForKbCheck(40)%this is used for keys that are stuck so that that spec
 
 txtsize = 20;
 spacebar_wait = 1;
+% choice_matrix_player1 = zeros(10,1);
 
 if strcmp(opponent, 'computer')
-    choice_matrix_player1 = zeros(1,10);
-    choice_matrix_player2 = {'c';'d';'c';'d';'d';'d';'d';'d';'c';'d'};
+    choice_matrix_player2 = {"c";"d";"c";"d";"d";"d";"d";"d";"c";"d"};
 elseif strcmp(opponent, 'human')
-    choice_matrix_player1 = zeros(1,10);
-    choice_matrix_player2 = zeros(1,10);
+%     choice_matrix_player2 = zeros(10,1);
 end
 
 % rand('state', sum(100*clock)); %AT this is no longer recommended
@@ -373,7 +381,7 @@ Time_postscrn_flip_intro3 = toc(time_postscrn_flip_intro3);
 
 for a = 1:nTrialsPerBlock
     
-%     Time_scrn_flip_trials1 = zeros(nTrialsPerBlock,2);
+    %     Time_scrn_flip_trials1 = zeros(nTrialsPerBlock,2);
     time_scrn_flip_trials1 = tic;
     FlushEvents();
     WaitSecs(0.5);
@@ -435,7 +443,7 @@ for a = 1:nTrialsPerBlock
     FlushEvents();
     WaitSecs(0.5);
     
-%     Time_scrn_flip_trials2 = zeros(nTrialsPerBlock,2);
+    %     Time_scrn_flip_trials2 = zeros(nTrialsPerBlock,2);
     jj = 1;
     while jj <= 2
         
@@ -527,10 +535,10 @@ for a = 1:nTrialsPerBlock
             rxnTime_player1(a,1) = toc(rxntime_player1);
             
             if keyCode(Key_c)
-                player1_response = 'c';
+                player1_response = "c";
                 break ;
             elseif keyCode(Key_d)
-                player1_response = 'd';
+                player1_response = "d";
                 break ;
             elseif keyCode(Key_esc)
                 ShowCursor;
@@ -550,24 +558,24 @@ for a = 1:nTrialsPerBlock
     FlushEvents();
     
     %     if a == 1 || a == 3
-    %         player1_response = 'c';
+    %         player1_response = "c";
     %     elseif a == 2 || a == 4
-    %         player1_response = 'd';
+    %         player1_response = "d";
     %     end
     
     
     
     jj = 1;
-%     Time_scrn_flip_trials3 = zeros(nTrialsPerBlock,2);
-
+    %     Time_scrn_flip_trials3 = zeros(nTrialsPerBlock,2);
+    
     while jj <= 2
-        if strcmp(player1_response, 'd')
+        if strcmp(player1_response, "d")
             linea = ('Your response: ______');
             DrawFormattedText(mainwin, linea,...
                 'center',center(2)+y_offset,textcolor_black);
             DrawFormattedText(mainwin, '                                       Defect',...
                 center(1)+x_offset,center(2)+y_offset,textcolor_defect);
-        elseif strcmp(player1_response, 'c')
+        elseif strcmp(player1_response, "c")
             linea = ('Your response: _________');
             
             DrawFormattedText(mainwin, linea,...
@@ -598,72 +606,94 @@ for a = 1:nTrialsPerBlock
     
     
     
-    if a > 0
-        RestrictKeysForKbCheck([Key_c, Key_d, Key_esc])
+    RestrictKeysForKbCheck([Key_c, Key_d, Key_esc])
+    
+    if strcmp(practiceblock, 'yes')
+        WaitSecs(2)
         
-        if strcmp(opponent, 'computer')
-            WaitSecs(2)
-            player2_response = choice_matrix_player2(a);
-        elseif strcmp(opponent,'human')
-            keyIsDown=0;
-            rxntime_player2 = tic;
-            
-            while 1
-                [keyIsDown, secs, keyCode] = KbCheck;
-                if keyIsDown
-                    toc_rxntime_player2 = toc(rxntime_player2);
-                    
-                    if keyCode(Key_spacebar)
-                        break ;
-                    elseif keyCode(Key_c)
-                        player2_response = 'c';
-                        break ;
-                    elseif keyCode(Key_d)
-                        player2_response = 'd';
-                        break ;
-                    elseif keyCode(Key_esc)
-                        ShowCursor;
-                        fclose(outfile);
-                        Screen('CloseAll');
-                        return;
-                    end
-                end
-            end
-            
-            Time_postscrn_flip_trials3(a,1) = toc(time_postscrn_flip_trials3);
-            time_scrn_flip_trials4 = tic;
-            FlushEvents();
-            RestrictKeysForKbCheck([])
-            WaitSecs(.5);
-            
+        if a == 1 || a == 2
+            player2_response = "c";
+        elseif a == 3 || a == 4
+            player2_response = "d";
+        elseif a > 4
+            player2_response = choice_matrix_player1((a-1));
         end
         
-    elseif a == 1 || a == 2
-        player2_response = 'c';
-    elseif a == 3 || a == 4
-        player2_response = 'd';
+    elseif strcmp(opponent, 'computer') &&  strcmp(strategy, 'none')
+        WaitSecs(2)
+        player2_response = choice_matrix_player2(a);
+    elseif strcmp(opponent,'human') &&  strcmp(strategy, 'none')
+        keyIsDown=0;
+        %  rxntime_player2 = tic;
+        
+        while 1
+            [keyIsDown, secs, keyCode] = KbCheck;
+            if keyIsDown
+                %                     toc_rxntime_player2 = toc(rxntime_player2);
+                
+                if keyCode(Key_spacebar)
+                    break ;
+                elseif keyCode(Key_c)
+                    player2_response = "c";
+                    break ;
+                elseif keyCode(Key_d)
+                    player2_response = "d";
+                    break ;
+                elseif keyCode(Key_esc)
+                    ShowCursor;
+                    fclose(outfile);
+                    Screen('CloseAll');
+                    return;
+                end
+            end
+        end
+        
+    elseif strcmp(strategy, 'TT_coop') || strcmp(strategy, 'TT_defect')
+        WaitSecs(2) %AT this we should change to be variable from some known distribution
+        
+        if a == 1
+            player2_response = "c";
+        elseif a == 2 || a == 3
+            player2_response = choice_matrix_player1((a-1));
+        elseif a > 3
+            player2_response = strategy_pick{a-3};
+        end
     end
     
+    Time_postscrn_flip_trials3(a,1) = toc(time_postscrn_flip_trials3);
+    time_scrn_flip_trials4 = tic;
+    FlushEvents();
+    RestrictKeysForKbCheck([])
+    WaitSecs(.5);
     
+    %     if strcmp(practiceblock, 'yes')
+    %         if a == 1 || a == 2
+    %             player2_response = "c";
+    %         elseif a == 3 || a == 4
+    %             player2_response = "d";
+    %         end
+    %     end
     
-    if strcmp(opponent, 'human')
-        rxnTime_player2(a,1) = toc_rxntime_player2;
-    end
+
     
+%     if strcmp(opponent, 'human')
+%         %         rxnTime_player2(a,1) = toc_rxntime_player2;
+%     end
+%     
     
     
     jj = 1;
-%     Time_scrn_flip_trials4 = zeros(nTrialsPerBlock,2);
-
+    %     Time_scrn_flip_trials4 = zeros(nTrialsPerBlock,2);
+    
     while jj <= 2
-        if strcmp(player1_response, 'd')
+        if strcmp(player1_response, "d")
             linea = 'Player B has responded';
             lineb = ('\n\n  If response is Cooperate, you will receive 6 points');
             linec = ('\n  If response is Defect, you will receive 1 points');
             Screen('TextSize', mainwin, txtsize);
             DrawFormattedText(mainwin, [linea],...
                 'center',center(2)+y_offset,textcolor_black);
-        elseif strcmp(player1_response, 'c')
+        elseif strcmp(player1_response, "c")
             linea = 'Player B has responded';
             lineb = ('\n\n  If response is Cooperate, you will receive 4 points');
             linec = ('\n  If response is Defect, you will receive 2 points');
@@ -694,8 +724,6 @@ for a = 1:nTrialsPerBlock
     end
     
     
-    
-    
     FlushEvents();
     keyIsDown=0;
     
@@ -717,11 +745,11 @@ for a = 1:nTrialsPerBlock
     time_scrn_flip_trials5 = tic;
     FlushEvents();
     WaitSecs(0.5);
-%     Time_scrn_flip_trials5 = zeros(nTrialsPerBlock,2);
+    %     Time_scrn_flip_trials5 = zeros(nTrialsPerBlock,2);
     
     jj = 1;
     while jj <= 2
-        if strcmp(player2_response, 'c') && strcmp(player1_response,'c') %mod(trialorder(i),2)==0
+        if strcmp(player2_response, "c") && strcmp(player1_response,"c") %mod(trialorder(i),2)==0
             %             Screen('DrawTexture', mainwin, redStar, [], itemloc);
             linea = '\n\n Your response: _________';
             lineb = '\n Player B''s response: _________'; %
@@ -735,7 +763,7 @@ for a = 1:nTrialsPerBlock
             DrawFormattedText(mainwin, '\n\n\n                                         Cooperate',...
                 center(1)+x_offset,center(2)+y_offset,textcolor_cooperate);
             PlayerA_pts = 4;
-        elseif strcmp(player2_response, 'd') && strcmp(player1_response,'d') %mod(trialorder(i),2)==0
+        elseif strcmp(player2_response, "d") && strcmp(player1_response,"d") %mod(trialorder(i),2)==0
             linea = '\n\n Your response: ______';
             lineb = '\n Player B''s response: ______'; %
             linec = 'You receive 2 points'; %
@@ -748,7 +776,7 @@ for a = 1:nTrialsPerBlock
             DrawFormattedText(mainwin, '\n\n\n                                             Defect',...
                 center(1)+x_offset,center(2)+y_offset,textcolor_defect);
             PlayerA_pts = 2;
-        elseif strcmp(player2_response, 'd') && strcmp(player1_response,'c') %mod(trialorder(i),2)==0
+        elseif strcmp(player2_response, "d") && strcmp(player1_response,"c") %mod(trialorder(i),2)==0
             linea = '\n\n Your response: _________';
             lineb = '\n Player B''s response: ______'; %
             linec = 'You receive 1 point'; %
@@ -762,7 +790,7 @@ for a = 1:nTrialsPerBlock
                 center(1)+x_offset,center(2)+y_offset,textcolor_defect);
             
             PlayerA_pts = 1;
-        elseif strcmp(player2_response, 'c') && strcmp(player1_response,'d') %mod(trialorder(i),2)==0
+        elseif strcmp(player2_response, "c") && strcmp(player1_response,"d") %mod(trialorder(i),2)==0
             linea = '\n\n Your response: ______';
             lineb = '\n Player B''s response: _________'; %
             linec = 'You receive 6 points'; %
@@ -797,9 +825,13 @@ for a = 1:nTrialsPerBlock
     end
     
     
+    %AT 2/11/20; there's some funkiness going on with the whole
+    %character/cell thing. watch out for errors. I think this is also why
+    %creating the pre-made array using 'zeros' didn't work out too well
     
-    choice_matrix_player1(a,1) = player1_response;
-    choice_matrix_player2(a,1) = player2_response;
+    %convertCharsToStrings
+    choice_matrix_player1(a) = player1_response;
+    choice_matrix_player2(a) = player2_response;
     playerA_pts_summary(a,1) = PlayerA_pts;
     
     
@@ -823,7 +855,7 @@ for a = 1:nTrialsPerBlock
     
     
     timing_wholesession_trials(a,1) = toc(wholesession);
-
+    
     Time_postscrn_flip_trials5(a,1) = toc(time_postscrn_flip_trials5);
     
 end
@@ -831,15 +863,15 @@ end
 
 
 
-%AT 2/10/20 Intro timing for two variables below should match 
-timing_sumTictocs_intro = Introtime;
-timing_wholesession_intro = Intro_wholesession;
- 
+%AT 2/10/20 Intro timing for two variables below should match
+timing_sumTictocs_Intro = Introtime;
+timing_wholesession_Intro = Intro_wholesession;
 
-%AT 2/10/20 Intro timing for two variables below should match 
-timing_sumTictocs_intro = Time_scrn_flip_intro1(1, 2)+Time_scrn_flip_intro2(1, 6)+Time_scrn_flip_intro3(1, 2)+Time_postscrn_flip_intro1+Time_postscrn_flip_intro2+Time_postscrn_flip_intro3;
+
+%AT 2/10/20 Intro timing for two variables below should match
+timing_sumTictocs_introScreens = Time_scrn_flip_intro1(1, 2)+Time_scrn_flip_intro2(1, 6)+Time_scrn_flip_intro3(1, 2)+Time_postscrn_flip_intro1+Time_postscrn_flip_intro2+Time_postscrn_flip_intro3;
 timing_wholesession_introScreens = IntroScreens_wholesession - Intro_wholesession;
- 
+
 %AT 2/10/20 doing some processing on wholesession tictoc so I can get the
 %trial by trial duration
 
@@ -865,7 +897,7 @@ taskoutput.choice_matrix_player1 = choice_matrix_player1;
 taskoutput.choice_matrix_player2 = choice_matrix_player2;
 
 taskoutput.rxnTime_player1 = rxnTime_player1;
-taskoutput.rxnTime_player2 = rxnTime_player2;
+% taskoutput.rxnTime_player2 = rxnTime_player2;
 
 taskoutput.durationWholeSession = wholesessionT;
 
