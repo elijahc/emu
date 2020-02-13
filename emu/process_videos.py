@@ -150,33 +150,59 @@ def process_video(in_file,out_file=None, suffix=None, verbose=True, audio_bitrat
 
     os.system(cmd)
 
-def process(resolution, video_set, video_directory,verbose):
-    vdir = os.path.expanduser(video_directory)
-    v_files = glob.glob(os.path.join(vdir,'*.mp4'))
-
-    print('Converting {} videos in {}({})'.format(video_set, vdir, resolution))
-
+def process(infile, resolution, start=0, end=None, video_set=None, video_directory=None, verbose=False):
     video_meta = {'trickshots':trickshots, 'deepfake':records}
-    videos=pd.DataFrame.from_records(video_meta[video_set])
-    v = videos.pipe(add_start).pipe(add_end)
+
+    if infile is not None:
+        if not os.path.exists(infile):
+            raise ValueError('{} does not exist'.format(infile))
+        else:
+            print('Converting @ {}'.format(resolution))
+            # df=pd.DataFrame.from_records(trickshots+records])
+
+            # df = df.pipe(add_start).pipe(add_end)
+            dirpath, fn = os.path.split(infile)
+
+            opts = {'out_file':os.path.join(dirpath, 'processed_'+str(fn)), 'r':resolution, 'verbose':verbose}
+            if start > 0:
+                opts.update({'ss':start})
+            if end is not None:
+                opts['t']=int(end)-int(start)
+
+            print('\t{}'.format(infile))
+            process_video(infile, **opts)
+
+    elif os.path.exists(video_directory) and video_set is not None:
+        vdir = os.path.expanduser(video_directory)
+        print('Converting {} videos in {} @ {}'.format(video_set, vdir, resolution))
+        v_files = glob.glob(os.path.join(vdir,'*.mp4'))
+        v = pd.DataFrame.from_records(video_meta[video_set]).pipe(add_start).pipe(add_end)
+        for i,row in tqdm(v.iterrows()):
+            #cmd = './process_video.sh -r 360p -i {} -s {} -e {} -o {}'.format(row.fname,row.start,row.end,row.fname)
+            #os.system(os.path.join())
+            fp = os.path.join(vdir,row.fname)
+            out_name = str(i+1)+'_'+row.fname
+            print(fp)
+
+            if pd.notna(row.end):
+                t = int(row.end)-int(row.start)
+                process_video(fp, out_file = out_name, ss=row.start, t=t, r=resolution, suffix=row.type, verbose=verbose)
+            else:
+                process_video(fp, out_file = out_name, ss=row.start, r=resolution, suffix=row.type, verbose=verbose)
+
+
+        
+
+
     # v[v.fname.isin(v_files)]
 
-    for i,row in tqdm(v.iterrows()):
-        #cmd = './process_video.sh -r 360p -i {} -s {} -e {} -o {}'.format(row.fname,row.start,row.end,row.fname)
-        #os.system(os.path.join())
-        fp = os.path.join(vdir,row.fname)
-        out_name = str(i+1)+'_'+row.fname
-        print(fp)
-
-        if pd.notna(row.end):
-            t = int(row.end)-int(row.start)
-            process_video(fp, out_file = out_name, ss=row.start, t=t, r=resolution, suffix=row.type, verbose=verbose)
-        else:
-            process_video(fp, out_file = out_name, ss=row.start, r=resolution, suffix=row.type, verbose=verbose)
 
 @click.command()
-@click.option('-r', '--resolution', default='360p', type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output videos')
-@click.option('-s', '--video_set', default='trickshots', type=click.Choice(['trickshots','deepfake']), help='Video set to convert')
+@click.option('-i', '--infile', type=str, help='Single file input. By default will write the output to the same dir as input file')
+@click.option('-r', '--resolution', default='360p', type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output video(s)')
+@click.option('-ss', '--start', default=0, type=int, help='Clip output video starting at ss (seconds)')
+@click.option('-e', '--end', type=int, help='Clip output video at end (seconds)')
+@click.option('--video_set', type=click.Choice(['trickshots','deepfake']), help='Video set to convert')
 @click.option('-d', '--video_directory', default='./', help='Path to folder containing raw video files')
 @click.option('--verbose', is_flag=True, default=False)
 def preprocess(*args, **kwargs):

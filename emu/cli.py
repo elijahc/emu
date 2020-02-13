@@ -25,8 +25,11 @@ def download(fileid,verbose):
         click.echo("{}".format(fileid))
 
 @main.command()
-@click.option('-r', '--resolution', default='360p', type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output videos')
-@click.option('-s', '--video_set', default='trickshots', type=click.Choice(['trickshots','deepfake']), help='Video set to convert')
+@click.option('-i', '--infile', type=str, help='Single file input. By default will write the output to the same dir as input file')
+@click.option('-r', '--resolution', default='360p', type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output video(s)')
+@click.option('-ss', '--start', default=0, type=int, help='Clip output video starting at ss (seconds)')
+@click.option('-e', '--end', type=int, help='Clip output video at end (seconds)')
+@click.option('--video_set', type=click.Choice(['trickshots','deepfake']), help='Video set to convert')
 @click.option('-d', '--video_directory', default='./', help='Path to folder containing raw video files')
 @click.option('--verbose', is_flag=True, default=False)
 def preprocess(*args, **kwargs):

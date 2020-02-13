@@ -9,7 +9,7 @@ $ git clone https://github.com/elijahc/emu
 $ cd emu
 ```
 
-Install the python requirements
+Install the python requirements and packages
 ```bash
 $ pip install -r requirements.txt
 ```
@@ -19,6 +19,16 @@ Install the optional jwt plugin
 $ pip install boxsdk[jwt]
 ```
 
+If you want systemwide access to the emu command line interface install the library using pip
+```bash
+
+$ pip install -e .
+
+```
+
+> The video preprocessing tools depend on ffmpeg, so make sure you have ffmpeg installed
+> `sudo apt-get install ffmpeg`
+
 ## Access
 
 In order to use the Box API you'll need a credentials file (Contact Elijah)
@@ -27,17 +37,50 @@ By default when you initialize the jwt client it will look for this file at ~/.e
 
 ## Usage
 
+You can access command line tools through the emu.py script...
+
+```bash
+$ python3 emu.py --help
+Usage: emu.py [OPTIONS] COMMAND [ARGS]...
+
+  Simple CLI for accessing emu data
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  download
+  info
+  preprocess
+```
+
+...or, if the emu package was installed system-wide (see Installation), the emu cli tool
+
+```bash
+
+$ pip install -e .
+
+$ emu --help
+Usage: emu [OPTIONS] COMMAND [ARGS]...
+
+  Simple CLI for accessing emu data
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  download
+  info
+  preprocess
+
+```
+
 ### Video Preprocessing
 
 The preprocessing subcommand in the emu cli allows you to rescale resolution of video files and greyscale them.
-Make sure you have ffmpeg installed
 
 ```bash
-$ sudo apt-get install ffmpeg
-```
-
-```bash
-elijahc@hopper:~/emu$ python3 emu.py preprocess --help
+emu.py preprocess --help
 Usage: emu.py preprocess [OPTIONS]
 
 Options:
