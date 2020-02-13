@@ -127,15 +127,14 @@ def process_video(in_file,out_file=None, suffix=None, verbose=True, audio_bitrat
 
     d,in_fn = os.path.split(in_file)
     if out_file is None:
-        out_fn = in_fn
+        out_file = os.path.join(d,'processed',in_fn)
     else:
         out_fn=out_file
 
     if suffix is not None:
-        name,ext = out_fn.split('.')
-        out_fn = name+'_{}.'.format(suffix)+ext
+        fp,ext = out_fn.split('.')
+        out_file = fp+'{}_{}.{}'.format(fp,suffix,ext)
 
-    out_file = os.path.join(d,'processed',out_fn)
 
     in_file = os.path.expanduser(in_file)
     out_file = os.path.expanduser(out_file)
@@ -162,14 +161,18 @@ def process(infile, resolution, start=0, end=None, video_set=None, video_directo
 
             # df = df.pipe(add_start).pipe(add_end)
             dirpath, fn = os.path.split(infile)
+            outfile = os.path.join(dirpath, 'processed_'+str(fn))
 
-            opts = {'out_file':os.path.join(dirpath, 'processed_'+str(fn)), 'r':resolution, 'verbose':verbose}
+            opts = {'out_file':outfile, 'r':resolution, 'verbose':verbose}
             if start > 0:
                 opts.update({'ss':start})
             if end is not None:
+                print('\t{} -> {}(0\'{}\" -> 0\'{}\")'.format(infile,outfile,start,end))
                 opts['t']=int(end)-int(start)
+            else:
+                print('\t{} -> {}(0\'{}\" -> {})'.format(infile,outfile,start,'end'))
 
-            print('\t{}'.format(infile))
+
             process_video(infile, **opts)
 
     elif os.path.exists(video_directory) and video_set is not None:

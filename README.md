@@ -80,13 +80,18 @@ Commands:
 The preprocessing subcommand in the emu cli allows you to rescale resolution of video files and greyscale them.
 
 ```bash
-emu.py preprocess --help
-Usage: emu.py preprocess [OPTIONS]
+
+$ emu preprocess --help
+Usage: emu preprocess [OPTIONS]
 
 Options:
+  -i, --infile TEXT               Single file input. By default will write the
+                                  output to the same dir as input file
   -r, --resolution [1080p|720p|360p]
-                                  Resolution options for output videos
-  -s, --video_set [trickshots|deepfake]
+                                  Resolution options for output video(s)
+  -ss, --start INTEGER            Clip output video starting at ss (seconds)
+  -e, --end INTEGER               Clip output video at end (seconds)
+  --video_set [trickshots|deepfake]
                                   Video set to convert
   -d, --video_directory TEXT      Path to folder containing raw video files
   --verbose
@@ -94,13 +99,24 @@ Options:
 
 ```
 
-Rescale trickshot videos to 360p
+Rescale all trickshot videos to 360p
 
 ```bash
 
 $ python3 emu.py preprocess  -r 360p -s trickshots -d ~/deepfake/videos/trickshots
 
 ```
+
+Preprocess a single video to 360p starting at 8 seconds and ending at 15
+
+```bash
+
+$ emu preprocess -i ./Beckham.mp4 -r 360p -ss 8 -e 15
+Converting @ 360p
+	./Beckham.mp4 -> ./processed_Beckham.mp4(0'8" -> 0'15")
+
+```
+
 
 ### Accessing Box Data
 
