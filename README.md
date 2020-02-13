@@ -27,6 +27,8 @@ $ pip install -e .
 ```
 
 > The video preprocessing tools depend on ffmpeg, so make sure you have ffmpeg installed
+
+
 > `sudo apt-get install ffmpeg`
 
 ## Access
@@ -37,7 +39,58 @@ By default when you initialize the jwt client it will look for this file at ~/.e
 
 ## Usage
 
-You can access command line tools through the emu.py script...
+### emu Box SDK
+
+#### Accessing Box Data
+
+To access data on the Box server you'll need to initialize/auth their client using jwt
+I created a few helper methods to streamline this
+
+```python
+
+from src.auth import jwt
+client = jwt()
+
+# or if you want your credentials stored somewhere else
+client = jwt('/path/to/config.json')
+```
+
+You can use the client to directly access files uploaded to box via the file's *file_id*. From the browser you can get this straight from the url in the form of app.box.com/file/<file_id>.
+For instance if I wanted to work with [this file](https://app.box.com/file/562127657379):
+
+```python
+
+file_id = 562127657379
+
+# This will grab a short summary of the file and is useful for checking if it exists and you have access
+file = client.file(file_id)
+
+# This will pull down the files full metadata
+file_info = client.file(file_id).get()
+
+# You can download the file using download_to
+with open('/path/to/dir', 'wb') as directory:
+    client.file(file_id).download_to(directory)
+
+```
+
+The client has a similar syntax for folders as well
+
+```python
+folder_id = 123456
+
+# This will grab a short summary of the file and is useful for checking if it exists and you have access
+folder = client.folder(folder_id)
+
+# This will pull down the files full metadata
+folder_info = client.folder(folder_id).get()
+```
+
+### Command Line Interface (CLI)
+
+Several of the commonly used python functions have also been wrapped in a CLI for convenient access on the command line
+
+You can access command line tools by either running the emu.py script...
 
 ```bash
 $ python3 emu.py --help
@@ -54,7 +107,7 @@ Commands:
   preprocess
 ```
 
-...or, if the emu package was installed system-wide (see Installation), the emu cli tool
+...or, if the emu package was installed system-wide (see Installation), the `emu` cli tool is added to your `PATH`
 
 ```bash
 
@@ -75,7 +128,7 @@ Commands:
 
 ```
 
-### Video Preprocessing
+#### Video Preprocessing
 
 The preprocessing subcommand in the emu cli allows you to rescale resolution of video files and greyscale them.
 
@@ -115,46 +168,4 @@ $ emu preprocess -i ./Beckham.mp4 -r 360p -ss 8 -e 15
 Converting @ 360p
 	./Beckham.mp4 -> ./processed_Beckham.mp4(0'8" -> 0'15")
 
-```
-
-
-### Accessing Box Data
-
-To access data on the Box server you'll need to initialize/auth their client using jwt
-I created a few helper methods to streamline this
-
-```python
-from src.auth import jwt
-client = jwt()
-
-# or if you want your credentials stored somewhere else
-client = jwt('/path/to/config.json')
-```
-
-You can use the client to directly access files uploaded to box via the file's *file_id*. From the browser you can get this straight from the url in the form of app.box.com/file/<file_id>.
-For instance if I wanted to work with [this file](https://app.box.com/file/562127657379):
-```python
-file_id = 562127657379
-
-# This will grab a short summary of the file and is useful for checking if it exists and you have access
-file = client.file(file_id)
-
-# This will pull down the files full metadata
-file_info = client.file(file_id).get()
-
-# You can download the file using download_to
-with open('/path/to/dir', 'wb') as directory:
-    client.file(file_id).download_to(directory)
-```
-
-The client has a similar syntax for folders as well
-
-```python
-folder_id = 123456
-
-# This will grab a short summary of the file and is useful for checking if it exists and you have access
-folder = client.folder(folder_id)
-
-# This will pull down the files full metadata
-folder_info = client.folder(folder_id).get()
 ```
