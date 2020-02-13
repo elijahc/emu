@@ -180,29 +180,29 @@ def process(infile, resolution, start=0, end=None, video_set=None, video_directo
         print('Converting {} videos in {} @ {}'.format(video_set, vdir, resolution))
         v_files = glob.glob(os.path.join(vdir,'*.mp4'))
         v = pd.DataFrame.from_records(video_meta[video_set]).pipe(add_start).pipe(add_end)
-        for i,row in tqdm(v.iterrows()):
-            #cmd = './process_video.sh -r 360p -i {} -s {} -e {} -o {}'.format(row.fname,row.start,row.end,row.fname)
-            #os.system(os.path.join())
+        for i,row in v.iterrows():
             fp = os.path.join(vdir,row.fname)
             out_name = str(i+1)+'_'+row.fname
-            print(fp)
+            out_file = os.path.join(vdir, 'processed', out_name)
+            infile = os.path.split(fp)[-1]
 
             if pd.notna(row.end):
                 t = int(row.end)-int(row.start)
-                process_video(fp, out_file = out_name, ss=row.start, t=t, r=resolution, suffix=row.type, verbose=verbose)
+                print('\t{} -> {}(0\'{}\" -> 0\'{}\")'.format(infile,out_file,row.start,row.end))
+                process_video(fp, out_file = out_file, ss=row.start, t=t, r=resolution, suffix=row.type, verbose=verbose)
             else:
-                process_video(fp, out_file = out_name, ss=row.start, r=resolution, suffix=row.type, verbose=verbose)
+                print('\t{} -> {}(0\'{}\" -> {})'.format(infile,out_file,row.start,'end'))
+                process_video(fp, out_file = out_file, ss=row.start, r=resolution, suffix=row.type, verbose=verbose)
 
 
         
 
 
-    # v[v.fname.isin(v_files)]
-
 
 @click.command()
 @click.option('-i', '--infile', type=str, help='Single file input. By default will write the output to the same dir as input file')
-@click.option('-r', '--resolution', default='360p', type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output video(s)')
+@click.option('-r', '--resolution', default='360p',
+        type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output video(s)')
 @click.option('-ss', '--start', default=0, type=int, help='Clip output video starting at ss (seconds)')
 @click.option('-e', '--end', type=int, help='Clip output video at end (seconds)')
 @click.option('--video_set', type=click.Choice(['trickshots','deepfake']), help='Video set to convert')

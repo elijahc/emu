@@ -152,14 +152,6 @@ Options:
 
 ```
 
-Rescale all trickshot videos to 360p
-
-```bash
-
-$ python3 emu.py preprocess  -r 360p -s trickshots -d ~/deepfake/videos/trickshots
-
-```
-
 Preprocess a single video to 360p starting at 8 seconds and ending at 15
 
 ```bash
@@ -167,5 +159,23 @@ Preprocess a single video to 360p starting at 8 seconds and ending at 15
 $ emu preprocess -i ./Beckham.mp4 -r 360p -ss 8 -e 15
 Converting @ 360p
 	./Beckham.mp4 -> ./processed_Beckham.mp4(0'8" -> 0'15")
+
+```
+
+To rescale all trickshot videos to 360p, use the `--video_set` and `-d` options to specify source directory and which set of videos
+
+```bash
+
+$ emu preprocess -r 360p --video_set=trickshots -d ~/deepfake/videos/trickshots
+
+Converting trickshots videos in /home/elijahc/deepfake/videos/trickshots @ 360p
+	Beckham.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/1_Beckham.mp4(0'34" -> 0'39")
+	Beckham.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/2_Beckham.mp4(0'40" -> 0'47")
+	Beckham.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/3_Beckham.mp4(0'48" -> 0'57")
+	Messi.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/4_Messi.mp4(0'12" -> 0'16")
+	pogba.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/5_pogba.mp4(0'0" -> 0'10")
+	DudePerfect_basketball.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/6_DudePerfect_basketball.mp4(0'21" -> 0'26")
+	Soccer_Trick_Shots_2_DudePerfect.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/7_Soccer_Trick_Shots_2_DudePerfect.mp4(0'27" -> 0'30")
+	Soccer_Trick_Shots_2_DudePerfect.mp4 -> /home/elijahc/deepfake/videos/trickshots/processed/8_Soccer_Trick_Shots_2_DudePerfect.mp4(0'73" -> 0'76")
 
 ```
