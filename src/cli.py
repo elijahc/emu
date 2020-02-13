@@ -1,13 +1,14 @@
-from auth import Auth
+# from .auth import Auth
+from .process_videos import process, records, trickshots, resolution_presets
 import click
 import yaml
 
-with open(r'box_index.yaml') as file:
+# with open(r'box_index.yaml') as file:
     # The FullLoader parameter handles the conversion from YAML
     # scalar values to Python the dictionary format
-    BOX_METADATA = yaml.load(file)
+#     BOX_METADATA = yaml.load(file)
 
-    print(BOX_METADATA)
+#     print(BOX_METADATA)
 
 @click.group()
 def main():
@@ -22,6 +23,14 @@ def main():
 def download(fileid,verbose):
     if verbose == True:
         click.echo("{}".format(fileid))
+
+@main.command()
+@click.option('-r', '--resolution', default='360p', type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output videos')
+@click.option('-s', '--video_set', default='trickshots', type=click.Choice(['trickshots','deepfake']), help='Video set to convert')
+@click.option('-d', '--video_directory', default='./', help='Path to folder containing raw video files')
+@click.option('--verbose', is_flag=True, default=False)
+def preprocess(*args, **kwargs):
+    process(*args, **kwargs)
 
 @main.command()
 @click.option('--patient_id')

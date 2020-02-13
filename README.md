@@ -27,6 +27,38 @@ By default when you initialize the jwt client it will look for this file at ~/.e
 
 ## Usage
 
+### Video Preprocessing
+
+The preprocessing subcommand in the emu cli allows you to rescale resolution of video files and greyscale them.
+Make sure you have ffmpeg installed
+
+```bash
+$ sudo apt-get install ffmpeg
+```
+
+```bash
+elijahc@hopper:~/emu$ python3 emu.py preprocess --help
+Usage: emu.py preprocess [OPTIONS]
+
+Options:
+  -r, --resolution [1080p|720p|360p]
+                                  Resolution options for output videos
+  -s, --video_set [trickshots|deepfake]
+                                  Video set to convert
+  -d, --video_directory TEXT      Path to folder containing raw video files
+  --verbose
+  --help                          Show this message and exit.
+
+```
+
+Rescale trickshot videos to 360p
+
+```bash
+
+$ python3 emu.py preprocess  -r 360p -s trickshots -d ~/deepfake/videos/trickshots
+
+```
+
 ### Accessing Box Data
 
 To access data on the Box server you'll need to initialize/auth their client using jwt
