@@ -18,8 +18,8 @@ elseif strcmp(practiceblock, 'no')
 end
 
 mode = 'testrun'; %either 'testrun' or 'experiment'
-opponent = 'human'; %either 'human' or 'computer'
-strategy = 'TT_coop'; % TT_coop/TT_defect/none
+opponent = 'human'; %either 'human' or 'computer'; %This is for purposes of the display screen only, you need to change the 'strategy' variable below if you actually wanna have a personVperson game
+strategy = 'TT_coop'; % TT_coop/TT_defect/human; note if 'human' then Player B must input a keyboard response
 
 if strcmp(strategy, 'TT_coop')
     stable = {"c";"c"};
@@ -52,6 +52,19 @@ elseif  strcmp(strategy, 'TT_defect')
     strategy_pick = [stable;shuffled1;stable;shuffled2];
     
 end
+
+%AT 2/25/20 adding below so we're pulling from some distribution of rxn
+%times for Player B
+rxntime = [1.6, 1.7, 1.8, 1.85, 1.9, 1.95, 2.0, 2.0 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.4];
+n=numel(rxntime);
+ii=randperm(n);
+[~,previous_order]=sort(ii);
+PlayerB_rxntime=rxntime(ii);
+
+
+
+
+
 
 taskoutput = struct();
 dbstop if error
@@ -149,8 +162,8 @@ textcolor_keypresses = green2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Login prompt and open file for writing data out
 prompt = {'Outputfile', 'Subject''s number:', 'age', 'gender', 'group', 'Num of Blocks'};
-defaults = {'ChoiceRT', '4', '4', '4', '4' , '4'};
-answer = inputdlg(prompt, 'ChoiceRT', 2, defaults);
+defaults = {'PDil', '01', '29', 'M', 'Test' , '1'};
+answer = inputdlg(prompt, 'PDil', 2, defaults);
 [output, subid, subage, gender, group, nBlocks] = deal(answer{:}); % all input variables are strings
 outputname = [output gender subid group subage '.xls'];
 nblocks = str2num(nBlocks); % convert string to number for subsequent reference
@@ -187,8 +200,13 @@ if strcmp(mode, 'testrun')
     
 elseif strcmp(mode, 'experiment')
     
+    rez = Screen('Resolution',screenNumber);
+    width = (rez.width);
+    height = (rez.height);
+    newrect = [0,0,width,height];
+    
     % Open window with default settings:
-    [mainwin, screenrect] = Screen('OpenWindow', screenNumber);
+    [mainwin, screenrect] = Screen('OpenWindow', screenNumber, white, newrect);
     
 end
 % [mainwin, screenrect] = Screen(0, 'OpenWindow');
@@ -643,10 +661,7 @@ for a = 1:nTrialsPerBlock
             player2_response = choice_matrix_player1((a-1));
         end
         
-    elseif strcmp(opponent, 'computer') &&  strcmp(strategy, 'none')
-        WaitSecs(2)
-        player2_response = choice_matrix_player2(a);
-    elseif strcmp(opponent,'human') &&  strcmp(strategy, 'none')
+    elseif strcmp(opponent,'human') &&  strcmp(strategy, 'human')
         keyIsDown=0;
         %  rxntime_player2 = tic;
         
@@ -673,14 +688,14 @@ for a = 1:nTrialsPerBlock
         end
         
     elseif strcmp(strategy, 'TT_coop') || strcmp(strategy, 'TT_defect')
-        WaitSecs(2) %AT this we should change to be variable from some known distribution
+        WaitSecs(PlayerB_rxntime(a)) %AT 2/25/20; pulling from normal distribution center around 2 seconds, see code further up top
         
         if a == 1
             player2_response = "c";
         elseif a == 2 || a == 3|| a == 4|| a == 5
             player2_response = choice_matrix_player1((a-1));
         elseif a > 5
-            player2_response = strategy_pick{a};
+            player2_response = strategy_pick{a-5};
         end
     end
     
@@ -899,12 +914,12 @@ timing_wholesession_introScreens = IntroScreens_wholesession - Intro_wholesessio
 %AT 2/10/20 doing some processing on wholesession tictoc so I can get the
 %trial by trial duration
 
-for aa = 1:trialNumb
+for aa = 1:nTrialsPerBlock
     timing_sumTictocs_trial_n(aa,1) = Time_scrn_flip_trials1(aa, 2)+Time_scrn_flip_trials2(aa, 2)+Time_scrn_flip_trials3(aa, 2)+Time_scrn_flip_trials4(aa, 2)+Time_scrn_flip_trials5(aa, 2)+Time_postscrn_flip_trials1(aa,1)+Time_postscrn_flip_trials2(aa,1)+Time_postscrn_flip_trials3(aa,1)+Time_postscrn_flip_trials4(aa,1)+Time_postscrn_flip_trials5(aa,1);
 end
 
 timing_wholesession_trial_n(1,1) = timing_wholesession_trials(1,1) - IntroScreens_wholesession;
-for nn = 2:trialNumb
+for nn = 2:nTrialsPerBlock
     timing_wholesession_trial_n(nn,1) = timing_wholesession_trials(nn,1) - timing_wholesession_trials((nn-1),1);
 end
 

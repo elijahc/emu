@@ -1,13 +1,21 @@
-       %Questions to ask at midpoint and at end
-        
-        if i == round(nTrialsPerBlock/2) || i == nTrialsPerBlock
+       %Questions to ask 
+       
+       queryTime1 = round(nTrialsPerBlock/3);
+       queryTime2 = round((nTrialsPerBlock/3)*2);
+       queryTime3 = nTrialsPerBlock;
+              
+        if a == queryTime1 || a == queryTime2 || a == queryTime3
             
-            if i == round(nTrialsPerBlock/2)
+            if a == queryTime1
                 linea = ('How would you describe your level of cooperation?');
                 linea2 = ('\n');
                 
-            elseif i == nTrialsPerBlock
-                linea = (['You previously rated your level of cooperation as ' mat2str(scaledResponse_PlayerA) '/9, with 1/9 representing ''Very uncooperative'' and 9/9 representing ''Very cooperative'' ']);
+            elseif a == queryTime2
+                linea = (['You previously rated your level of cooperation as ' mat2str(scaledResponse_PlayerA_query1) ' out of 9 ']);
+                linea2 = ('\n Since then, how would you describe your level of cooperation?');
+           
+            elseif a == queryTime3
+                linea = (['You previously rated your level of cooperation as ' mat2str(scaledResponse_PlayerA_query2) ' out of 9 ']);
                 linea2 = ('\n Since then, how would you describe your level of cooperation?');
                 
             end
@@ -97,27 +105,33 @@
             WaitSecs(.5);
             
             
-            if i == round(nTrialsPerBlock/2)
-                scaledResponse_PlayerA = playerA_probeResponse;
-                probeResponse_playerAcooperativity(1) = scaledResponse_PlayerA;
+            if a == queryTime1
+                scaledResponse_PlayerA_query1 = playerA_probeResponse;
+                probeResponse_playerAcooperativity(1) = scaledResponse_PlayerA_query1;
                 probeResponse_playerAcoop_rxntime(1) = playerA_probeRrxntime;
-            elseif i == nTrialsPerBlock
-                probeResponse_playerAcooperativity(2) = playerA_probeResponse;
+          
+            elseif a == queryTime2
+                scaledResponse_PlayerA_query2 = playerA_probeResponse;
+                probeResponse_playerAcooperativity(2) = scaledResponse_PlayerA_query2;
                 probeResponse_playerAcoop_rxntime(2) = playerA_probeRrxntime;
-                
+          
+            elseif a == queryTime3
+                probeResponse_playerAcooperativity(3) = playerA_probeResponse;
+                probeResponse_playerAcoop_rxntime(3) = playerA_probeRrxntime;
+               
             end
             
         end
         
         
         
-        if i == round(nTrialsPerBlock/2) || i == nTrialsPerBlock
+        if a == round(nTrialsPerBlock/2) || a == nTrialsPerBlock
             
-            if i == round(nTrialsPerBlock/2)
+            if a == round(nTrialsPerBlock/2)
                 linea = ('How much do you trust Player B?');
                 linea2 = ('\n');
                 
-            elseif i == nTrialsPerBlock
+            elseif a == nTrialsPerBlock
                 linea = (['You previously rated Player B''s trustworthiness as ' mat2str(scaledResponse_PlayerB) '/9, with 1/9 representing ''Not trust'' and 9/9 representing ''Full trust'' ']);
                 linea2 = ('\n Since then, how much do you trust Player B?');
                 
@@ -208,11 +222,11 @@
             WaitSecs(.5);
             
             
-            if i == round(nTrialsPerBlock/2)
+            if a == round(nTrialsPerBlock/2)
                 scaledResponse_PlayerB = playerA_probeResponse;
                 probeResponse_playerBcooperativity(1) = scaledResponse_PlayerB;
                 probeResponse_playerBcoop_rxntime(1) = playerA_probeRrxntime;
-            elseif i == nTrialsPerBlock
+            elseif a == nTrialsPerBlock
                 probeResponse_playerBcooperativity(2) = playerA_probeResponse;
                 probeResponse_playerBcoop_rxntime(2) = playerA_probeRrxntime;
                 
