@@ -202,7 +202,7 @@ def process(infile, resolution, start=0, end=None, video_set=None, video_directo
 @click.command()
 @click.option('-i', '--infile', type=str, help='Single file input. By default will write the output to the same dir as input file')
 @click.option('-r', '--resolution', default='360p',
-        type=click.Choice(list(resolution_presets.keys()), case_sensitive=False), help='Resolution options for output video(s)')
+        type=click.Choice(list(resolution_presets.keys())), help='Resolution options for output video(s)')
 @click.option('-ss', '--start', default=0, type=int, help='Clip output video starting at ss (seconds)')
 @click.option('-e', '--end', type=int, help='Clip output video at end (seconds)')
 @click.option('--video_set', type=click.Choice(['trickshots','deepfake']), help='Video set to convert')
