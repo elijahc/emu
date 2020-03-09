@@ -39,6 +39,22 @@ trickshots = [
         'fname':'Soccer_Trick_Shots_2_DudePerfect.mp4',
         'link':'https://v637g.app.goo.gl/iE2yrrk8EqL7dKPm6',
         'type':'real',
+    },{
+        'fname':'Drew_Brees_Edition_DP.mp4',
+        'link':'https://v637g.app.goo.gl/oWrnVwfM1AmGwy2Q8',
+        'type':'real',
+    },{
+        'fname':'Drew_Brees_Edition_DP.mp4',
+        'link':'https://v637g.app.goo.gl/Vsr9R6EbEGkveR6T6',
+        'type':'real',
+    },{
+        'fname':'World_Record_Edition_2_DudePerfect.mp4',
+        'link':'https://v637g.app.goo.gl/UYWr93JfYcp7cz7C7',
+        'type':'real',
+    },{
+        'fname':'World_Record_Edition_2_DudePerfect.mp4',
+        'link':'https://v637g.app.goo.gl/s97rDmq9DkqriJ6DA',
+        'type':'real',
     }
 ]
 
