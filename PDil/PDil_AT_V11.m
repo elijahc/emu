@@ -1,9 +1,18 @@
-%V8 - transitioning to a more put-together form of this task
+%V10 - transitioning to a more put-together form of this task
 
 sca; clearvars; close all; clc;
 RestrictKeysForKbCheck([])
 rng('shuffle');% At this is recommended in the ^'s place
 
+TTLs = 'no'; %AT 2/25/20, this is either 'no' or 'yes'
+
+if strcmp(TTLs, 'yes')
+    Datapixx('Open');
+    WaitSecs(.2)
+    DatapixxAOttl() %FOR TTL
+    WaitSecs(.2)
+    DatapixxAOttl() %FOR TTL
+end
 
 wholesession = tic;
 introtime = tic;
@@ -18,8 +27,14 @@ elseif strcmp(practiceblock, 'no')
 end
 
 mode = 'testrun'; %either 'testrun' or 'experiment'
-opponent = 'human'; %either 'human' or 'computer'
-strategy = 'TT_coop'; % TT_coop/TT_defect/none
+opponent = 'human'; %either 'human' or 'computer'; %This is for purposes of the display screen only, you need to change the 'strategy' variable below if you actually wanna have a personVperson game
+strategy = 'TT_coop'; % TT_coop/TT_defect/human; note if 'human' then Player B must input a keyboard response
+
+
+queryTime1 = round(nTrialsPerBlock/3);
+queryTime2 = round((nTrialsPerBlock/3)*2);
+queryTime3 = nTrialsPerBlock;
+
 
 if strcmp(strategy, 'TT_coop')
     stable = {"c";"c"};
@@ -53,6 +68,19 @@ elseif  strcmp(strategy, 'TT_defect')
     
 end
 
+%AT 2/25/20 adding below so we're pulling from some distribution of rxn
+%times for Player B
+rxntime = [1.6, 1.7, 1.8, 1.85, 1.9, 1.95, 2.0, 2.0 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.4];
+n=numel(rxntime);
+ii=randperm(n);
+[~,previous_order]=sort(ii);
+PlayerB_rxntime=rxntime(ii);
+
+
+
+
+
+
 taskoutput = struct();
 dbstop if error
 PsychDefaultSetup(2);
@@ -65,7 +93,7 @@ spacebar_wait = 1;
 if strcmp(opponent, 'computer')
     choice_matrix_player2 = {"c";"d";"c";"d";"d";"d";"d";"d";"c";"d"};
 elseif strcmp(opponent, 'human')
-%     choice_matrix_player2 = zeros(10,1);
+    %     choice_matrix_player2 = zeros(10,1);
 end
 
 ErrorDelay=1;
@@ -149,8 +177,8 @@ textcolor_keypresses = green2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Login prompt and open file for writing data out
 prompt = {'Outputfile', 'Subject''s number:', 'age', 'gender', 'group', 'Num of Blocks'};
-defaults = {'ChoiceRT', '4', '4', '4', '4' , '4'};
-answer = inputdlg(prompt, 'ChoiceRT', 2, defaults);
+defaults = {'PDil', '01', '29', 'M', 'Test' , '1'};
+answer = inputdlg(prompt, 'PDil', 2, defaults);
 [output, subid, subage, gender, group, nBlocks] = deal(answer{:}); % all input variables are strings
 outputname = [output gender subid group subage '.xls'];
 nblocks = str2num(nBlocks); % convert string to number for subsequent reference
@@ -187,8 +215,13 @@ if strcmp(mode, 'testrun')
     
 elseif strcmp(mode, 'experiment')
     
+    rez = Screen('Resolution',screenNumber);
+    width = (rez.width);
+    height = (rez.height);
+    newrect = [0,0,width,height];
+    
     % Open window with default settings:
-    [mainwin, screenrect] = Screen('OpenWindow', screenNumber);
+    [mainwin, screenrect] = Screen('OpenWindow', screenNumber, white, newrect);
     
 end
 % [mainwin, screenrect] = Screen(0, 'OpenWindow');
@@ -406,6 +439,10 @@ Time_postscrn_flip_intro3 = toc(time_postscrn_flip_intro3);
 for a = 1:nTrialsPerBlock
     
     %     Time_scrn_flip_trials1 = zeros(nTrialsPerBlock,2);
+    if strcmp(TTLs, 'yes')
+        DatapixxAOttl() %FOR TTL
+    end
+    
     time_scrn_flip_trials1 = tic;
     FlushEvents();
     WaitSecs(0.5);
@@ -643,10 +680,7 @@ for a = 1:nTrialsPerBlock
             player2_response = choice_matrix_player1((a-1));
         end
         
-    elseif strcmp(opponent, 'computer') &&  strcmp(strategy, 'none')
-        WaitSecs(2)
-        player2_response = choice_matrix_player2(a);
-    elseif strcmp(opponent,'human') &&  strcmp(strategy, 'none')
+    elseif strcmp(opponent,'human') &&  strcmp(strategy, 'human')
         keyIsDown=0;
         %  rxntime_player2 = tic;
         
@@ -673,14 +707,14 @@ for a = 1:nTrialsPerBlock
         end
         
     elseif strcmp(strategy, 'TT_coop') || strcmp(strategy, 'TT_defect')
-        WaitSecs(2) %AT this we should change to be variable from some known distribution
+        WaitSecs(PlayerB_rxntime(a)) %AT 2/25/20; pulling from normal distribution center around 2 seconds, see code further up top
         
         if a == 1
             player2_response = "c";
         elseif a == 2 || a == 3|| a == 4|| a == 5
             player2_response = choice_matrix_player1((a-1));
         elseif a > 5
-            player2_response = strategy_pick{a};
+            player2_response = strategy_pick{a-5};
         end
     end
     
@@ -698,12 +732,12 @@ for a = 1:nTrialsPerBlock
     %         end
     %     end
     
-
     
-%     if strcmp(opponent, 'human')
-%         %         rxnTime_player2(a,1) = toc_rxntime_player2;
-%     end
-%     
+    
+    %     if strcmp(opponent, 'human')
+    %         %         rxnTime_player2(a,1) = toc_rxntime_player2;
+    %     end
+    %
     
     
     jj = 1;
@@ -877,10 +911,430 @@ for a = 1:nTrialsPerBlock
     end
     
     
+    Time_postscrn_flip_trials5(a,1) = toc(time_postscrn_flip_trials5);
+    
+    %AT 2/25/20; below is doing the first question
+    if a == queryTime1 || a == queryTime2 || a == queryTime3
+        time_query1 = tic;
+        
+        if a == queryTime1
+            linea = ('How would you describe your level of cooperation?');
+            linea2 = ('\n');
+            
+        elseif a == queryTime2
+            linea = (['You previously rated your level of cooperation as ' mat2str(probeResponse_playerAcooperativity(1)) ' out of 9 ']);
+            linea2 = ('\n Since then, how would you describe your level of cooperation?');
+            
+        elseif a == queryTime3
+            linea = (['You previously rated your level of cooperation as ' mat2str(probeResponse_playerAcooperativity(2)) ' out of 9 ']);
+            linea2 = ('\n Since then, how would you describe your level of cooperation?');
+            
+        end
+        
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea linea2],...
+            'center',center(2)+y_offset,textcolor_black,...
+            80);
+        %             DrawFormattedText(mainwin, '\n\n\n\n\n\n Press a key (1-9) now',...
+        %                 'center',center(2)+y_offset,textcolor_keypresses);
+        Screen('Flip', mainwin)
+        
+        WaitSecs(spacebar_wait)
+        
+        
+        
+        
+        
+        
+        str_color = '#58de49';
+        green = sscanf(str_color(2:end),'%2x%2x%2x',[1 3])/255;
+        
+        % Set blend function for alpha blending
+        Screen('BlendFunction', mainwin, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+        
+        % Get the centre coordinate of the window
+        [xCenter, yCenter] = RectCenter(screenrect);
+        
+        % Make a base Rect of 400 by 400 pixels
+        baseRect = [0 0 width/15 width/15];
+        
+        % Screen X positions of our nine rectangles
+        for ii = 1:9
+            squareXpos(ii) = ((width/15)+(width/30))+((width/15)*(ii-1))*1.5;
+            squareYpos(ii) = (height*(2/3));
+        end
+        numSqaures = length(squareXpos);
+        
+        
+        % % Screen X positions of our three rectangles
+        % squareXpos = [xCenter - 200 xCenter + 200 xCenter];
+        % squareYpos = [yCenter yCenter yCenter + 200];
+        % numSqaures = length(squareXpos);
+        
+        % Set the colors to Red, Green and Blue, with the fourth value being the
+        % "alpha" value. This also takes a value between 0 and 1 just like a
+        % normal colour, however now 0 = totally transparent and 1 = totally
+        % opaque. Our RGB triplets are now RGBA values.
+        % allColors = [1 0 0 1; 0 1 0 1; 0 0 1 0.5]';
+        
+        green = [green, .25];
+        
+        % Make our rectangle coordinates
+        allRects = nan(4, numSqaures);
+        for i = 1:numSqaures
+            allRects(:, i) = CenterRectOnPointd(baseRect,...
+                squareXpos(i), squareYpos(i));
+        end
+        
+        
+        %AT 2/25/20; draw screen from up top
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea linea2],...
+            'center',center(2)+y_offset,textcolor_black,...
+            80);
+        
+        
+        % Draw the rect to the screen
+        Screen('FillRect', mainwin, green, allRects);
+        numbs = [1,2,3,4,5,6,7,8,9];
+        lineaa = (mat2str(numbs));
+        lineb = '';
+        Screen('TextSize', mainwin, 20);
+        for kk = 1:numSqaures
+            lineaa = (mat2str(numbs(kk)));
+            
+            DrawFormattedText(mainwin, lineaa,...
+                squareXpos(kk), squareYpos(kk), [0 0 0]);
+        end
+        
+        for kk = 1
+            lineaa = 'Very Uncooperative';
+            
+            DrawFormattedText(mainwin, lineaa,...
+                'left', squareYpos(kk)+(squareYpos(kk)/4), [0 0 0]);
+        end
+        for kk = 9
+            lineaa = 'Very Cooperative';
+            
+            DrawFormattedText(mainwin, lineaa,...
+                'right', squareYpos(kk)+(squareYpos(kk)/4), [0 0 0]);
+        end
+        
+        % % % % % Flip to the screen
+        % % % % Screen('Flip', mainwin);
+        % % % %
+        % % % % % Wait for a key press
+        % % % % KbStrokeWait;
+        % % % %
+        % % % % % Clear the screen
+        % % % % sca;
+        % % % %
+        
+        
+        
+        Screen('Flip', mainwin)
+        
+        
+        keyIsDown=0;
+        
+        time_query1 = toc(time_query1);
+        time_query1_rxntime = tic;
+        
+        while 1
+            [keyIsDown, secs, keyCode] = KbCheck;
+            if keyIsDown
+                time_query1_Rxntime = toc(time_query1_rxntime);
+                time_query1_postrxntime = tic;
+                
+                if keyCode(Key_spacebar)
+                    break ;
+                elseif keyCode(Key_1)
+                    playerA_probeResponse = '1';
+                    break ;
+                elseif keyCode(Key_2)
+                    playerA_probeResponse = '2';
+                    break ;
+                elseif keyCode(Key_3)
+                    playerA_probeResponse = '3';
+                    break ;
+                elseif keyCode(Key_4)
+                    playerA_probeResponse = '4';
+                    break ;
+                elseif keyCode(Key_5)
+                    playerA_probeResponse = '5';
+                    break ;
+                elseif keyCode(Key_6)
+                    playerA_probeResponse = '6';
+                    break ;
+                elseif keyCode(Key_7)
+                    playerA_probeResponse = '7';
+                    break ;
+                elseif keyCode(Key_8)
+                    playerA_probeResponse = '8';
+                    break ;
+                elseif keyCode(Key_9)
+                    playerA_probeResponse = '9';
+                    break ;
+                elseif keyCode(Key_esc)
+                    ShowCursor;
+                    fclose(outfile);
+                    Screen('CloseAll');
+                    return;
+                end
+                
+            end
+        end
+        
+        
+        FlushEvents();
+        
+        WaitSecs(.5);
+        
+        time_query1_Postrxntime = toc(time_query1_postrxntime);
+        
+        if a == queryTime1
+            Time_query1(1) = time_query1;
+            probeResponse_playerAcooperativity(1) = playerA_probeResponse;
+            Time_query1_rxntime(1) = time_query1_Rxntime;
+            Time_query1_Postrxntime(1) = time_query1_Postrxntime;
+            
+        elseif a == queryTime2
+            Time_query1(2) = time_query1;
+            probeResponse_playerAcooperativity(2) = playerA_probeResponse;
+            Time_query1_rxntime(2) = time_query1_Rxntime;
+            Time_query1_Postrxntime(2) = time_query1_Postrxntime;
+            
+        elseif a == queryTime3
+            Time_query1(3) = time_query1;
+            probeResponse_playerAcooperativity(3) = playerA_probeResponse;
+            Time_query1_rxntime(3) = time_query1_Rxntime;
+            Time_query1_Postrxntime(3) = time_query1_Postrxntime;
+            
+        end
+        
+    end
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    %AT 2/25/20; below is doing the second question
+    if a == queryTime1 || a == queryTime2 || a == queryTime3
+        time_query2 = tic;
+        
+        if a == queryTime1
+            linea = ('How much do you trust the other player?');
+            linea2 = ('\n');
+            
+        elseif a == queryTime2
+            linea = (['You previously rated your level of trust in the other player as ' mat2str(probeResponse_playerAtrust(1)) ' out of 9 ']);
+            linea2 = ('\n Since then, how would you describe your level of trust?');
+            
+        elseif a == queryTime3
+            linea = (['You previously rated your level of trust in the other player as ' mat2str(probeResponse_playerAtrust(2)) ' out of 9 ']);
+            linea2 = ('\n Since then, how would you describe your level of trust?');
+            
+        end
+        
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea linea2],...
+            'center',center(2)+y_offset,textcolor_black,...
+            80);
+        %             DrawFormattedText(mainwin, '\n\n\n\n\n\n Press a key (1-9) now',...
+        %                 'center',center(2)+y_offset,textcolor_keypresses);
+        Screen('Flip', mainwin)
+        
+        WaitSecs(spacebar_wait)
+        
+        
+        
+        
+        
+        
+        str_color = '#58de49';
+        green = sscanf(str_color(2:end),'%2x%2x%2x',[1 3])/255;
+        
+        % Set blend function for alpha blending
+        Screen('BlendFunction', mainwin, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+        
+        % Get the centre coordinate of the window
+        [xCenter, yCenter] = RectCenter(screenrect);
+        
+        % Make a base Rect of 400 by 400 pixels
+        baseRect = [0 0 width/15 width/15];
+        
+        % Screen X positions of our nine rectangles
+        for ii = 1:9
+            squareXpos(ii) = ((width/15)+(width/30))+((width/15)*(ii-1))*1.5;
+            squareYpos(ii) = (height*(2/3));
+        end
+        numSqaures = length(squareXpos);
+        
+        
+        % % Screen X positions of our three rectangles
+        % squareXpos = [xCenter - 200 xCenter + 200 xCenter];
+        % squareYpos = [yCenter yCenter yCenter + 200];
+        % numSqaures = length(squareXpos);
+        
+        % Set the colors to Red, Green and Blue, with the fourth value being the
+        % "alpha" value. This also takes a value between 0 and 1 just like a
+        % normal colour, however now 0 = totally transparent and 1 = totally
+        % opaque. Our RGB triplets are now RGBA values.
+        % allColors = [1 0 0 1; 0 1 0 1; 0 0 1 0.5]';
+        
+        green = [green, .25];
+        
+        % Make our rectangle coordinates
+        allRects = nan(4, numSqaures);
+        for i = 1:numSqaures
+            allRects(:, i) = CenterRectOnPointd(baseRect,...
+                squareXpos(i), squareYpos(i));
+        end
+        
+        
+        %AT 2/25/20; draw screen from up top
+        Screen('TextSize', mainwin, txtsize);
+        DrawFormattedText(mainwin, [linea linea2],...
+            'center',center(2)+y_offset,textcolor_black,...
+            80);
+        
+        
+        % Draw the rect to the screen
+        Screen('FillRect', mainwin, green, allRects);
+        numbs = [1,2,3,4,5,6,7,8,9];
+        lineaa = (mat2str(numbs));
+        lineb = '';
+        Screen('TextSize', mainwin, 20);
+        for kk = 1:numSqaures
+            lineaa = (mat2str(numbs(kk)));
+            
+            DrawFormattedText(mainwin, lineaa,...
+                squareXpos(kk), squareYpos(kk), [0 0 0]);
+        end
+        
+        for kk = 1
+            lineaa = 'Very Untrusting';
+            
+            DrawFormattedText(mainwin, lineaa,...
+                'left', squareYpos(kk)+(squareYpos(kk)/4), [0 0 0]);
+        end
+        for kk = 9
+            lineaa = 'Very trusting';
+            
+            DrawFormattedText(mainwin, lineaa,...
+                'right', squareYpos(kk)+(squareYpos(kk)/4), [0 0 0]);
+        end
+        
+        % % % % % Flip to the screen
+        % % % % Screen('Flip', mainwin);
+        % % % %
+        % % % % % Wait for a key press
+        % % % % KbStrokeWait;
+        % % % %
+        % % % % % Clear the screen
+        % % % % sca;
+        % % % %
+        
+        
+        
+        Screen('Flip', mainwin)
+        
+        
+        keyIsDown=0;
+        
+        time_query2 = toc(time_query2);
+        time_query2_rxntime = tic;
+        
+        while 1
+            [keyIsDown, secs, keyCode] = KbCheck;
+            if keyIsDown
+                time_query2_Rxntime = toc(time_query2_rxntime);
+                time_query2_postrxntime = tic;
+                
+                if keyCode(Key_spacebar)
+                    break ;
+                elseif keyCode(Key_1)
+                    playerA_trustResponse = '1';
+                    break ;
+                elseif keyCode(Key_2)
+                    playerA_trustResponse = '2';
+                    break ;
+                elseif keyCode(Key_3)
+                    playerA_trustResponse = '3';
+                    break ;
+                elseif keyCode(Key_4)
+                    playerA_trustResponse = '4';
+                    break ;
+                elseif keyCode(Key_5)
+                    playerA_trustResponse = '5';
+                    break ;
+                elseif keyCode(Key_6)
+                    playerA_trustResponse = '6';
+                    break ;
+                elseif keyCode(Key_7)
+                    playerA_trustResponse = '7';
+                    break ;
+                elseif keyCode(Key_8)
+                    playerA_trustResponse = '8';
+                    break ;
+                elseif keyCode(Key_9)
+                    playerA_trustResponse = '9';
+                    break ;
+                elseif keyCode(Key_esc)
+                    ShowCursor;
+                    fclose(outfile);
+                    Screen('CloseAll');
+                    return;
+                end
+                
+            end
+        end
+        
+        
+        FlushEvents();
+        
+        WaitSecs(.5);
+        
+        time_query2_Postrxntime = toc(time_query2_postrxntime);
+        
+        if a == queryTime1
+            Time_query2(1) = time_query2;
+            probeResponse_playerAtrust(1) = playerA_trustResponse;
+            Time_query2_rxntime(1) = time_query2_Rxntime;
+            Time_query2_Postrxntime(1) = time_query2_Postrxntime;
+            
+        elseif a == queryTime2
+            Time_query2(2) = time_query2;
+            probeResponse_playerAtrust(2) = playerA_trustResponse;
+            Time_query2_rxntime(2) = time_query2_Rxntime;
+            Time_query2_Postrxntime(2) = time_query2_Postrxntime;
+            
+        elseif a == queryTime3
+            Time_query2(3) = time_query2;
+            probeResponse_playerAtrust(3) = playerA_trustResponse;
+            Time_query2_rxntime(3) = time_query2_Rxntime;
+            Time_query2_Postrxntime(3) = time_query2_Postrxntime;
+            
+        end
+        
+    end
+    
+    
+    
+    
+    
+    
+    
+    
     
     timing_wholesession_trials(a,1) = toc(wholesession);
     
-    Time_postscrn_flip_trials5(a,1) = toc(time_postscrn_flip_trials5);
     
 end
 
@@ -899,14 +1353,25 @@ timing_wholesession_introScreens = IntroScreens_wholesession - Intro_wholesessio
 %AT 2/10/20 doing some processing on wholesession tictoc so I can get the
 %trial by trial duration
 
-for aa = 1:trialNumb
+for aa = 1:nTrialsPerBlock
     timing_sumTictocs_trial_n(aa,1) = Time_scrn_flip_trials1(aa, 2)+Time_scrn_flip_trials2(aa, 2)+Time_scrn_flip_trials3(aa, 2)+Time_scrn_flip_trials4(aa, 2)+Time_scrn_flip_trials5(aa, 2)+Time_postscrn_flip_trials1(aa,1)+Time_postscrn_flip_trials2(aa,1)+Time_postscrn_flip_trials3(aa,1)+Time_postscrn_flip_trials4(aa,1)+Time_postscrn_flip_trials5(aa,1);
 end
+timing_sumTictocs_trial_n(queryTime1,1) = timing_sumTictocs_trial_n(queryTime1,1)+Time_query1(1)+Time_query1_rxntime(1)+Time_query2_Postrxntime(1)+Time_query2(1)+Time_query2_rxntime(1)+Time_query2_Postrxntime(1);
+timing_sumTictocs_trial_n(queryTime2,1) = timing_sumTictocs_trial_n(queryTime2,1)+Time_query1(2)+Time_query1_rxntime(2)+Time_query2_Postrxntime(2)+Time_query2(2)+Time_query2_rxntime(2)+Time_query2_Postrxntime(2);
+timing_sumTictocs_trial_n(queryTime3,1) = timing_sumTictocs_trial_n(queryTime3,1)+Time_query1(3)+Time_query1_rxntime(3)+Time_query2_Postrxntime(3)+Time_query2(3)+Time_query2_rxntime(3)+Time_query2_Postrxntime(3);
+
+
 
 timing_wholesession_trial_n(1,1) = timing_wholesession_trials(1,1) - IntroScreens_wholesession;
-for nn = 2:trialNumb
+for nn = 2:nTrialsPerBlock
     timing_wholesession_trial_n(nn,1) = timing_wholesession_trials(nn,1) - timing_wholesession_trials((nn-1),1);
 end
+
+
+
+sum(Time_query1)
+sum(Time_query1_rxntime)
+
 
 
 
@@ -927,7 +1392,7 @@ taskoutput.durationWholeSession = wholesessionT;
 
 if strcmp(practiceblock, 'no')
     taskoutput.probeResponse_playerAcoop = probeResponse_playerAcooperativity;
-    taskoutput.probeResponse_playerAcoop_rxntime = probeResponse_playerAcoop_rxntime;
+    taskoutput.probeResponse_playerAcoop_rxntime = Time_query1_rxntime;
     
     taskoutput.probeResponse_playerBcoop = probeResponse_playerBcooperativity;
     taskoutput.probeResponse_playerBcoop_rxntime = probeResponse_playerBcoop_rxntime;

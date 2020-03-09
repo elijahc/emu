@@ -34,6 +34,21 @@ newrect = [0,0,width,height];
 
 [screenXpixels, screenYpixels] = Screen('WindowSize', mainwin);
 
+
+
+
+
+
+
+
+
+
+
+
+
+str_color = '#58de49';
+green = sscanf(str_color(2:end),'%2x%2x%2x',[1 3])/255;
+
 % Set blend function for alpha blending
 Screen('BlendFunction', mainwin, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
 
