@@ -2,7 +2,6 @@ import luigi
 import os
 import pandas as pd
 import numpy as np
-import src.neuralynx_io
 import scipy.signal as signal
 from tqdm import tqdm
 import warnings
@@ -11,8 +10,15 @@ from dateutil.tz import tzlocal
 from pynwb import NWBFile, TimeSeries,NWBHDF5IO
 
 from .download import FileManifest,Raw
+from .remote import RemotePatientManifest
 from .utils import file_ids_by_channel
 from ..neuralynx_io import load_ncs
+
+import sys
+if sys.version_info[0] < 3: 
+    from StringIO import StringIO
+else:
+    from io import StringIO
 
 def gen_ncs(fp_list,ignore_warnings=True):
     with warnings.catch_warnings():
@@ -21,6 +27,21 @@ def gen_ncs(fp_list,ignore_warnings=True):
 
         for fp in fp_list:
             yield load_ncs(fp)
+
+class PDilTask(luigi.Task):
+    patient_id = luigi.IntParameter()
+    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
+
+    def patient_data(self):
+        fm = RemotePatientManifest(patient_id=self.patient_id)
+
+        with fm.output().open('r') as infile:
+            manifest = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
+
+        manifest = manifest.query('study == "pdil"')
+        manifest = manifest.query('patient_id == {}'.format(self.patient_id))
+
+        return manifest
 
 class sEEGTask(luigi.Task):
     patient_id = luigi.IntParameter()
