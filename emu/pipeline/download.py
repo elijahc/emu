@@ -82,36 +82,86 @@ class PatientsLocal(luigi.Task):
         return luigi.LocalTarget(out_fp)
 
 class Raw(luigi.Task):
-    file_id = luigi.IntParameter()
+    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
+    file_id = luigi.IntParameter(description='Box file_id')
     file_name = luigi.Parameter()
-    save_to = luigi.Parameter(default=os.path.join(DEFAULT_ROOT,'pt_default'))
+    save_to = luigi.OptionalParameter()
     overwrite = luigi.BoolParameter(default=False)
 
-    def save_to_dir(self,data_type='data_type'):
-            if self.save_to is None:
-                return os.path.join(
-                    self.data_root,
-                    self.study,
-                    'pt_{:02d}'.format(self.patient_id),
-                    data_type
-                    )
-            else:
-                return self.save_to
+    def out_dir(self):
+        return self.save_to
 
     def download(self):
         client = jwt()
         file = client.file(self.file_id)
-        fp = os.path.join(self.save_to_dir(),self.file_name)
+        fp = os.path.join(self.out_dir(),self.file_name)
 
         with open(fp, 'wb') as open_file:
             file.download_to(open_file)
             open_file.close()
 
     def run(self):
-        out_dir = self.save_to_dir()
-        check_or_create(out_dir)
+        check_or_create(self.out_dir())
         self.download()
 
     def output(self):
-        out_fp = os.path.join(self.save_to_dir(),self.file_name)
+        out_fp = os.path.join(self.out_dir(),self.file_name)
         return luigi.LocalTarget(out_fp)
+
+def cache_fp(data_root,study,patient_id,data_type=None):
+    fp = os.path.join(
+        data_root,
+        study,
+        'pt_{:02d}'.format(patient_id),
+        )
+    if data_type is not None:
+        fp = os.path.join(fp,data_type)
+
+    return os.path.expanduser(fp)
+
+class BehaviorRaw(Raw):
+    study = luigi.Parameter(default='pdil')
+    patient_id = luigi.IntParameter()
+
+    def out_dir(self):
+        return os.path.join(cache_fp(self.data_root,self.study,self.patient_id,'Behavior'),'raw')
+
+class ExperimentManifest(luigi.Task):
+    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
+    study = luigi.Parameter()
+    # patient_id = luigi.IntParameter()
+    file_name = luigi.Parameter(default='manifest.csv')
+
+    def out_dir(self):
+        return os.path.join(self.data_root,self.study)
+
+    def requires(self):
+        return RemotePatientManifest()
+
+    def create(self):
+        client = jwt()
+        records = []
+        with self.input().open('r') as f:
+            patient_manifest = pd.read_csv(f)
+        patient_folders = patient_manifest.query('patient_id > 0')
+        # patient_folders = patient_manifest.query('patient_id == {}'.format(self.patient_id))
+        patient_ids = []
+        for i,row in patient_folders.iterrows():
+            fold = row.folder_id
+            root = client.folder(fold)
+            folder_files = list(get_file_manifest(root))
+            
+            records.extend(folder_files)
+            patient_ids.extend([row.patient_id]*len(folder_files))
+        files = pd.DataFrame.from_records(records)
+        files['patient_id'] = patient_ids
+        return files
+
+    def run(self):
+        check_or_create(self.out_dir())
+        out = self.create()
+        out.to_csv(os.path.join(self.out_dir(),self.file_name),index=False)
+
+    def output(self):
+        out_fp = os.path.join(self.out_dir(),self.file_name)
+        return luigi.LocalTarget(out_fp) 

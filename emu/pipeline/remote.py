@@ -20,7 +20,7 @@ class RemoteCSV(luigi.ExternalTask):
 
 class RemotePatientManifest(RemoteCSV):
     # file_id = luigi.IntParameter(default=DEFAULT_MANIFEST_FID)
-    patient_id = luigi.IntParameter()
+    # patient_id = luigi.IntParameter()
 
     def output(self):
         return BoxTarget('/EMU/_patient_manifest.csv')
