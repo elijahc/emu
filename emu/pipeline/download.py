@@ -26,7 +26,7 @@ class Patients(luigi.ExternalTask):
     file_id = luigi.IntParameter(default=588757437066)
 
     def output(self):
-        return BoxTarget('/Doubt/patient_manifest.csv')
+        return BoxTarget('/EMU/_patient_manifest.csv')
 
 class FileManifest(luigi.Task):
     patient_id = luigi.IntParameter(default=1)
