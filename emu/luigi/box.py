@@ -5,11 +5,16 @@ import os
 import random
 import tempfile
 import time
-import io
+import sys
 from contextlib import contextmanager
 from ..auth import jwt, DEFAULT_CONFIG
 from luigi.target import FileSystem, FileSystemTarget, AtomicLocalFile
 from boxsdk import JWTAuth, Client
+
+if sys.version_info[0] < 3: 
+    from StringIO import StringIO
+else:
+    from io import StringIO
 
 # TODO: Rename all instances of DEFAULT_CONFIG_FP to DEFAULT_CONFIG
 DEFAULT_CONFIG_FP = DEFAULT_CONFIG
@@ -44,7 +49,7 @@ class BoxClient(FileSystem):
     Box client for authentication, designed to be used by the :py:class:`BoxTarget` class.
     """
 
-    def __init__(self, path_to_config, user_agent="Luigi"):
+    def __init__(self, path_to_config=DEFAULT_CONFIG_FP, user_agent="Luigi"):
         """
         :param str path_to_config: path to Box JWT config.json file
         """
@@ -67,6 +72,12 @@ class BoxClient(FileSystem):
 
     def folder(self,fid):
         return self.conn.folder(fid)
+    
+    def file_id_to_path(self,fid):
+        return file_id_to_path(file_id=fid,client=self.conn)
+
+    def path_to_fid(self,path):
+        return path_to_fid(client=self.conn,path=path)
 
     def exists(self, path):
         try:
@@ -131,7 +142,7 @@ class ReadableBoxFile(object):
         self.fid = file_id
 
         self.client = client
-        self.path = file_id_to_path(client,file_id)
+        self.path = self.client.file_id_to_path(file_id)
         self.download_file_location = os.path.join(tempfile.mkdtemp(prefix=str(time.time())),
                                                    ntpath.basename(self.path))
         self.closed = False
@@ -139,7 +150,9 @@ class ReadableBoxFile(object):
     def read(self):
         # content = self.client.download_as_bytes(self.fid)
         # print(content)
-        return self.client.download_as_bytes(self.fid)
+        byte_content =  self.client.download_as_bytes(self.fid)
+
+        return byte_content
 
     def download_to_tmp(self):
         with open(self.download_file_location, 'w') as tmpfile:
@@ -189,7 +202,9 @@ class AtomicWritableBoxFile(AtomicLocalFile):
         """
         self.client.upload(self.folder.id, self.path)
 
-def file_id_to_path(client, file_id):
+def file_id_to_path(file_id, client=None):
+    if client is None:
+        client = jwt()
     parent_dirs = []
     f = client.file(file_id).get()
     parent_path = f.path_collection['entries']
@@ -203,7 +218,7 @@ def path_to_obj(client, path):
     results = client.search().query(query=target, limit=100,order='relevance')
     results = [f for f in results if f.name == target]
     for f in results:
-        full_path = file_id_to_path(client,f.id)
+        full_path = file_id_to_path(client=client,file_id=f.id)
         print(full_path)
         if full_path == path:
             return f
@@ -211,21 +226,28 @@ def path_to_obj(client, path):
     # should never reach this point if you find it
     raise ValueError('Path not found:\n Path: {}'.format(path))
 
-def path_to_fid(client,path):
-    f = path_to_obj(client,path)
+def path_to_fid(path,client):
+    f = path_to_obj(path=path,client=client)
     return int(f.id)
 
 class BoxTarget(FileSystemTarget):
-    def __init__(self, path, auth_config=DEFAULT_CONFIG_FP, format=None, user_agent="Luigi"):
+    def __init__(self, path=None, file_id=None, auth_config=DEFAULT_CONFIG_FP, format=None, user_agent="Luigi"):
         super(BoxTarget, self).__init__(path)
 
         if not auth_config or not os.path.exists(auth_config):
             raise ValueError("The auth_config parameter must contain a valid path to a JWT config.json file")
 
+        if path is None and file_id is None:
+            raise ValueError("Must provide either path or file_id")
         self.path = path
         self.auth_config = auth_config
         self.client = BoxClient(auth_config, user_agent=user_agent)
         self.format = format or luigi.format.get_default_format()
+
+        if file_id is not None and isinstance(file_id,int):
+            self.fid = file_id
+        else:
+            self.fid = self.client.path_to_fid(path=self.path)
 
     @property
     def fs(self):
@@ -247,9 +269,9 @@ class BoxTarget(FileSystemTarget):
         if mode not in ('r', 'w'):
             raise ValueError("Unsupported open mode '%s'" % mode)
         if mode == 'r':
-            self.fid = path_to_fid(self.client.conn, self.path)
-            # return io.StringIO(ReadableBoxFile(self.fid,self.client))
-            return self.format.pipe_reader(ReadableBoxFile(self.fid, self.client))
+            rbf = ReadableBoxFile(file_id=self.fid,client=self.client)
+            return StringIO(str(rbf.read(), 'utf-8'))
+            # return self.format.pipe_reader(ReadableBoxFile(self.fid, self.client))
             # fp = rbf.download_to_tmp()
             # print('downloading to:\n {}'.format(rbf.download_file_location))
             # return open(rbf.download_file_location, 'r')
