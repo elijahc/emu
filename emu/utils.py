@@ -15,6 +15,15 @@ else:
     from io import StringIO
 
 DEFAULT_MANIFEST_FID = 588757437066
+RELEVANT_FILES={
+    '.ncs':'SEEG',
+    '.nev':'SEEG',
+    '.nde': 'SEEG',
+    '.csv': 'CSV',
+    'taskoutput.mat': 'Behavior',
+    '.asc': 'eyetracking',
+    '.edf': 'eyetracking',
+}
 
 _parse_ch = lambda fn: re.match('CSC(?P<channel>[0-9]+)(?P<block>_[0-9]{4})?\.ncs',fn)
 _get_ch = lambda f: int(_parse_ch(f).group('channel'))
@@ -27,6 +36,11 @@ def create_or_reuse_client(client):
         return BoxClient()
     else:
         return client
+
+def get_file_type(filename, relevant_files=RELEVANT_FILES):
+    for k in relevant_files.keys():
+        if k in filename:
+            return relevant_files[k]
 
 def load_patients(box_client=None, path='/EMU/_pt_manifest.csv',file_id=None):
     client = create_or_reuse_client(box_client)
@@ -49,21 +63,11 @@ def get_file_manifest(folder, prog_bar=False, **kwargs):
 
     total_count = folder.item_collection['total_count']
     folder_name = folder.name
-    file_types={
-        '.ncs':'Channel',
-        '.nev':'Event',
-        '.nde': 'Error',
-        '.csv': 'CSV',
-        '.mat': 'Matfile',
-    }
     for f in tqdm(folder.get_items(**kwargs),total=total_count,desc=folder_name):
         if isinstance(f,Folder):
             get_file_manifest(f)
         elif isinstance(f, File):
-            if f.name[-4:] in file_types.keys():
-                ftype = file_types[f.name[-4:]]
-            else:
-                ftype = None
+            ftype = get_file_type(f.name)
             rec = {
                 'filename':f.name,
                 'id':f.id,
