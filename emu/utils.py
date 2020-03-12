@@ -72,7 +72,8 @@ def get_file_manifest(folder, prog_bar=False, **kwargs):
                 'filename':f.name,
                 'id':f.id,
                 # 'path':os.path.join(parent,f.name),
-                'type': ftype
+                'type': ftype,
+                'folder': folder_name,
             }
             yield rec
 

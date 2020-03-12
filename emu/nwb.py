@@ -12,6 +12,39 @@ from pynwb import TimeSeries, NWBFile,NWBHDF5IO
 from pynwb.ecephys import ElectricalSeries
 from pynwb.misc import AnnotationSeries
 
+def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4):
+    channel_ids = []
+    np_fps = []
+    rates = []
+    
+    # Write all numpy files, then iter again yielding timeseries
+    for fp in tqdm(ncs_fps,desc='compressing channels'):
+        d,f = os.path.split(fp)
+        name = f.split('.ncs')[0]
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            try:
+                ncs = nlx.load_ncs(fp)
+            except ValueError:
+                print('Error loading {}'.format(os.path.split(fp)[-1]))
+                print('skipping...')
+        channel_ids.append(ncs['channel_number'])
+        rates.append(float(int(ncs['sampling_rate']/downsample)))
+        np_fps.append(os.path.join(d,name+'.npy'))
+        n_samples = int(data_time_len*ncs['sampling_rate'])
+        np.save(os.path.join(d,name),ncs['data'][:n_samples:downsample].astype(dtype))
+        
+    for fp,ch,rate in zip(np_fps,channel_ids,rates):
+        
+        # Load compressed data
+        data = np.load(fp)
+        
+        ch_ts = TimeSeries(name='channel_{}'.format(ch),
+                           rate=rate,
+                           data=data,conversion=1.0/10**6,unit='V')
+        yield ch_ts
+        os.remove(fp)
+
 def ncs_to_timeseries(ncs,downsample=4):
     rate = float(ncs['sampling_rate'])
 
@@ -22,10 +55,10 @@ def ncs_to_timeseries(ncs,downsample=4):
     else:
         data = ncs['data']
 
-    ch_ts = TimeSeries(name='channel_{}'.format(ch),rate =rate, data=data.astype(np.float32),conversion=1.0/10**6,unit='V')
+    ch_ts = TimeSeries(name='channel_{}'.format(ch),rate =rate, data=data.astype(np.float16),conversion=1.0/10**6,unit='V')
     return ch_ts
 
-def nlx_to_nwb(nev_fp,ncs_paths,desc=''):
+def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         ncs = nlx.load_ncs(ncs_paths.pop(0))
@@ -48,22 +81,27 @@ def nlx_to_nwb(nev_fp,ncs_paths,desc=''):
     ev = ev[ev.ttl==1]
     label_blockstart(ev)
     n_blocks = int(len(ev[ev.label=='block_start'])/2)
+    print()
     print(n_blocks,' blocks')
+    print()
 
     # ev['TimeStamp'] = ev.index.values/10**6 - start_time.timestamp()
     ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
 #     start_stop = ev[ev.EventString.isin(['Starting Recording','Stopping Recording'])]
     
     events = AnnotationSeries(name='ttl', data=ev.label.values[:n_blocks*17], timestamps=ev_ts[:n_blocks*17])
+    data_time_len = events.timestamps[-1]+trim_buffer
     nwbfile.add_acquisition(events)
     
-    for p in tqdm(ncs_paths):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            try:
-                nwbfile.add_acquisition(ncs_to_timeseries(nlx.load_ncs(p)))
-            except ValueError:
-                print('Failed to load: ',os.path.split(p)[-1])
+    for ts in tqdm(iter_ncs_to_timeseries(ncs_paths,data_time_len),desc='adding to nwb'):
+        if ts.name not in nwbfile.acquisition.keys():
+            nwbfile.add_acquisition(ts)
+        else:
+            print('Failed to load: ',ts.name)
+
+    # for p in tqdm(ncs_paths):
+    #     with warnings.catch_warnings():
+    #         warnings.simplefilter("ignore")
         
     return nwbfile
 

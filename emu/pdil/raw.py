@@ -257,19 +257,19 @@ class Participant(object):
                 t = NLXRaw(
                     patient_id = row.patient_id,
                     file_id = row.id,
-                    file_name=row.filename,
+                    file_name=row.folder+'.'+row.filename,
                     save_to=self.seeg.raw_path,
                 )
                 yield t
 
-    def cache_ncs(self,verbose=False):
+    def cache_ncs(self, verbose=False):
         tasks = []
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.ncs'):
                 t = NLXRaw(
                     patient_id = row.patient_id,
                     file_id = row.id,
-                    file_name=row.filename,
+                    file_name=row.folder+'.'+row.filename,
                     save_to=self.seeg.raw_path,
                 )
                 yield t
@@ -294,18 +294,19 @@ class Participant(object):
 
                 yield timings
 
-    def create_nwb(self,nev_fp,ncs_fps,desc=''):
+    def create_nwb(self,nev_fp,ncs_fps,blocks, desc=''):
         self.nwb = nlx_to_nwb(nev_fp,ncs_fps,desc)
         ttl = self.nwb.acquisition['ttl']
         trial_starts = [t for d,t in zip(ttl.data,ttl.timestamps) if d.startswith('trial')]
 
         # Calculate Trial deltas
         pdil_events = pd.concat(self.load_pdil_events())
-        pdil_events = pdil_events[pdil_events.block>=3]
-        trial_delta = pdil_events[pdil_events.trial>1].groupby(['block','trial']).event_delta.sum().values
+        pdil_events = pdil_events[pdil_events.block.isin(blocks)]
+        # trial_delta = pdil_events[pdil_events.trial>=1].groupby(['block','trial']).event_delta.sum().values
 
         outcomes = pd.concat(self.load_game_data())
-        outcomes = outcomes.query('block >= 3')
+        outcomes = outcomes[outcomes.block.isin(blocks)]
+        trial_delta = outcomes.sort_values(['block','trial']).timing_sumTictocs.values
         choices = pd.DataFrame.from_records(map(points_to_choice,outcomes.points.values),columns=['A','B'])
         choices['points'] = outcomes.points.values
         choices['tuple'] = [a[0].upper()+'-'+b[0].upper() for a,b in zip(choices.A.values,choices.B.values)]

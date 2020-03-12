@@ -221,8 +221,8 @@ def load_nev(file_path):
 
     return nev
 
-def nev_as_records(nev):
-    cols = nev['events'].dtype.names
-    for row in nev['events']:
+def nev_as_records(n):
+    cols = n['events'].dtype.names
+    for row in n['events']:
         r = {k:v for k,v in zip(cols,row)}
         yield r
