@@ -274,22 +274,30 @@ class Participant(object):
                 )
                 yield t
 
-    def load_game_data(self):
+    def load_game_data(self, local_scheduler=False):
         tasks = list(self.cache_behavior())
-        luigi.build(tasks,local_scheduler=True)
-        self.games = []
+        missing_tasks = [t for t in tasks if not t.output().exists()]
+        print('{} missing tasks'.format(len(missing_tasks)))
+
+        if len(missing_tasks) > 0:
+            luigi.build(missing_tasks,local_scheduler=local_scheduler)
+
         for lt in tasks:
             df,_ = timestamps(lt.output().path)
-            self.games.append(df)
             yield df
 
     def load_pdil_events(self):
         tasks = list(self.cache_behavior())
-        self.pdil_events = []
+        missing_tasks = [t for t in tasks if not t.output().exists()]
+        print('{} missing tasks'.format(len(missing_tasks)))
+
+        if len(missing_tasks) > 0:
+            luigi.build(missing_tasks,local_scheduler=local_scheduler)
+
         for t in tasks:
             if t.output().exists:
                 timings = extract_trial_timing(t.output().path)
-                self.pdil_events.append(timings)
+
                 timings['ttl_delta'] = timings.event_delta.cumsum()
 
                 yield timings
