@@ -123,8 +123,21 @@ class BehaviorRaw(Raw):
     study = luigi.Parameter(default='pdil')
     patient_id = luigi.IntParameter()
 
+    def cache_fp(self,data_type):
+        return cache_fp(self.data_root,self.study,self.patient_id,data_type)
+
     def out_dir(self):
         return os.path.join(cache_fp(self.data_root,self.study,self.patient_id,'Behavior'),'raw')
+
+class NLXRaw(Raw):
+    study = luigi.Parameter(default='pdil')
+    patient_id = luigi.IntParameter()
+
+    def cache_fp(self,data_type):
+        return cache_fp(self.data_root,self.study,self.patient_id,data_type)
+
+    def out_dir(self):
+        return os.path.join(self.cache_fp('SEEG'),'raw')
 
 class ExperimentManifest(luigi.Task):
     data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))

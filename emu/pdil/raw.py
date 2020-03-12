@@ -5,10 +5,13 @@ import pandas as pd
 import numpy as np
 import scipy.io as sio
 import glob
+import warnings
 from .. import neuralynx_io as nlx
 from ..pipeline.process import PDilTask
-from ..pipeline.download import Raw, check_or_create, BehaviorRaw, ExperimentManifest,cache_fp
+from ..pipeline.download import Raw, check_or_create, BehaviorRaw, ExperimentManifest,cache_fp,NLXRaw
 from ..utils import Experiment
+from ..neuralynx_io import nev_as_records
+from ..nwb import nlx_to_nwb
 
 import logging
 
@@ -26,24 +29,7 @@ def points_to_choice(pts):
         return PAYOFF_DICT[pts]
     else:
         raise ValueError('pts not in PAYOFF_DICT')
-def label_blockstart(df,threshold=220000):
-    labels = ['block_start']
-    for i in np.arange(len(df.index.values))[1:-1]:
-#         triplet = df.index.values[i-1:i+1]
-        diff_prev = int(np.abs(df.index.values[i]-df.index.values[i-1]))
-        diff_next = int(np.abs(df.index.values[i]-df.index.values[i+1]))
-#         print([diff_prev, diff_next])
-        if  diff_prev <= threshold or diff_next <= threshold:
-            labels.append('block_start')
-            j=1
-#         elif i<len(df.index.values) and  <= threshold:
-#             labels.append('block_start')
-        else:
-            labels.append('trial{}_start'.format(int(j)))
-            j+=1
-    labels.append('trial{}_start'.format(j))
-    df['label'] = labels
-    return df
+
 
 def download_experiment(patient_id, data_root='~/.emu/',local_scheduler=True,include_practice=False):
     data_root = os.path.expanduser(data_root)
@@ -63,9 +49,21 @@ def download_experiment(patient_id, data_root='~/.emu/',local_scheduler=True,inc
 
     return [t.output().path for t in tasks]
 
+def taskoutput_meta(filename, rgx_string=r"blockNum_(\d+)_(\w+)TT_(\w+)_taskoutput.mat"):
+    if 'PRACTICE' in filename:
+        block=0
+        opp = np.nan
+        strat = np.nan
+    else:
+        rgx = re.compile(rgx_string)
+        block,opp,strat = rgx.findall(filename)[0]
+
+    return int(block),opp,strat
+
 def timestamps(filename,var_key='taskoutput'):
     dat = sio.loadmat(filename,squeeze_me=True)['taskoutput']
     
+
     df = pd.DataFrame.from_records({
         'reaction_time':dat['rxnTime_player1'].flat[0],
         'timing_wholesession':dat['timing_wholesession_trial_n'].flat[0],
@@ -75,21 +73,16 @@ def timestamps(filename,var_key='taskoutput'):
 
     df['trial']=np.arange(len(df))+1
 
-    if 'PRACTICE' in filename:
-        df['block']=0
-        df['opponent']=np.nan
-        df['strategy']=np.nan
-
-    else:
-        rgx = re.compile(r"blockNum_(\d+)_(\w+)TT_(\w+)_taskoutput.mat")
-        block,opp,strat = rgx.findall(filename)[0]
-        df['block']=int(block)
-        df['opponent']=opp
-        df['strategy']=strat
+    block,opp,strat = taskoutput_meta(filename)
+    df['block']=block
+    df['opponent']=opp
+    df['strategy'] = strat
 
     return df,dat
 
 def extract_trial_timing(filename,struct_as_record=False):
+    block,opp,strat = taskoutput_meta(filename)
+
     taskoutput = sio.loadmat(filename,squeeze_me=True,struct_as_record=struct_as_record)['taskoutput']
     timing = taskoutput.timing
     trial_keys = [
@@ -132,10 +125,11 @@ def extract_trial_timing(filename,struct_as_record=False):
         'event_delta':delta_t,
         'trial':rd,
         'event':events,
-        'screen':screen
+        'screen':screen,
     }
 
     df = pd.DataFrame.from_records(records).sort_values(['trial','screen'])    
+    df['block']=block
 
     return df
 
@@ -183,24 +177,29 @@ class Game(luigi.Task):
         return luigi.LocalTarget(out_fp)
 
 class Electrophysiology(object):
-    def __init__(self, patient_id, raw_path):
+    def __init__(self, patient_id, raw_path=None):
         self.patient_id = patient_id
-        self.raw_path = raw_path
+        if raw_path is not None:
+            self.raw_path = raw_path
 
-    def load_ncs(self):
 
+        ncs_files = sorted(glob.glob(os.path.join(raw_path,'*.ncs')))
+        self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in ncs_files])))
+
+    def gen_nlx_chunks(self):
+        for c in self.chunks:
+            nev_file = os.path.join(self.raw_path,'Events_{}.nev'.format(c))
+            ncs_files = sorted(glob.glob(os.path.join(self.raw_path,'*{}.ncs'.format(c))))
+
+            yield nev_file,ncs_files
 
     def load_all_nev(self):
         path = self.raw_path
         nev_files = sorted(glob.glob(os.path.join(path,'*.nev')))
-        nev1 = nlx.load_nev(nev_files[0])['events']
-        cols = nev1.dtype.names
         for p in nev_files:
-            f = nlx.load_nev(p)['events']
-            for row in f:
-                r = {k:v for k,v in zip(cols,row)}
-                r['path'] = os.path.split(p)[-1]
-                yield r
+            f = nlx.load_nev(p)
+            if len(f) > 0:
+                yield list(nev_as_records(f))
 
     def events(self,index=None):
         nevs = self.load_all_nev()
@@ -225,6 +224,7 @@ class Participant(object):
         self.all_files = raw_files
         self.behavior_files = self.all_files.query('type == "Behavior"')
         self.survey_files = self.all_files.query('type == "CSV"')
+        self.seeg_files = self.all_files.query('type == "SEEG"')
 
         self.behavior_raw_path = os.path.join(
             os.path.expanduser('~/.emu/'),
@@ -237,7 +237,7 @@ class Participant(object):
             # self.seeg_raw_path = seeg_raw_path
             self.seeg = Electrophysiology(self.patient_id, seeg_raw_path)
 
-    def cache_behavior(self):
+    def cache_behavior(self,verbose=False):
         files = self.behavior_files
 
         tasks = []
@@ -249,6 +249,30 @@ class Participant(object):
                 save_to=self.behavior_raw_path,
             )
             yield t
+
+    def cache_nev(self,verbose=False):
+        tasks = []
+        for i,row in self.seeg_files.iterrows():
+            if row.filename.endswith('.nev'):
+                t = NLXRaw(
+                    patient_id = row.patient_id,
+                    file_id = row.id,
+                    file_name=row.filename,
+                    save_to=self.seeg.raw_path,
+                )
+                yield t
+
+    def cache_ncs(self,verbose=False):
+        tasks = []
+        for i,row in self.seeg_files.iterrows():
+            if row.filename.endswith('.ncs'):
+                t = NLXRaw(
+                    patient_id = row.patient_id,
+                    file_id = row.id,
+                    file_name=row.filename,
+                    save_to=self.seeg.raw_path,
+                )
+                yield t
 
     def load_game_data(self):
         tasks = list(self.cache_behavior())
@@ -266,10 +290,40 @@ class Participant(object):
             if t.output().exists:
                 timings = extract_trial_timing(t.output().path)
                 self.pdil_events.append(timings)
+                timings['ttl_delta'] = timings.event_delta.cumsum()
+
                 yield timings
 
-        
+    def create_nwb(self,nev_fp,ncs_fps,desc=''):
+        self.nwb = nlx_to_nwb(nev_fp,ncs_fps,desc)
+        ttl = self.nwb.acquisition['ttl']
+        trial_starts = [t for d,t in zip(ttl.data,ttl.timestamps) if d.startswith('trial')]
 
+        # Calculate Trial deltas
+        pdil_events = pd.concat(self.load_pdil_events())
+        pdil_events = pdil_events[pdil_events.block>=3]
+        trial_delta = pdil_events[pdil_events.trial>1].groupby(['block','trial']).event_delta.sum().values
+
+        outcomes = pd.concat(self.load_game_data())
+        outcomes = outcomes.query('block >= 3')
+        choices = pd.DataFrame.from_records(map(points_to_choice,outcomes.points.values),columns=['A','B'])
+        choices['points'] = outcomes.points.values
+        choices['tuple'] = [a[0].upper()+'-'+b[0].upper() for a,b in zip(choices.A.values,choices.B.values)]
+
+        self.nwb.add_trial_column(name='outcome',description='Choice pair for both players')
+        for start,dt,choice in zip(trial_starts,trial_delta,choices.tuple.values):
+
+            self.nwb.add_trial(start_time=start,stop_time=start+dt,outcome=choice)
+
+        return self.nwb
+
+def get_data_manifest(study='pdil'):
+    exps = ExperimentManifest(study='pdil')
+    if not exps.output().exists():
+        luigi.build([exps],local_scheduler=True)
+
+    with exps.output().open('r') as f:
+        return pd.read_csv(f).drop_duplicates()
 
 class PDilCache(object):
     def __init__(self, patient_manifest='~/.emu/patient_manifest.csv'):

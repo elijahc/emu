@@ -76,6 +76,8 @@ def get_file_manifest(folder, prog_bar=False, **kwargs):
             }
             yield rec
 
+    
+
 class Experiment(object):
 
     def __init__(self, study, patient_id, client=None, pt_manifest_file_id=None):
