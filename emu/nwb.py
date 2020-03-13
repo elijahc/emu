@@ -2,6 +2,7 @@ import os
 import datetime
 import numpy as np
 import pandas as pd
+import sys
 import warnings
 from tqdm import tqdm as tqdm
 from . import neuralynx_io as nlx
@@ -58,7 +59,7 @@ def ncs_to_timeseries(ncs,downsample=4):
     ch_ts = TimeSeries(name='channel_{}'.format(ch),rate =rate, data=data.astype(np.float16),conversion=1.0/10**6,unit='V')
     return ch_ts
 
-def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10):
+def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         ncs = nlx.load_ncs(ncs_paths.pop(0))
@@ -81,19 +82,19 @@ def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10):
     ev = ev[ev.ttl==1]
     label_blockstart(ev)
     n_blocks = int(len(ev[ev.label=='block_start'])/2)
-    print()
-    print(n_blocks,' blocks')
-    print()
+    n_ttls = int(n_blocks*17)
+    if practice_incl:
+        n_ttls-=5
 
     # ev['TimeStamp'] = ev.index.values/10**6 - start_time.timestamp()
     ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
 #     start_stop = ev[ev.EventString.isin(['Starting Recording','Stopping Recording'])]
     
-    events = AnnotationSeries(name='ttl', data=ev.label.values[:n_blocks*17], timestamps=ev_ts[:n_blocks*17])
+    events = AnnotationSeries(name='ttl', data=ev.label.values[:n_ttls], timestamps=ev_ts[:n_ttls])
     data_time_len = events.timestamps[-1]+trim_buffer
     nwbfile.add_acquisition(events)
     
-    for ts in tqdm(iter_ncs_to_timeseries(ncs_paths,data_time_len),desc='adding to nwb'):
+    for ts in iter_ncs_to_timeseries(ncs_paths,data_time_len):
         if ts.name not in nwbfile.acquisition.keys():
             nwbfile.add_acquisition(ts)
         else:

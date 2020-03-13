@@ -82,11 +82,16 @@ class PatientsLocal(luigi.Task):
         return luigi.LocalTarget(out_fp)
 
 class Raw(luigi.Task):
+    __name__ = 'Raw'
     data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
     file_id = luigi.IntParameter(description='Box file_id')
     file_name = luigi.Parameter()
     save_to = luigi.OptionalParameter()
     overwrite = luigi.BoolParameter(default=False)
+
+    def __repr__(self):
+        cache = self.out_dir().split('.emu/')[-1]
+        return '{}(file=/.emu/{}/{})'.format(self.__name__,cache,self.file_name)
 
     def out_dir(self):
         return self.save_to
@@ -120,6 +125,7 @@ def cache_fp(data_root,study,patient_id,data_type=None):
     return os.path.expanduser(fp)
 
 class BehaviorRaw(Raw):
+    __name__ = 'BehaviorRaw'
     study = luigi.Parameter(default='pdil')
     patient_id = luigi.IntParameter()
 
@@ -130,6 +136,7 @@ class BehaviorRaw(Raw):
         return os.path.join(cache_fp(self.data_root,self.study,self.patient_id,'Behavior'),'raw')
 
 class NLXRaw(Raw):
+    __name__ = 'NLXRaw'
     study = luigi.Parameter(default='pdil')
     patient_id = luigi.IntParameter()
 

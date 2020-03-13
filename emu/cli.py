@@ -18,7 +18,7 @@ def main():
     pass
 
 @main.command()
-@click.argument('fileid')
+@click.argument('fileid',type=int, help='Box.com fileid')
 @click.option('--verbose', is_flag=True, default=False, help='Print debugging info')
 def download(fileid,verbose):
     if verbose == True:

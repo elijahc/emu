@@ -13,10 +13,6 @@ from ..utils import Experiment
 from ..neuralynx_io import nev_as_records
 from ..nwb import nlx_to_nwb
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 PAYOFF_DICT = {
     6: ('defect','copperate'),
     4: ('cooperate','cooperate'),
@@ -29,25 +25,6 @@ def points_to_choice(pts):
         return PAYOFF_DICT[pts]
     else:
         raise ValueError('pts not in PAYOFF_DICT')
-
-
-def download_experiment(patient_id, data_root='~/.emu/',local_scheduler=True,include_practice=False):
-    data_root = os.path.expanduser(data_root)
-    exp = Experiment(study='pdil', patient_id=patient_id)
-    exp_files = exp.files()
-    print('filtering for files ending with taskoutput.mat')
-    task_output_files = exp_files[exp_files.filename.isin(filter(lambda s: s.endswith('taskoutput.mat'),exp_files.filename))]
-    print('downloading...')
-    tasks = []
-    for i,row in task_output_files.iterrows():
-        if include_practice is False and row.filename.startswith('PRACTICE'):
-            pass
-        else:
-            tasks.append(BehaviorRaw(patient_id=patient_id,file_id=row.id,file_name=row.filename))
-    
-    luigi.build(tasks,local_scheduler=local_scheduler)
-
-    return [t.output().path for t in tasks]
 
 def taskoutput_meta(filename, rgx_string=r"blockNum_(\d+)_(\w+)TT_(\w+)_taskoutput.mat"):
     if 'PRACTICE' in filename:
@@ -133,58 +110,15 @@ def extract_trial_timing(filename,struct_as_record=False):
 
     return df
 
-class Game(luigi.Task):
-    patient_id = luigi.IntParameter()
-    data_root = luigi.Parameter(default=os.path.expanduser('~/.emu/'))
-    game_filename = luigi.Parameter(default='session.npy')
-    save_to = luigi.Parameter(default=None)
-
-    # def requires(self):
-    #     return ExperimentManifest(data_root=self.data_root,patient_id=self.patient_id)
-
-    def save_to_dir(self):
-        if self.save_to is None:
-            return os.path.join(
-                cache_fp(self.data_root,'pdil',self.patient_id,'Behavior')
-                )
-        else:
-            return self.save_to
-
-    def requires(self):
-        em = ExperimentManifest(data_root=self.data_root, patient_id=self.patient_id)
-        # tasks = 
-
-    def create(self):
-        with self.input().open('r') as f:
-            exp_files = pd.read_csv(f)
-
-        task_output_files = exp_files[exp_files.filename.isin(filter(lambda s: s.endswith('taskoutput.mat'),exp_files.filename))]
-        tasks = [BehaviorRaw(patient_id=self.patient_id,file_id=row.id, file_name=row.filename) for i,row in task_output_files.iterrows()]
-        dfs = []
-        for lt in self.input():
-            df,_ = timestamps(lt.path)
-            dfs.append(df)
-
-        return pd.concat(dfs).sort_values(['block','trial']).reset_index().drop(columns=['index'])
-
-    def run(self):
-        out_fp = os.path.join(self.save_to_dir(),self.game_filename)
-        out_df = self.create()
-        out_df.to_pickle(out_fp)
-
-    def output(self):
-        out_fp = os.path.join(self.save_to_dir(),self.game_filename)
-        return luigi.LocalTarget(out_fp)
-
 class Electrophysiology(object):
-    def __init__(self, patient_id, raw_path=None):
+    def __init__(self, patient_id, box_files, raw_path=None):
         self.patient_id = patient_id
         if raw_path is not None:
             self.raw_path = raw_path
 
-
-        ncs_files = sorted(glob.glob(os.path.join(raw_path,'*.ncs')))
-        self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in ncs_files])))
+        self.seeg_files = box_files.query('type == "SEEG"')
+        # ncs_files = sorted(glob.glob(os.path.join(raw_path,'*.ncs')))
+        self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in self.seeg_files])))
 
     def gen_nlx_chunks(self):
         for c in self.chunks:
@@ -235,12 +169,10 @@ class Participant(object):
 
         if seeg_raw_path is not None:
             # self.seeg_raw_path = seeg_raw_path
-            self.seeg = Electrophysiology(self.patient_id, seeg_raw_path)
+            self.seeg = Electrophysiology(self.patient_id, 
+                box_files=self.seeg_files, raw_path = seeg_raw_path)
 
     def cache_behavior(self,verbose=False):
-        files = self.behavior_files
-
-        tasks = []
         for i,row in self.behavior_files.iterrows():
             t = BehaviorRaw(
                 patient_id=row.patient_id,
@@ -251,7 +183,6 @@ class Participant(object):
             yield t
 
     def cache_nev(self,verbose=False):
-        tasks = []
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.nev'):
                 t = NLXRaw(
@@ -263,7 +194,6 @@ class Participant(object):
                 yield t
 
     def cache_ncs(self, verbose=False):
-        tasks = []
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.ncs'):
                 t = NLXRaw(
@@ -286,7 +216,7 @@ class Participant(object):
             df,_ = timestamps(lt.output().path)
             yield df
 
-    def load_pdil_events(self):
+    def load_pdil_events(self,local_scheduler=False):
         tasks = list(self.cache_behavior())
         missing_tasks = [t for t in tasks if not t.output().exists()]
         print('{} missing tasks'.format(len(missing_tasks)))
@@ -310,7 +240,6 @@ class Participant(object):
         # Calculate Trial deltas
         pdil_events = pd.concat(self.load_pdil_events())
         pdil_events = pdil_events[pdil_events.block.isin(blocks)]
-        # trial_delta = pdil_events[pdil_events.trial>=1].groupby(['block','trial']).event_delta.sum().values
 
         outcomes = pd.concat(self.load_game_data())
         outcomes = outcomes[outcomes.block.isin(blocks)]
@@ -333,42 +262,3 @@ def get_data_manifest(study='pdil'):
 
     with exps.output().open('r') as f:
         return pd.read_csv(f).drop_duplicates()
-
-class PDilCache(object):
-    def __init__(self, patient_manifest='~/.emu/patient_manifest.csv'):
-        self._pt_manifest_fp = os.path.expanduser(patient_manifest)
-        exps = ExperimentManifest(study='pdil')
-        if not exps.output().exists():
-            luigi.build([exps],local_scheduler=True)
-
-        with exps.output().open('r') as f:
-            self.data_manifest = pd.read_csv(f).drop_duplicates()
-
-    def load_behavior(self,patient_id=[1],include_practice=True):
-        exp_files = self.data_manifest
-        tasks = []
-        for pt_id in patient_id:
-            files = behavior_files.query('patient_id == {}'.format(pt_id))
-            out_fp = os.path.join(
-                os.path.expanduser('~/.emu/'),
-                'pdil',
-                'pt_{:02d}'.format(pt_id),
-                'Behavior',
-                'raw')
-
-            tasks.extend([BehaviorRaw(
-                patient_id=row.patient_id,
-                file_id=row.id,
-                file_name=row.filename,
-                save_to=out_fp,
-                ) for i,row in files.iterrows()])
-
-        luigi.build(tasks,local_scheduler=True)
-
-        dfs = []
-        for lt in tasks:
-            if not 'PRACTICE' in lt.output().path:
-                df,_ = timestamps(lt.output().path)
-                dfs.append(df) 
-        
-        return pd.concat(dfs).sort_values(['block','trial']).reset_index().drop(columns=['index'])
