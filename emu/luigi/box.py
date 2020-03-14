@@ -6,15 +6,17 @@ import random
 import tempfile
 import time
 import sys
+from functools import wraps
 from contextlib import contextmanager
 from ..auth import jwt, DEFAULT_CONFIG
 from luigi.target import FileSystem, FileSystemTarget, AtomicLocalFile
 from boxsdk import JWTAuth, Client
+import boxsdk
 
 if sys.version_info[0] < 3: 
     from StringIO import StringIO
 else:
-    from io import StringIO
+    from io import StringIO,BytesIO
 
 # TODO: Rename all instances of DEFAULT_CONFIG_FP to DEFAULT_CONFIG
 DEFAULT_CONFIG_FP = DEFAULT_CONFIG
@@ -88,15 +90,13 @@ class BoxClient(FileSystem):
             return False
         # Implement this
 
+    @accept_trailing_slash_in_existing_dirpaths
     def isdir(self, path):
         if path == '/':
             return True
         try:
             f = path_to_obj(self.conn,path)
-            if f.type == 'folder':
-                return isinstance(md, dropbox.files.FolderMetadata)
-            else:
-                return False
+            return isinstance(f, boxsdk.object.folder.Folder)
         except ValueError as e:
             raise e
 
@@ -120,15 +120,47 @@ class BoxClient(FileSystem):
         return True
 
     def download_as_bytes(self, fid):
-        # content = self.conn.file(fid).content()
-        # if isinstance(content,str):
-        #     content = unicode(content, 'utf-8')
-        return self.conn.file(fid).content()
+        content = self.conn.file(fid).content()
+        if isinstance(content,str):
+            content = unicode(content, 'utf-8')
+        return content
 
-    def upload(self, folder_id, file_path):
-        folder = self.conn.folder(folder_id).get()
-        if os.path.exists(file_path):
-            new_file = folder.upload(file_path)
+    def upload(self, folder_path, local_path):
+        if not self.isdir(folder_path):
+            raise ValueError('Invalid folder path {}'.format(folder_path))
+        elif not os.path.exists(local_path):
+            raise ValueError('local path {} does not exist'.format(local_path))
+        else:
+            file_name = os.path.split(local_path)[-1]
+            remote_filepath = folder_path+'/'+file_name
+            if self.exists(remote_filepath):
+                logger.warning('File exists, updating contents')
+                file = path_to_obj(self.conn, remote_filepath)
+                uploaded_file = file.update_contents(local_path)
+            else:
+                folder = path_to_obj(self.conn,folder_path)
+                if os.path.getsize(local_path)/10**6 > 200:
+                    logger.warning('File larger than 200Mb, using chunked uploader')
+                    uploader = folder.get_chunked_uploader(local_path)
+                    uploaded_file = uploader.start()
+                else:
+                    uploaded_file = folder.upload(local_path)
+
+            return uploaded_file
+
+    def _exists_and_is_dir(self, path):
+        """
+        Auxiliary method, used by the 'accept_trailing_slash' and 'accept_trailing_slash_in_existing_dirpaths' decorators
+        :param path: a Dropbox path that does NOT ends with a '/' (even if it is a directory)
+        """
+        if path == '/':
+            return True
+        try:
+            md = path_to_obj(self.conn,path).get()
+            is_dir = isinstance(md, boxsdk.object.folder.Folder)
+            return is_dir
+        except boxsdk.exception.BoxAPIException:
+            return False
 
 class ReadableBoxFile(object):
     def __init__(self, file_id, client):
@@ -202,24 +234,42 @@ class AtomicWritableBoxFile(AtomicLocalFile):
         """
         self.client.upload(self.folder.id, self.path)
 
+def obj_to_path(obj):
+    folders =[f.name for f in obj.path_collection['entries'][1:]]
+    path = '/'+'/'.join(folders)+'/'+obj.name
+    return path
+
+def path_to_root(obj):
+    parent_dirs = []
+    parent_path = obj.path_collection['entries']
+    parent_path = [folder.name for folder in parent_path[1:]]
+    parent_dirs.extend(parent_path)
+    path = '/'+'/'.join(parent_dirs)+'/'
+    return path + obj.name 
+
 def file_id_to_path(file_id, client=None):
     if client is None:
         client = jwt()
     parent_dirs = []
     f = client.file(file_id).get()
     parent_path = f.path_collection['entries']
-    parent_path = [folder.get().name for folder in parent_path[1:]]
+    parent_path = [folder.name for folder in parent_path[1:]]
     parent_dirs.extend(parent_path)
     path = '/'+'/'.join(parent_dirs)+'/'
     return path + f.name
+
+def folder_id_to_path(folder_id, client=None):
+    if client is None:
+        client = jwt()
+    f = client.file(folder_id).get()
+    return path_to_root(f)
 
 def path_to_obj(client, path):
     target = path.split('/')[-1]
     results = client.search().query(query=target, limit=100,order='relevance')
     results = [f for f in results if f.name == target]
     for f in results:
-        full_path = file_id_to_path(client=client,file_id=f.id)
-        print(full_path)
+        full_path = obj_to_path(f)
         if full_path == path:
             return f
 
@@ -244,8 +294,8 @@ class BoxTarget(FileSystemTarget):
         self.client = BoxClient(auth_config, user_agent=user_agent)
         self.format = format or luigi.format.get_default_format()
 
-        if file_id is not None and isinstance(file_id,int):
-            self.fid = file_id
+        if file_id is not None:
+            self.fid = int(file_id)
         else:
             self.fid = self.client.path_to_fid(path=self.path)
 
@@ -266,11 +316,15 @@ class BoxTarget(FileSystemTarget):
         self.fs.upload(temp_path, self.path)
 
     def open(self, mode):
-        if mode not in ('r', 'w'):
+        if mode not in ('r', 'w', 'rb'):
             raise ValueError("Unsupported open mode '%s'" % mode)
         if mode == 'r':
             rbf = ReadableBoxFile(file_id=self.fid,client=self.client)
             return StringIO(str(rbf.read(), 'utf-8'))
+        elif mode == 'rb':
+            rbf = ReadableBoxFile(file_id=self.fid,client=self.client)
+            return BytesIO(rbf.read())
+
             # return self.format.pipe_reader(ReadableBoxFile(self.fid, self.client))
             # fp = rbf.download_to_tmp()
             # print('downloading to:\n {}'.format(rbf.download_file_location))

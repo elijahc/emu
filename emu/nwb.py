@@ -13,7 +13,7 @@ from pynwb import TimeSeries, NWBFile,NWBHDF5IO
 from pynwb.ecephys import ElectricalSeries
 from pynwb.misc import AnnotationSeries
 
-def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4):
+def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4,electrode_locations=None):
     channel_ids = []
     np_fps = []
     rates = []
@@ -29,7 +29,11 @@ def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4):
             except ValueError:
                 print('Error loading {}'.format(os.path.split(fp)[-1]))
                 print('skipping...')
-        channel_ids.append(ncs['channel_number'])
+
+        # Use AcqEntName instead of channel_number to infer channel
+        # ch = int(ncs['header']['AcqEntName'][3:])
+        ch = ncs['channel_number']
+        channel_ids.append(ch)
         rates.append(float(int(ncs['sampling_rate']/downsample)))
         np_fps.append(os.path.join(d,name+'.npy'))
         n_samples = int(data_time_len*ncs['sampling_rate'])
@@ -40,26 +44,66 @@ def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4):
         # Load compressed data
         data = np.load(fp)
         
-        ch_ts = TimeSeries(name='channel_{}'.format(ch),
-                           rate=rate,
-                           data=data,conversion=1.0/10**6,unit='V')
-        yield ch_ts
+        ts_kwargs = {
+            'name':'channel_{}'.format(int(ch)),
+            'rate':rate,
+            'data':data.astype(np.float16),
+            'conversion':1.0/10**6,
+            'comments': ncs['header']['AcqEntName']
+        }
+
+        yield ch,ts_kwargs
         os.remove(fp)
 
-def ncs_to_timeseries(ncs,downsample=4):
+def ncs_to_timeseries(ncs,data_time_len,downsample=4):
     rate = float(ncs['sampling_rate'])
 
+    # Use AcqEntName instead of channel_number to infer channel
     ch = ncs['channel_number']
+    # ch = int(ncs['header']['AcqEntName'][3:])
+    n_samples = int(data_time_len*rate)
     if downsample:
-        data = ncs['data'][::downsample]
+        data = ncs['data'][:n_samples:downsample]
         rate = rate/downsample
     else:
         data = ncs['data']
 
-    ch_ts = TimeSeries(name='channel_{}'.format(ch),rate =rate, data=data.astype(np.float16),conversion=1.0/10**6,unit='V')
-    return ch_ts
+    # ch_ts = TimeSeries(name='channel_{}'.format(ch),rate =rate, data=data.astype(np.float16),conversion=1.0/10**6,unit='V')
+    ts_kwargs = {
+        'name': 'C{}'.format(ch+1),
+        'rate':rate,
+        'data':data.astype(np.float16),
+        'conversion':1.0/10**6,
+        'comments': ncs['header']['AcqEntName']
+    }
 
-def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False):
+    return TimeSeries(**ts_kwargs)
+
+def add_electrodes(nwb,trodes,device,group_col='wire_num'):
+    wire_loc = trodes[[group_col,'anat_lg']].drop_duplicates()
+
+    # Create electrode groups
+    e_groups = []
+    for i,wire in wire_loc.iterrows():
+        grp = nwb.create_electrode_group(
+            name='wire_{}'.format(wire.wire_num),
+            description='SEEG wire',
+            location=wire.anat_lg,
+            device=device)
+
+        e_groups.append(grp)
+
+    for i,df_grp in enumerate(trodes.groupby(group_col)):
+        grp_name, sub_grp = df_grp
+        e_grp = e_groups[i]
+        for j,row in sub_grp.iterrows():
+            nwb.add_electrode(id=row.chan_num,
+                                  x=0.0,y=0.0,z=0.0,
+                                  imp=float(-1),
+                                  location=row.anat_sh, filtering='none',
+                                  group=e_grp)
+
+def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False,electrode_locations=None):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         ncs = nlx.load_ncs(ncs_paths.pop(0))
@@ -72,8 +116,12 @@ def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False)
                       identifier=uuid,
                       session_start_time=start_time
                      )
+
+    dev = nwbfile.create_device(name='Neuralynx')
     # ts = ncs_to_timeseries(ncs)
-    nwbfile.add_acquisition(ncs_to_timeseries(ncs))
+
+    if electrode_locations is not None:
+        add_electrodes(nwbfile,electrode_locations,dev)
     
     ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
 
@@ -92,17 +140,29 @@ def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False)
     
     events = AnnotationSeries(name='ttl', data=ev.label.values[:n_ttls], timestamps=ev_ts[:n_ttls])
     data_time_len = events.timestamps[-1]+trim_buffer
+
     nwbfile.add_acquisition(events)
     
-    for ts in iter_ncs_to_timeseries(ncs_paths,data_time_len):
+    nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
+
+    for ch,ts_kwargs in iter_ncs_to_timeseries(ncs_paths,data_time_len):
+        if electrode_locations is not None:
+            # ts_kwargs['electrodes']=electrode_table_region
+            try:
+                electrode_table_region = nwbfile.create_electrode_table_region([ch],'Channel')
+                row = electrode_locations.where(electrode_locations.chan_num==ch+1).dropna().iloc[0]
+                ts_kwargs['name'] = 'wire_{}_electrode_{}'.format(int(row.wire_num),int(row.electrode))
+                ts_kwargs['electrodes'] = electrode_table_region
+                ts = ElectricalSeries(**ts_kwargs)
+            except IndexError:
+                pass
+        else:
+            ts = TimeSeries(**ts_kwargs)
+
         if ts.name not in nwbfile.acquisition.keys():
             nwbfile.add_acquisition(ts)
         else:
             print('Failed to load: ',ts.name)
-
-    # for p in tqdm(ncs_paths):
-    #     with warnings.catch_warnings():
-    #         warnings.simplefilter("ignore")
         
     return nwbfile
 

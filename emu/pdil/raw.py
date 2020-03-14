@@ -8,6 +8,7 @@ import glob
 import warnings
 from .. import neuralynx_io as nlx
 from ..pipeline.process import PDilTask
+from ..pipeline.remote import RemoteCSV
 from ..pipeline.download import Raw, check_or_create, BehaviorRaw, ExperimentManifest,cache_fp,NLXRaw
 from ..utils import Experiment
 from ..neuralynx_io import nev_as_records
@@ -76,7 +77,7 @@ def extract_trial_timing(filename,struct_as_record=False):
     ]
     
     num_trials = len(getattr(timing,trial_keys[0]))
-    logger.debug('Number of trials in block: {}'.format(num_trials))
+    # logger.debug('Number of trials in block: {}'.format(num_trials))
 
     delta_t = [0]
     screen = [np.nan]
@@ -159,6 +160,9 @@ class Participant(object):
         self.behavior_files = self.all_files.query('type == "Behavior"')
         self.survey_files = self.all_files.query('type == "CSV"')
         self.seeg_files = self.all_files.query('type == "SEEG"')
+        if 'electrode_locations.csv' in self.all_files.filename.values:
+            loc = self.all_files[self.all_files.filename.isin(['electrode_locations.csv'])].iloc[0]
+            self.electrode_locations = RemoteCSV(file_id=loc.id).load()
 
         self.behavior_raw_path = os.path.join(
             os.path.expanduser('~/.emu/'),
@@ -173,6 +177,12 @@ class Participant(object):
                 box_files=self.seeg_files, raw_path = seeg_raw_path)
 
     def cache_behavior(self,verbose=False):
+        """
+        Yields
+        ------
+        luigi.Task
+            Yields a BehaviorRaw task for downloading a single behavior file
+        """
         for i,row in self.behavior_files.iterrows():
             t = BehaviorRaw(
                 patient_id=row.patient_id,
@@ -183,6 +193,12 @@ class Participant(object):
             yield t
 
     def cache_nev(self,verbose=False):
+        """
+        Yields
+        ------
+        luigi.Task
+            Yields a NLXRaw task for downloading a single nev file from box
+        """
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.nev'):
                 t = NLXRaw(
@@ -194,6 +210,12 @@ class Participant(object):
                 yield t
 
     def cache_ncs(self, verbose=False):
+        """
+        Yields
+        ------
+        luigi.Task
+            Yields a NLXRaw task for downloading a single ncs file from box
+        """
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.ncs'):
                 t = NLXRaw(
@@ -233,7 +255,19 @@ class Participant(object):
                 yield timings
 
     def create_nwb(self,nev_fp,ncs_fps,blocks, desc=''):
-        self.nwb = nlx_to_nwb(nev_fp,ncs_fps,desc)
+        if 0 in blocks:
+            practice_incl = True
+        else:
+            practice_incl = False
+
+        if hasattr(self,'electrode_locations'):
+            self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
+                                  practice_incl=practice_incl,
+                                  electrode_locations=self.electrode_locations)
+        else:
+            self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
+                                  practice_incl=practice_incl)
+
         ttl = self.nwb.acquisition['ttl']
         trial_starts = [t for d,t in zip(ttl.data,ttl.timestamps) if d.startswith('trial')]
 
