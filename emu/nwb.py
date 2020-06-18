@@ -55,13 +55,17 @@ def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4,e
         yield ch,ts_kwargs
         os.remove(fp)
 
-def ncs_to_timeseries(ncs,data_time_len,downsample=4):
+def ncs_to_timeseries(ncs,data_time_len=None,downsample=4):
     rate = float(ncs['sampling_rate'])
 
     # Use AcqEntName instead of channel_number to infer channel
     ch = ncs['channel_number']
     # ch = int(ncs['header']['AcqEntName'][3:])
-    n_samples = int(data_time_len*rate)
+    if data_time_len is not None:
+        n_samples = int(data_time_len*rate)
+    else:
+        n_samples = len(ncs['data'])
+
     if downsample:
         data = ncs['data'][:n_samples:downsample]
         rate = rate/downsample
@@ -102,6 +106,21 @@ def add_electrodes(nwb,trodes,device,group_col='wire_num'):
                                   imp=float(-1),
                                   location=row.anat_sh, filtering='none',
                                   group=e_grp)
+
+def ncs_to_nwb(ncs_paths, desc=''):
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ncs = nlx.load_ncs(ncs_paths.pop(0))
+    uuid = ncs['header']['SessionUUID']
+    start_time = pd.to_datetime(ncs['time'][0],unit='us',utc=True).to_pydatetime()
+    start_time_sec = start_time.timestamp()
+    nwbfile = NWBFile(session_description=desc,
+                      identifier=uuid,
+                      session_start_time=start_time
+                     )
+    nwbfile.add_acquisition(ncs_to_timeseries(ncs))
+
+    return nwbfile
 
 def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False,electrode_locations=None):
     with warnings.catch_warnings():

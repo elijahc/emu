@@ -8,6 +8,8 @@ import warnings
 import pandas as pd
 from ..pipeline.download import NLXRaw
 from ..pipeline.remote import RemoteCSV
+from ..neuralynx_io import load_nev, nev_as_records, load_ncs, nev_as_dataframe
+from ..nwb import ncs_to_nwb
 
 class Electrophysiology(object):
     name = "seeg"
@@ -26,7 +28,6 @@ class Electrophysiology(object):
                 )
 
         self.seeg_files = raw_files.query('type == "SEEG"')
-        self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in self.seeg_files])))
 
         self.electrode_locations = None
         if 'electrode_locations.csv' in self.seeg_files.filename.values:
@@ -86,25 +87,16 @@ class Electrophysiology(object):
 
     def gen_nlx_chunks(self):
         for c in self.chunks:
-            nev_file = os.path.join(self.raw_path,'Events_{}.nev'.format(c))
-            ncs_files = sorted(glob.glob(os.path.join(self.raw_path,'*{}.ncs'.format(c))))
+            nev_file = os.path.join(self.seeg_raw_path,'Events_{}.nev'.format(c))
+            ncs_files = sorted(glob.glob(os.path.join(self.seeg_raw_path,'*{}.ncs'.format(c))))
 
             yield nev_file,ncs_files
 
-    def load_all_nev(self):
-        path = self.raw_path
-        nev_files = sorted(glob.glob(os.path.join(path,'*.nev')))
-        for p in nev_files:
-            f = nlx.load_nev(p)
-            if len(f) > 0:
-                yield list(nev_as_records(f))
+    def events(self,index='TimeStamp'):
+        nev_files = sorted(glob.glob(os.path.join(self.seeg_raw_path,'*.nev')))
+        nev_dataframes = [nev_as_dataframe(fp) for fp in nev_files]
+        ev = pd.concat(nev_dataframes)
 
-    def events(self,index=None):
-        nevs = self.load_all_nev()
-        ev = pd.DataFrame.from_records(nevs,index=index)
-        ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
-        ev['time'] = pd.to_datetime(ev.TimeStamp.values,unit='us')
-        ev = ev.set_index('TimeStamp')
         return ev
 
     def ttl(self):

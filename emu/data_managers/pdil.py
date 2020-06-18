@@ -161,6 +161,22 @@ class PDILBehavior(object):
             df,_ = timestamps(lt.output().path)
             yield df
 
+    def load_pdil_events(self,local_scheduler=False):
+        tasks = list(self.cache())
+        missing_tasks = [t for t in tasks if not t.output().exists()]
+        print('{} missing tasks'.format(len(missing_tasks)))
+
+        if len(missing_tasks) > 0:
+            luigi.build(missing_tasks,local_scheduler=local_scheduler)
+
+        for t in tasks:
+            if t.output().exists:
+                timings = extract_trial_timing(t.output().path)
+
+                timings['ttl_delta'] = timings.event_delta.cumsum()
+
+                yield timings
+
     def add_to_nwb(self, nwb, blocks=[0,1,2]):
         """
         Returns

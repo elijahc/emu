@@ -16,7 +16,7 @@ class Participant(object):
         results_list = '\n'.join(['- {}'.format(r.__repr__()) for r in self.results])
         return 'Participant(id={})\n'.format(self.patient_id)+results_list
 
-    def create_nwb(self,nev_fp,ncs_fps,blocks, desc=''):
+    def to_nwb(self, nev_fp, ncs_fps, blocks, desc=''):
         if 0 in blocks:
             practice_incl = True
         else:

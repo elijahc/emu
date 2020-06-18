@@ -6,6 +6,7 @@ from __future__ import division
 import os
 import warnings
 import numpy as np
+import pandas as pd
 import datetime
 
 HEADER_LENGTH = 16 * 1024  # 16 kilobytes of header
@@ -220,6 +221,19 @@ def load_nev(file_path):
     nev['events'] = records[['pkt_id', 'TimeStamp', 'event_id', 'ttl', 'Extra', 'EventString']]
 
     return nev
+
+def nev_as_dataframe(file_path,index='TimeStamp'):
+    nev_dict = load_nev(file_path)
+    nev_records = nev_as_records(nev_dict)
+    nev_df = pd.DataFrame.from_records(nev_records,index=index)
+
+    # Convert EventString byte strings to utf-8
+    nev_df['EventString'] = [str(v,'utf-8') for v in nev_df['EventString'].values]
+
+    # Create time column
+    nev_df['time'] = pd.to_datetime(nev_df.index.values,unit='us',utc=True)
+
+    return nev_df
 
 def nev_as_records(n):
     cols = n['events'].dtype.names
