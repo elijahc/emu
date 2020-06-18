@@ -6,12 +6,7 @@ class Participant(object):
         self.patient_id = patient_id
         self.all_files = raw_files
         self.results = results
-        self.survey_files = self.all_files.query('type == "CSV"')
-        # self.seeg_files = self.all_files.query('type == "SEEG"')
-        # if 'electrode_locations.csv' in self.all_files.filename.values:
-        #     loc = self.all_files[self.all_files.filename.isin(['electrode_locations.csv'])].iloc[0]
-        #     self.electrode_locations = RemoteCSV(file_id=loc.id).load()
-
+        # self.survey_files = self.all_files.query('type == "CSV"')
         for r in results:
             setattr(self,r.name,r)
             setattr(self,r.name+'_files',r.files())

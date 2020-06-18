@@ -7,6 +7,7 @@ import glob
 import warnings
 import pandas as pd
 from ..pipeline.download import NLXRaw
+from ..pipeline.remote import RemoteCSV
 
 class Electrophysiology(object):
     name = "seeg"
@@ -17,7 +18,7 @@ class Electrophysiology(object):
             self.seeg_raw_path = raw_path
         else:
             self.seeg_raw_path = os.path.join(
-                os.path.expanduser('~/'),
+                os.path.expanduser('~/.emu'),
                 'pdil',
                 'pt_{:02d}'.format(self.patient_id),
                 'SEEG',
@@ -25,8 +26,12 @@ class Electrophysiology(object):
                 )
 
         self.seeg_files = raw_files.query('type == "SEEG"')
-        # ncs_files = sorted(glob.glob(os.path.join(raw_path,'*.ncs')))
         self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in self.seeg_files])))
+
+        self.electrode_locations == None
+        if 'electrode_locations.csv' in self.seeg_files.filename.values:
+            loc = self.seeg_files[self.seeg_files.filename.isin(['electrode_locations.csv'])].iloc[0]
+            self.electrode_locations = RemoteCSV(file_id=loc.id).load()
 
     def files(self):
         return self.seeg_files
