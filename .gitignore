@@ -169,3 +169,6 @@ codegen/
 
 # Simulink cache files
 *.slxc
+
+# Vim swp files
+*.swp
