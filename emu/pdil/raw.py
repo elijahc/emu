@@ -197,7 +197,7 @@ class Participant(object):
         Yields
         ------
         luigi.Task
-            Yields a NLXRaw task for downloading a single nev file from box
+            Yields all NLXRaw luigi tasks for downloading a nev files from box
         """
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.nev'):
