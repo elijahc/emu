@@ -28,7 +28,7 @@ class Electrophysiology(object):
         self.seeg_files = raw_files.query('type == "SEEG"')
         self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in self.seeg_files])))
 
-        self.electrode_locations == None
+        self.electrode_locations = None
         if 'electrode_locations.csv' in self.seeg_files.filename.values:
             loc = self.seeg_files[self.seeg_files.filename.isin(['electrode_locations.csv'])].iloc[0]
             self.electrode_locations = RemoteCSV(file_id=loc.id).load()
