@@ -10,7 +10,7 @@ from .. import neuralynx_io as nlx
 from ..pipeline.process import PDilTask
 from ..pipeline.remote import RemoteCSV
 from ..pipeline.download import Raw, check_or_create, BehaviorRaw, ExperimentManifest,cache_fp,NLXRaw
-from ..utils import Experiment
+from ..utils import Experiment, _parse_ch
 from ..neuralynx_io import nev_as_records
 from ..nwb import nlx_to_nwb
 
@@ -119,7 +119,9 @@ class Electrophysiology(object):
 
         self.seeg_files = box_files.query('type == "SEEG"')
         # ncs_files = sorted(glob.glob(os.path.join(raw_path,'*.ncs')))
-        self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in self.seeg_files])))
+        parsed_filenames = map(_parse_ch,self.seeg_files.filename.values)
+        # self.chunks = sorted(np.unique([f.groupdict()['block'][1:] for f in parsed_filenames if f is not None]))
+        self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in self.seeg_files.filename.values])))
 
     def gen_nlx_chunks(self):
         for c in self.chunks:
@@ -267,7 +269,7 @@ class Participant(object):
         else:
             self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
                                   practice_incl=practice_incl)
-
+        
         ttl = self.nwb.acquisition['ttl']
         trial_starts = [t for d,t in zip(ttl.data,ttl.timestamps) if d.startswith('trial')]
 
@@ -290,7 +292,7 @@ class Participant(object):
         return self.nwb
 
 def get_data_manifest(study='pdil'):
-    exps = ExperimentManifest(study='pdil')
+    exps = ExperimentManifest(study=study)
     if not exps.output().exists():
         luigi.build([exps],local_scheduler=True)
 

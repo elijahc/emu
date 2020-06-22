@@ -8,6 +8,7 @@ from tqdm import tqdm as tqdm
 from boxsdk.object.file import File
 from boxsdk.object.folder import Folder
 from .luigi.box import ReadableBoxFile,BoxClient, DEFAULT_CONFIG_FP
+from .pipeline.remote import RemotePatientManifest
 from .auth import Client
 if sys.version_info[0] < 3: 
     from StringIO import StringIO
@@ -23,7 +24,7 @@ RELEVANT_FILES={
     'survey': 'survey',
     'taskoutput.mat': 'Behavior',
     '.asc': 'eyetracking',
-    '.edf': 'eyetracking',
+    '.edf': 'eyetracking'
 }
 
 _parse_ch = lambda fn: re.match('CSC(?P<channel>[0-9]+)(?P<block>_[0-9]{4})?\.ncs',fn)
@@ -40,19 +41,13 @@ def create_or_reuse_client(client):
 
 def get_file_type(filename, relevant_files=RELEVANT_FILES):
     for k in relevant_files.keys():
-        if k in filename:
+        if 'med_administration' in filename:
+            return 'EMR'
+        elif k in filename:
             return relevant_files[k]
 
-def load_patients(box_client=None, path='/EMU/_pt_manifest.csv',file_id=None):
-    client = create_or_reuse_client(box_client)
-
-    if file_id is None:
-        file_id = DEFAULT_MANIFEST_FID
-    rbf = ReadableBoxFile(file_id,client)
-    # pt_manifest = client.file(file_id).get()
-    with StringIO(str(rbf.read(),'utf-8')) as infile:
-        df = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
-    return df
+def load_patients():
+    return RemotePatientManifest().load()
 
 def get_file_manifest(folder, prog_bar=False, **kwargs):
     folder = folder.get()

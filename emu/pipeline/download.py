@@ -117,7 +117,7 @@ def cache_fp(data_root,study,patient_id,data_type=None):
     fp = os.path.join(
         data_root,
         study,
-        'pt_{:02d}'.format(patient_id),
+        'pt_{:04d}'.format(patient_id),
         )
     if data_type is not None:
         fp = os.path.join(fp,data_type)
@@ -163,7 +163,7 @@ class ExperimentManifest(luigi.Task):
         records = []
         with self.input().open('r') as f:
             patient_manifest = pd.read_csv(f)
-        patient_folders = patient_manifest.query('patient_id > 0')
+        patient_folders = patient_manifest.query('patient_id > 0 & study == "{}"'.format(self.study))
         # patient_folders = patient_manifest.query('patient_id == {}'.format(self.patient_id))
         patient_ids = []
         for i,row in patient_folders.iterrows():

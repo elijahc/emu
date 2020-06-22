@@ -4,8 +4,6 @@ import io
 import numpy as np
 import pandas as pd
 from ..auth import jwt, DEFAULT_ROOT
-from .utils import file_ids_by_channel
-from ..utils import get_file_manifest,DEFAULT_MANIFEST_FID
 from ..luigi.box import BoxTarget
 from ..neuralynx_io import read_header, read_records, parse_header
 
@@ -36,7 +34,7 @@ class RemoteCSV(RemoteFile):
     file_path : str
     """
     file_id = luigi.IntParameter(default=None)
-    file_path = luigi.Parameter(default=None)
+    file_path = luigi.OptionalParameter(default=None)
 
     def load(self, parse_func=pd.read_csv,force=False):
         """
