@@ -25,7 +25,7 @@ def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4,e
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             try:
-                ncs = nlx.load_ncs(fp)
+                ncs = nlx.load_ncs(fp,load_time=False)
             except ValueError:
                 print('Error loading {}'.format(os.path.split(fp)[-1]))
                 print('skipping...')
@@ -70,7 +70,7 @@ def ncs_to_timeseries(ncs,data_time_len,downsample=4):
 
     # ch_ts = TimeSeries(name='channel_{}'.format(ch),rate =rate, data=data.astype(np.float16),conversion=1.0/10**6,unit='V')
     ts_kwargs = {
-        'name': 'C{}'.format(ch+1),
+        'name': 'channel_{}'.format(ch+1),
         'rate':rate,
         'data':data.astype(np.float16),
         'conversion':1.0/10**6,
@@ -103,14 +103,67 @@ def add_electrodes(nwb,trodes,device,group_col='wire_num'):
                                   location=row.anat_sh, filtering='none',
                                   group=e_grp)
 
+def ncs_to_nwb(ncs_paths,desc='',nev_path=None,electrode_locations=None):
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ncs = nlx.load_ncs(ncs_paths.pop(0),load_time=False)
+
+    uuid = ncs['header']['SessionUUID']
+    # start_time = pd.to_datetime(ncs['time'][0],unit='us',utc=True).to_pydatetime()
+    start_time = ncs['header']['TimeCreated_dt']
+    start_time_sec = start_time.timestamp()
+    nwbfile = NWBFile(session_description=desc,
+                    identifier=uuid,
+                    session_start_time=start_time
+                    )
+
+    dev = nwbfile.create_device(name='Neuralynx')
+    # ts = ncs_to_timeseries(ncs)
+
+    if electrode_locations is not None:
+        add_electrodes(nwbfile,electrode_locations,dev)
+
+    data_time_len = len(ncs['data'])/int(ncs['sampling_rate'])
+    nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
+
+    if nev_path is not None:
+
+        nev = nlx.load_nev(nev_fp) 
+        ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
+
+        ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
+        ev['time'] = pd.to_datetime(ev.index.values,unit='us',utc=True)
+        ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
+
+    for ch,ts_kwargs in iter_ncs_to_timeseries(ncs_paths,data_time_len):
+        if electrode_locations is not None:
+            # ts_kwargs['electrodes']=electrode_table_region
+            try:
+                electrode_table_region = nwbfile.create_electrode_table_region([ch],'Channel')
+                row = electrode_locations.where(electrode_locations.chan_num==ch+1).dropna().iloc[0]
+                ts_kwargs['name'] = 'wire_{}_electrode_{}'.format(int(row.wire_num),int(row.electrode))
+                ts_kwargs['electrodes'] = electrode_table_region
+                ts = ElectricalSeries(**ts_kwargs)
+            except IndexError:
+                pass
+        else:
+            ts = TimeSeries(**ts_kwargs)
+
+        if ts.name not in nwbfile.acquisition.keys():
+            nwbfile.add_acquisition(ts)
+        else:
+            print('Failed to load: ',ts.name)
+
+    return nwbfile
+
 def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False,electrode_locations=None):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        ncs = nlx.load_ncs(ncs_paths.pop(0))
+        ncs = nlx.load_ncs(ncs_paths.pop(0),load_time=False)
         nev = nlx.load_nev(nev_fp)
 
     uuid = nev['header']['SessionUUID']
-    start_time = pd.to_datetime(ncs['time'][0],unit='us',utc=True).to_pydatetime()
+    start_time = pd.to_datetime(ncs['timestamp'][0],unit='us',utc=True).to_pydatetime()
     start_time_sec = start_time.timestamp()
     nwbfile = NWBFile(session_description=desc,
                       identifier=uuid,

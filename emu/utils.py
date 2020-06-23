@@ -9,12 +9,16 @@ from tqdm import tqdm as tqdm
 from boxsdk.object.file import File
 from boxsdk.object.folder import Folder
 from .luigi.box import ReadableBoxFile,BoxClient, DEFAULT_CONFIG_FP
-from .pipeline.remote import RemotePatientManifest
 from .auth import Client
+
 if sys.version_info[0] < 3: 
+    # python 2
     from StringIO import StringIO
+    from urlparse import urlparse
 else:
+    # python 3
     from io import StringIO
+    from urllib.parse import urlparse
 
 DEFAULT_MANIFEST_FID = 588757437066
 RELEVANT_FILES={
@@ -48,6 +52,7 @@ def get_file_type(filename, relevant_files=RELEVANT_FILES):
             return relevant_files[k]
 
 def load_patients():
+    from .pipeline.remote import RemotePatientManifest
     return RemotePatientManifest().load()
 
 def get_file_manifest(folder, prog_bar=False, **kwargs):
@@ -74,17 +79,27 @@ def get_file_manifest(folder, prog_bar=False, **kwargs):
             }
             yield rec
 
+def md5_16(*args):
+    h = hashlib.md5()
+    for s in args:
+        h.update(s.encode())
+    return h.hexdigest()[8:24]
+
 def generate_id(firstname,lastname):
-    h = hashlib.md5(str(firstname).lower().encode())
-    h.update('-'.encode())
-    h.update(str(lastname).lower().encode())
-    dig = h.hexdigest()[8:24]
+    dig = md5_16(firstname.lower(),'-',lastname.lower())
     print('md5:',dig)
 
     pt_id = ''.join([c for c in dig if c.isdigit()])
     print('patient_id:',pt_id[-4:])
 
     return pt_id[-4:]
+
+def is_url(url):
+  try:
+    result = urlparse(url)
+    return all([result.scheme, result.netloc])
+  except ValueError:
+    return False
 
     
 

@@ -76,14 +76,14 @@ class BoxClient(FileSystem):
         return self.conn.folder(fid)
     
     def file_id_to_path(self,fid):
-        return file_id_to_path(file_id=fid,client=self.conn)
+        return obj_to_path(self.file(fid).get())
 
     def path_to_fid(self,path):
         return path_to_fid(client=self.conn,path=path)
 
     def exists(self, path):
         try:
-            f = path_to_obj(self.client,path)
+            f = path_to_obj(self.conn,path)
             if f.type in ['file','folder']:
                 return True
         except ValueError as e:
@@ -216,10 +216,10 @@ class ReadableBoxFile(object):
 class AtomicWritableBoxFile(AtomicLocalFile):
     def __init__(self, path, client):
         """
-        Represents a file that will be created inside the Dropbox cloud
+        Represents a file that will be created inside the Box cloud
 
-        :param str path: Destination path inside Dropbox
-        :param DropboxClient client: a DropboxClient object (initialized with a valid token, for the desired account)
+        :param str path: Destination path inside Box cloud
+        :param BoxClient client: a BoxClient object (initialized with a valid token, for the desired account)
         """
         super(AtomicWritableBoxFile, self).__init__(path)
         self.path = path
@@ -284,20 +284,23 @@ class BoxTarget(FileSystemTarget):
     def __init__(self, path=None, file_id=None, auth_config=DEFAULT_CONFIG_FP, format=None, user_agent="Luigi"):
         super(BoxTarget, self).__init__(path)
 
+        # Check inputs
         if not auth_config or not os.path.exists(auth_config):
             raise ValueError("The auth_config parameter must contain a valid path to a JWT config.json file")
 
         if path is None and file_id is None:
             raise ValueError("Must provide either path or file_id")
-        self.path = path
+
         self.auth_config = auth_config
         self.client = BoxClient(auth_config, user_agent=user_agent)
         self.format = format or luigi.format.get_default_format()
 
         if file_id is not None:
             self.fid = int(file_id)
-        else:
-            self.fid = self.client.path_to_fid(path=self.path)
+
+        self.path = path or self.client.file_id_to_path(self.fid)
+        # if self.client.exists(self.path):
+        #     self.fid = self.client.path_to_fid( path=self.path )
 
     @property
     def fs(self):
@@ -319,9 +322,11 @@ class BoxTarget(FileSystemTarget):
         if mode not in ('r', 'w', 'rb'):
             raise ValueError("Unsupported open mode '%s'" % mode)
         if mode == 'r':
+            self.fid = self.client.path_to_fid(self.path)
             rbf = ReadableBoxFile(file_id=self.fid,client=self.client)
             return StringIO(str(rbf.read(), 'utf-8'))
         elif mode == 'rb':
+            self.fid = self.client.path_to_fid(self.path)
             rbf = ReadableBoxFile(file_id=self.fid,client=self.client)
             return BytesIO(rbf.read())
 

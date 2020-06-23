@@ -79,10 +79,10 @@ def parse_header(raw_hdr):
         warnings.warn('Unable to parse original file path from Neuralynx header: ' + hdr_lines[1])
 
     # Process lines with file opening and closing times
-    hdr[u'TimeOpened'] = hdr_lines[2][3:]
-    hdr[u'TimeOpened_dt'] = parse_neuralynx_time_string(hdr_lines[2])
-    hdr[u'TimeClosed'] = hdr_lines[3][3:]
-    hdr[u'TimeClosed_dt'] = parse_neuralynx_time_string(hdr_lines[3])
+    hdr[u'TimeCreated'] = hdr_lines[7][1:]
+    hdr[u'TimeCreated_dt'] = parse_neuralynx_time_string(hdr_lines[7])
+    hdr[u'TimeClosed'] = hdr_lines[8][1:]
+    hdr[u'TimeClosed_dt'] = parse_neuralynx_time_string(hdr_lines[8])
 
     # Read the parameters, assuming "-PARAM_NAME PARAM_VALUE" format
     for line in hdr_lines[4:]:
@@ -124,17 +124,16 @@ def estimate_record_count(file_path, record_dtype):
 def parse_neuralynx_time_string(time_string):
     # Parse a datetime object from the idiosyncratic time string in Neuralynx file headers
     try:
-        tmp_date = [int(x) for x in time_string.split()[4].split('/')]
-        tmp_time = [int(x) for x in time_string.split()[-1].replace('.', ':').split(':')]
-        tmp_microsecond = tmp_time[3] * 1000
+        tmp_date = [int(x) for x in time_string.split()[1].split('/')]
+        tmp_time = [int(x) for x in time_string.split()[-1].split(':')]
+        # tmp_microsecond = tmp_time[3] * 1000
     except:
         warnings.warn('Unable to parse time string from Neuralynx header: ' + time_string)
         return None
     else:
-        return datetime.datetime(tmp_date[2], tmp_date[0], tmp_date[1],  # Year, month, day
+        return datetime.datetime(tmp_date[0], tmp_date[1], tmp_date[2],  # Year, month, day
                                  tmp_time[0], tmp_time[1], tmp_time[2],  # Hour, minute, second
-                                 tmp_microsecond)
-
+                                 )
 
 def check_ncs_records(records):
     # Check that all the records in the array are "similar" (have the same sampling frequency etc.
