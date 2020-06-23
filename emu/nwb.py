@@ -6,11 +6,11 @@ import sys
 import warnings
 from tqdm import tqdm as tqdm
 from . import neuralynx_io as nlx
-from .neuralynx_io import nev_as_records
+from .neuralynx_io import nev_as_records,load_nev
 
 from pynwb import NWBFile, TimeSeries,NWBHDF5IO
 from pynwb import TimeSeries, NWBFile,NWBHDF5IO
-from pynwb.ecephys import ElectricalSeries
+from pynwb.ecephys import ElectricalSeries,LFP
 from pynwb.misc import AnnotationSeries
 
 def iter_ncs_to_timeseries(ncs_fps,data_time_len,dtype=np.float16,downsample=4,electrode_locations=None):
@@ -103,17 +103,49 @@ def add_electrodes(nwb,trodes,device,group_col='wire_num'):
                                   location=row.anat_sh, filtering='none',
                                   group=e_grp)
 
-def ncs_to_nwb(ncs_paths,desc='',nev_path=None,electrode_locations=None):
+def nev_to_behavior_annotation(nev_fp,practice_incl=False):
+    nev = load_nev(nev_fp)
+    ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
+
+    ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
+    ev['time'] = pd.to_datetime(ev.index.values,unit='us',utc=True)
+    ev = ev[ev.ttl==1]
+
+    label_blockstart(ev)
+    n_blocks = int(len(ev[ev.label=='block_start'])/2)
+    n_ttls = int(n_blocks*17)
+    if practice_incl:
+        n_ttls-=5
+
+    start_time = self.nwb.session_start_time
+    ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
+
+    events = AnnotationSeries(name='ttl', data=ev.label.values[:n_ttls], timestamps=ev_ts[:n_ttls])
+
+    return events
+
+
+def ncs_to_nwb(ncs_paths,
+                desc='',
+                nev_path=None,
+                electrode_locations=None,
+                lab='Thompson Lab',
+                institution='University of Colorado Anschutz',
+                ):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        ncs = nlx.load_ncs(ncs_paths.pop(0),load_time=False)
+        first_ncs = ncs_paths.pop(0)
+        ncs = nlx.load_ncs(first_ncs,load_time=False)
 
     uuid = ncs['header']['SessionUUID']
-    # start_time = pd.to_datetime(ncs['time'][0],unit='us',utc=True).to_pydatetime()
-    start_time = ncs['header']['TimeCreated_dt']
+    start_time = pd.to_datetime(ncs['timestamp'][0],unit='us',utc=True).to_pydatetime()
+    # start_time = ncs['header']['TimeCreated_dt']
     start_time_sec = start_time.timestamp()
     nwbfile = NWBFile(session_description=desc,
                     identifier=uuid,
+                    session_id=uuid,
+                    lab=lab,
+                    institution=institution,
                     session_start_time=start_time
                     )
 
@@ -124,16 +156,21 @@ def ncs_to_nwb(ncs_paths,desc='',nev_path=None,electrode_locations=None):
         add_electrodes(nwbfile,electrode_locations,dev)
 
     data_time_len = len(ncs['data'])/int(ncs['sampling_rate'])
-    nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
+    # nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
 
-    if nev_path is not None:
+    # if nev_path is not None:
+    #     nev = nlx.load_nev(nev_path) 
+    #     if len(nev['events']) > 0:
+    #         ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
 
-        nev = nlx.load_nev(nev_path) 
-        ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
+    #         ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
+    #         ev['time'] = pd.to_datetime(ev.index.values,unit='us',utc=True)
+    #         ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
 
-        ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
-        ev['time'] = pd.to_datetime(ev.index.values,unit='us',utc=True)
-        ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
+    ncs_paths.append(first_ncs)
+    lfp = LFP(name='LFP')
+
+    # nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
 
     for ch,ts_kwargs in iter_ncs_to_timeseries(ncs_paths,data_time_len):
         if electrode_locations is not None:
@@ -144,16 +181,23 @@ def ncs_to_nwb(ncs_paths,desc='',nev_path=None,electrode_locations=None):
                 ts_kwargs['name'] = 'wire_{}_electrode_{}'.format(int(row.wire_num),int(row.electrode))
                 ts_kwargs['electrodes'] = electrode_table_region
                 ts = ElectricalSeries(**ts_kwargs)
+                if ts.name not in lfp.electrical_series.keys():
+                    lfp.add_electrical_series(ts)
+                else:
+                    print('Failed to load: ',ts.name)
             except IndexError:
                 pass
         else:
             ts = TimeSeries(**ts_kwargs)
+            if ts.name not in nwbfile.acquisition.keys():
+                nwbfile.add_acquisition(ts)
+            else:
+                print('Failed to load: ',ts.name)
 
-        if ts.name not in nwbfile.acquisition.keys():
-            nwbfile.add_acquisition(ts)
-        else:
-            print('Failed to load: ',ts.name)
-
+    nwbfile.create_processing_module(name='ecephys',
+                                description='preprocessed extracellular electrophysiology')
+    nwbfile.processing['ecephys'].add(lfp)
+        
     return nwbfile
 
 def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False,electrode_locations=None):
@@ -196,6 +240,7 @@ def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False,
 
     nwbfile.add_acquisition(events)
     
+    lfp = LFP(name='LFP')
     nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
 
     for ch,ts_kwargs in iter_ncs_to_timeseries(ncs_paths,data_time_len):
@@ -207,15 +252,23 @@ def nlx_to_nwb(nev_fp,ncs_paths,desc='', trim_buffer=60*10, practice_incl=False,
                 ts_kwargs['name'] = 'wire_{}_electrode_{}'.format(int(row.wire_num),int(row.electrode))
                 ts_kwargs['electrodes'] = electrode_table_region
                 ts = ElectricalSeries(**ts_kwargs)
+                if ts.name not in lfp.electrical_series.keys():
+                    lfp.add_electrical_series(ts)
             except IndexError:
                 pass
         else:
             ts = TimeSeries(**ts_kwargs)
+            if ts.name not in nwbfile.acquisition.keys():
+                nwbfile.add_acquisition(ts)
 
-        if ts.name not in nwbfile.acquisition.keys():
-            nwbfile.add_acquisition(ts)
-        else:
-            print('Failed to load: ',ts.name)
+            else:
+                print('Failed to load: ',ts.name)
+
+        ecephys_module = ProcessingModule(name='ecephys',
+                                  description='preprocessed extracellular electrophysiology')
+        nwbfile.create_processing_module(name='ecephys',
+                                    description='preprocessed extracellular electrophysiology')
+        nwbfile.processing['ecephys'].add(lfp)
         
     return nwbfile
 

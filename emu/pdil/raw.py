@@ -11,8 +11,10 @@ from ..pipeline.process import PDilTask
 from ..pipeline.remote import RemoteCSV
 from ..pipeline.download import Raw, check_or_create, BehaviorRaw, ExperimentManifest,cache_fp,NLXRaw
 from ..utils import Experiment, _parse_ch
-from ..neuralynx_io import nev_as_records
-from ..nwb import nlx_to_nwb
+from ..neuralynx_io import nev_as_records, load_nev
+from ..nwb import nlx_to_nwb, ncs_to_nwb,label_blockstart
+from pynwb.file import Subject
+from pynwb.misc import AnnotationSeries
 
 PAYOFF_DICT = {
     6: ('defect','copperate'),
@@ -117,8 +119,12 @@ class Electrophysiology(object):
         if raw_path is not None:
             self.raw_path = raw_path
 
+        if 'electrode_locations.csv' in box_files.filename.values:
+            loc = box_files[box_files.filename.isin(['electrode_locations.csv'])].iloc[0]
+            self.electrode_locations = RemoteCSV(file_id=loc.id).load()
+
         self.seeg_files = box_files.query('type == "SEEG"')
-        # ncs_files = sorted(glob.glob(os.path.join(raw_path,'*.ncs')))
+
         parsed_filenames = map(_parse_ch,self.seeg_files.filename.values)
         # self.chunks = sorted(np.unique([f.groupdict()['block'][1:] for f in parsed_filenames if f is not None]))
         self.chunks = sorted(np.unique(np.array([f[-8:-4] for f in self.seeg_files.filename.values])))
@@ -155,10 +161,21 @@ class Electrophysiology(object):
         df = label_blockstart(df)
         return df
 
+    def to_nwb(self,ncs_paths,nev_fp=None):
+        if hasattr(self,'electrode_locations'):
+            nwbfile = ncs_to_nwb(ncs_paths,electrode_locations=self.electrode_locations)
+        else:
+            nwbfile = ncs_to_nwb(ncs_paths)
+
+        
+        return nwbfile
+
 class Participant(object):
-    def __init__(self,patient_id, raw_files,seeg_raw_path=None):
+    def __init__(self,patient_id, raw_files,seeg_raw_path=None,sex=None,species='human'):
         self.patient_id = patient_id
-        self.all_files = raw_files
+        self.sex = sex
+        self.species = species
+        self.all_files = raw_files.query('patient_id == {}'.format(self.patient_id))
         self.behavior_files = self.all_files.query('type == "Behavior"')
         self.survey_files = self.all_files.query('type == "CSV"')
         self.seeg_files = self.all_files.query('type == "SEEG"')
@@ -262,34 +279,87 @@ class Participant(object):
         else:
             practice_incl = False
 
-        if hasattr(self,'electrode_locations'):
-            self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
-                                  practice_incl=practice_incl,
-                                  electrode_locations=self.electrode_locations)
-        else:
-            self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
-                                  practice_incl=practice_incl)
+        subject = Subject(sex=self.sex,subject_id=str(self.patient_id),species=self.species)
+
+        self.nwb = self.seeg.to_nwb(ncs_fps)
+        # if hasattr(self,'electrode_locations'):
+        #     self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
+        #                           practice_incl=practice_incl,
+        #                           electrode_locations=self.electrode_locations)
+        # else:
+        #     self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
+        #                           practice_incl=practice_incl)
+
+        self.nwb.subject = subject
+        self.add_behavior(nev_fp,blocks,practice_incl)
         
+        # ttl = self.nwb.acquisition['ttl']
+        # trial_starts = [t for d,t in zip(ttl.data,ttl.timestamps) if d.startswith('trial')]
+
+        # outcomes = pd.concat(self.load_game_data())
+        # outcomes = outcomes[outcomes.block.isin(blocks)]
+        # trial_delta = outcomes.sort_values(['block','trial']).timing_sumTictocs.values
+        # choices = pd.DataFrame.from_records(map(points_to_choice,outcomes.points.values),columns=['A','B'])
+        # choices['points'] = outcomes.points.values
+        # choices['tuple'] = [a[0].upper()+'-'+b[0].upper() for a,b in zip(choices.A.values,choices.B.values)]
+
+        # self.nwb.add_trial_column(name='outcome',description='Choice pair for both players')
+        # for start,dt,choice in zip(trial_starts,trial_delta,choices.tuple.values):
+
+        #     self.nwb.add_trial(start_time=start,stop_time=start+dt,outcome=choice)
+
+        return self.nwb
+
+    def add_behavior(self,nev_fp,blocks,practice_incl=None):
+        if nev_fp is None or not os.path.exists(nev_fp):
+            raise ValueError('error in nev_fp')
+
+        nev = load_nev(nev_fp)
+        ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
+
+        ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
+        ev['time'] = pd.to_datetime(ev.index.values,unit='us',utc=True)
+        ev = ev[ev.ttl==1]
+
+        label_blockstart(ev)
+        n_blocks = int(len(ev[ev.label=='block_start'])/2)
+        n_ttls = int(n_blocks*17)
+        if practice_incl:
+            n_ttls-=5
+
+        start_time = self.nwb.session_start_time
+        ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
+
+        events = AnnotationSeries(name='ttl', data=ev.label.values[:n_ttls], timestamps=ev_ts[:n_ttls])
+
+        self.nwb.add_acquisition(events)
+        self.nwb.add_trial_column(name='outcome',description='Choice pair for both players')
+        # self.nwb.add_trial_column(name='round',description='')
+
         ttl = self.nwb.acquisition['ttl']
         trial_starts = [t for d,t in zip(ttl.data,ttl.timestamps) if d.startswith('trial')]
 
         # Calculate Trial deltas
-        pdil_events = pd.concat(self.load_pdil_events())
-        pdil_events = pdil_events[pdil_events.block.isin(blocks)]
+        # pdil_events = pd.concat(self.load_pdil_events(local_scheduler=True))
+        # pdil_events = pdil_events[pdil_events.block.isin(blocks)]
 
-        outcomes = pd.concat(self.load_game_data())
+        outcomes = pd.concat(self.load_game_data(local_scheduler=True))
         outcomes = outcomes[outcomes.block.isin(blocks)]
         trial_delta = outcomes.sort_values(['block','trial']).timing_sumTictocs.values
         choices = pd.DataFrame.from_records(map(points_to_choice,outcomes.points.values),columns=['A','B'])
         choices['points'] = outcomes.points.values
         choices['tuple'] = [a[0].upper()+'-'+b[0].upper() for a,b in zip(choices.A.values,choices.B.values)]
-
-        self.nwb.add_trial_column(name='outcome',description='Choice pair for both players')
         for start,dt,choice in zip(trial_starts,trial_delta,choices.tuple.values):
 
             self.nwb.add_trial(start_time=start,stop_time=start+dt,outcome=choice)
 
+        block_starts = ttl.timestamps[ttl.data == 'block_start'][1::2]
+        # for bstart,idx in zip(block_starts,idx):
+        #     self.nwb.add_epoch()
+
+
         return self.nwb
+
 
 def get_data_manifest(study='pdil'):
     exps = ExperimentManifest(study=study)
