@@ -128,7 +128,7 @@ def ncs_to_nwb(ncs_paths,desc='',nev_path=None,electrode_locations=None):
 
     if nev_path is not None:
 
-        nev = nlx.load_nev(nev_fp) 
+        nev = nlx.load_nev(nev_path) 
         ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
 
         ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
