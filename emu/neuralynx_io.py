@@ -79,10 +79,14 @@ def parse_header(raw_hdr):
         warnings.warn('Unable to parse original file path from Neuralynx header: ' + hdr_lines[1])
 
     # Process lines with file opening and closing times
-    hdr[u'TimeCreated'] = hdr_lines[7][1:]
-    hdr[u'TimeCreated_dt'] = parse_neuralynx_time_string(hdr_lines[7])
-    hdr[u'TimeClosed'] = hdr_lines[8][1:]
-    hdr[u'TimeClosed_dt'] = parse_neuralynx_time_string(hdr_lines[8])
+    for line in hdr_lines:
+        if line.startswith('-Time'):
+            name = line[1:].split()[0]
+            hdr[name] = ' '.join(line[1:].split()[1:])
+            hdr[name+'_dt'] = parse_neuralynx_time_string(line[1:])
+    # hdr[u'TimeCreated_dt'] = parse_neuralynx_time_string(hdr_lines[7])
+    # hdr[u'TimeClosed'] = hdr_lines[8][1:]
+    # hdr[u'TimeClosed_dt'] = parse_neuralynx_time_string(hdr_lines[8])
 
     # Read the parameters, assuming "-PARAM_NAME PARAM_VALUE" format
     for line in hdr_lines[4:]:
