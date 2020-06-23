@@ -4,6 +4,7 @@ import fnmatch
 import sys
 import pandas as pd
 import numpy as np
+import hashlib
 from tqdm import tqdm as tqdm
 from boxsdk.object.file import File
 from boxsdk.object.folder import Folder
@@ -72,6 +73,18 @@ def get_file_manifest(folder, prog_bar=False, **kwargs):
                 'folder': folder_name,
             }
             yield rec
+
+def generate_id(firstname,lastname):
+    h = hashlib.md5(str(firstname).lower().encode())
+    h.update('-'.encode())
+    h.update(str(lastname).lower().encode())
+    dig = h.hexdigest()[8:24]
+    print('md5:',dig)
+
+    pt_id = ''.join([c for c in dig if c.isdigit()])
+    print('patient_id:',pt_id[-4:])
+
+    return pt_id[-4:]
 
     
 
