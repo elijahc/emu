@@ -78,7 +78,7 @@ class RemotePatientManifest(RemoteCSV):
     def output(self):
         return BoxTarget('/EMU/_patient_manifest.csv')
 
-    def register_new_data(self,firstname,lastname,study,data_type,folder_id=None,path=None):
+    def new_record(self,firstname,lastname,study,data_type,folder_id=None,path=None):
         if not self.output().exists():
             raise ValueError(self.output().path+' does not exist')
         elif folder_id is None and path is None:
@@ -92,11 +92,30 @@ class RemotePatientManifest(RemoteCSV):
         
         folder_id = folder_id or path_fid
         
-        pt_id = generate_id(firstname,lastname)
-        
-        return pt_id,firstname.upper()[0]+lastname.upper()[0],study,data_type,folder_id
-        # folder_id = folder_id or 
+        new_row = {
+            'patient_id': int(generate_id(firstname,lastname)),
+            'md5_16':md5_16(firstname,'-',lastname),
+            'patient_initials':firstname.upper()[0]+lastname.upper()[0],
+            'study':study,
+            'folder_id':int(folder_id),
+            'type':data_type
+        }
 
+        return new_row
+
+    def generate_id(self,firstname,lastname):
+        return generate_id(firstname,lastname)
+
+
+    def register_folder(self,firstname,lastname,study,data_type,folder_id=None,path=None):
+
+        new_row = self.new_record(firstname,lastname,study,data_type,folder_id,path)
+
+        with self.output().temporary_path() as tmp_path:
+            df = self.load().append(new_row,ignore_index=True)
+            df.to_csv(tmp_path,index=False)
+
+        print('Updated manifest')
 
 class RemoteStudyManifest(RemoteCSV):
     study = luigi.Parameter()
