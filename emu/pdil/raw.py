@@ -211,7 +211,7 @@ class Participant(object):
             )
             yield t
 
-    def cache_nev(self,verbose=False):
+    def cache_nev(self,study='pdil',verbose=False):
         """
         Yields
         ------
@@ -221,6 +221,7 @@ class Participant(object):
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.nev'):
                 t = NLXRaw(
+                    study=study,
                     patient_id = row.patient_id,
                     file_id = row.id,
                     file_name=row.folder+'.'+row.filename,
@@ -228,7 +229,7 @@ class Participant(object):
                 )
                 yield t
 
-    def cache_ncs(self, verbose=False):
+    def cache_ncs(self, study='pdil',verbose=False):
         """
         Yields
         ------
@@ -238,6 +239,7 @@ class Participant(object):
         for i,row in self.seeg_files.iterrows():
             if row.filename.endswith('.ncs'):
                 t = NLXRaw(
+                    study=study,
                     patient_id = row.patient_id,
                     file_id = row.id,
                     file_name=row.folder+'.'+row.filename,

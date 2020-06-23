@@ -123,7 +123,6 @@ def nev_to_behavior_annotation(nev_fp,practice_incl=False):
 
     return events
 
-
 def ncs_to_nwb(ncs_paths,
                 desc='',
                 nev_path=None,
@@ -170,11 +169,8 @@ def ncs_to_nwb(ncs_paths,
     else:
         data_time_len = len(ncs['data'])/int(ncs['sampling_rate'])
 
-    print('data_time_len', data_time_len)
     ncs_paths.append(first_ncs)
     lfp = LFP(name='LFP')
-
-    # nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
 
     for ch,ts_kwargs in iter_ncs_to_timeseries(ncs_paths,data_time_len):
         if electrode_locations is not None:

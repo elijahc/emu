@@ -125,5 +125,6 @@ class RemoteStudyManifest(RemoteCSV):
     def output(self):
         return BoxTarget('/EMU/STUDY_{}/manifest.csv'.format(self.study.upper()))
 
+class 
 # For backwards compatibility
 Patients = RemotePatientManifest
