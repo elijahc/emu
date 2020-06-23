@@ -126,27 +126,27 @@ class BoxClient(FileSystem):
         return content
 
     def upload(self, folder_path, local_path):
-        if not self.isdir(folder_path):
-            raise ValueError('Invalid folder path {}'.format(folder_path))
-        elif not os.path.exists(local_path):
+        if not os.path.exists(local_path):
             raise ValueError('local path {} does not exist'.format(local_path))
-        else:
-            file_name = os.path.split(local_path)[-1]
-            remote_filepath = folder_path+'/'+file_name
-            if self.exists(remote_filepath):
-                logger.warning('File exists, updating contents')
-                file = path_to_obj(self.conn, remote_filepath)
-                uploaded_file = file.update_contents(local_path)
-            else:
-                folder = path_to_obj(self.conn,folder_path)
-                if os.path.getsize(local_path)/10**6 > 200:
-                    logger.warning('File larger than 200Mb, using chunked uploader')
-                    uploader = folder.get_chunked_uploader(local_path)
-                    uploaded_file = uploader.start()
-                else:
-                    uploaded_file = folder.upload(local_path)
 
-            return uploaded_file
+        file_name = os.path.split(local_path)[-1]
+        remote_filepath = folder_path+'/'+file_name
+        if self.exists(remote_filepath):
+            logger.warning('File exists, updating contents')
+            file = path_to_obj(self.conn, remote_filepath)
+            uploaded_file = file.update_contents(local_path)
+        elif not self.isdir(folder_path):
+            raise ValueError('Invalid folder path {}'.format(folder_path))
+        else:
+            folder = path_to_obj(self.conn,folder_path)
+            if os.path.getsize(local_path)/10**6 > 200:
+                logger.warning('File larger than 200Mb, using chunked uploader')
+                uploader = folder.get_chunked_uploader(local_path)
+                uploaded_file = uploader.start()
+            else:
+                uploaded_file = folder.upload(local_path)
+
+        return uploaded_file
 
     def _exists_and_is_dir(self, path):
         """
@@ -309,6 +309,7 @@ class BoxTarget(FileSystemTarget):
     @contextmanager
     def temporary_path(self):
         tmp_dir = tempfile.mkdtemp()
+        dst_path = os.path.join(tmp_dir,ntpath.basename(self.path))
         num = random.randrange(0, 1e10)
         temp_path = '{}{}luigi-tmp-{:010}{}'.format(
             tmp_dir, os.sep,
@@ -316,7 +317,20 @@ class BoxTarget(FileSystemTarget):
 
         yield temp_path
         # We won't reach here if there was an user exception.
-        self.fs.upload(temp_path, self.path)
+
+        os.rename(temp_path,dst_path)
+
+        uploaded_file = self.fs.upload(ntpath.dirname(self.path),dst_path)
+        
+
+    @contextmanager
+    def temporary_file(self):
+        tmp_dir = tempfile.mkdtemp()
+        temp_path = os.path.join(tmp_dir,ntpath.basename(self.path))
+
+        yield temp_path
+
+        self.fs.upload(ntpath.dirname(self.path),temp_path)
 
     def open(self, mode):
         if mode not in ('r', 'w', 'rb'):

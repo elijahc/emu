@@ -53,6 +53,21 @@ class RemoteCSV(RemoteFile):
 
         return self.content
 
+    def append(self,row):
+        if not hasattr(self,'content'):
+            self.load()
+
+        self.content = self.content.append(row,ignore_index=True)
+
+        return self.content
+
+    def commit(self):
+        if not hasattr(self,'content'):
+            raise ValueError('No changes made')
+
+        with self.output().temporary_path() as temp_path:
+            self.content.to_csv(temp_path,index=False)
+
 class RemoteNLX(RemoteFile):
     """
     Parameters
@@ -78,7 +93,7 @@ class RemotePatientManifest(RemoteCSV):
     def output(self):
         return BoxTarget('/EMU/_patient_manifest.csv')
 
-    def new_record(self,firstname,lastname,study,data_type,folder_id=None,path=None):
+    def register_folder(self,firstname,lastname,study,data_type,folder_id=None,path=None,patient_order=0):
         if not self.output().exists():
             raise ValueError(self.output().path+' does not exist')
         elif folder_id is None and path is None:
@@ -96,26 +111,20 @@ class RemotePatientManifest(RemoteCSV):
             'patient_id': int(generate_id(firstname,lastname)),
             'md5_16':md5_16(firstname,'-',lastname),
             'patient_initials':firstname.upper()[0]+lastname.upper()[0],
+            'patient_order':patient_order,
             'study':study,
             'folder_id':int(folder_id),
             'type':data_type
         }
 
-        return new_row
+        self.append(new_row)
+        
+        self.content = self.content.drop_duplicates()
+
+        return self.content
 
     def generate_id(self,firstname,lastname):
         return generate_id(firstname,lastname)
-
-
-    def register_folder(self,firstname,lastname,study,data_type,folder_id=None,path=None):
-
-        new_row = self.new_record(firstname,lastname,study,data_type,folder_id,path)
-
-        with self.output().temporary_path() as tmp_path:
-            df = self.load().append(new_row,ignore_index=True)
-            df.to_csv(tmp_path,index=False)
-
-        print('Updated manifest')
 
 class RemoteStudyManifest(RemoteCSV):
     study = luigi.Parameter()
