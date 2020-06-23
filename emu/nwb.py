@@ -117,8 +117,7 @@ def nev_to_behavior_annotation(nev_fp,practice_incl=False):
     if practice_incl:
         n_ttls-=5
 
-    start_time = self.nwb.session_start_time
-    ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
+    ev_ts = np.array([t.timestamp() for t in ev.time])
 
     events = AnnotationSeries(name='ttl', data=ev.label.values[:n_ttls], timestamps=ev_ts[:n_ttls])
 
@@ -131,6 +130,7 @@ def ncs_to_nwb(ncs_paths,
                 electrode_locations=None,
                 lab='Thompson Lab',
                 institution='University of Colorado Anschutz',
+                trim_buffer=60*10,
                 ):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -155,18 +155,22 @@ def ncs_to_nwb(ncs_paths,
     if electrode_locations is not None:
         add_electrodes(nwbfile,electrode_locations,dev)
 
-    data_time_len = len(ncs['data'])/int(ncs['sampling_rate'])
-    # nwbfile.add_acquisition(ncs_to_timeseries(ncs,data_time_len))
+    if nev_path is not None:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            nev = load_nev(nev_path)
+            if len(nev['events']) > 0:
+                ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
 
-    # if nev_path is not None:
-    #     nev = nlx.load_nev(nev_path) 
-    #     if len(nev['events']) > 0:
-    #         ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
+                ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
+                ev['time'] = pd.to_datetime(ev.index.values,unit='us',utc=True)
+                ev = ev[ev.ttl==1]
+                ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
+                data_time_len = ev_ts[-1]+trim_buffer
+    else:
+        data_time_len = len(ncs['data'])/int(ncs['sampling_rate'])
 
-    #         ev['EventString'] = [str(v,'utf-8') for v in ev.EventString.values]
-    #         ev['time'] = pd.to_datetime(ev.index.values,unit='us',utc=True)
-    #         ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
-
+    print('data_time_len', data_time_len)
     ncs_paths.append(first_ncs)
     lfp = LFP(name='LFP')
 

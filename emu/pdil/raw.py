@@ -12,7 +12,7 @@ from ..pipeline.remote import RemoteCSV
 from ..pipeline.download import Raw, check_or_create, BehaviorRaw, ExperimentManifest,cache_fp,NLXRaw
 from ..utils import Experiment, _parse_ch
 from ..neuralynx_io import nev_as_records, load_nev
-from ..nwb import nlx_to_nwb, ncs_to_nwb,label_blockstart
+from ..nwb import nlx_to_nwb, ncs_to_nwb,label_blockstart,nev_to_behavior_annotation
 from pynwb.file import Subject
 from pynwb.misc import AnnotationSeries
 
@@ -163,9 +163,9 @@ class Electrophysiology(object):
 
     def to_nwb(self,ncs_paths,nev_fp=None):
         if hasattr(self,'electrode_locations'):
-            nwbfile = ncs_to_nwb(ncs_paths,electrode_locations=self.electrode_locations)
+            nwbfile = ncs_to_nwb(ncs_paths,nev_path=nev_fp,electrode_locations=self.electrode_locations)
         else:
-            nwbfile = ncs_to_nwb(ncs_paths)
+            nwbfile = ncs_to_nwb(ncs_paths,nev_path=nev_fp)
 
         
         return nwbfile
@@ -281,7 +281,7 @@ class Participant(object):
 
         subject = Subject(sex=self.sex,subject_id=str(self.patient_id),species=self.species)
 
-        self.nwb = self.seeg.to_nwb(ncs_fps)
+        self.nwb = self.seeg.to_nwb(ncs_fps,nev_fp=nev_fp)
         # if hasattr(self,'electrode_locations'):
         #     self.nwb = nlx_to_nwb(nev_fp=nev_fp, ncs_paths=ncs_fps,desc=desc,
         #                           practice_incl=practice_incl,
@@ -293,26 +293,15 @@ class Participant(object):
         self.nwb.subject = subject
         self.add_behavior(nev_fp,blocks,practice_incl)
         
-        # ttl = self.nwb.acquisition['ttl']
-        # trial_starts = [t for d,t in zip(ttl.data,ttl.timestamps) if d.startswith('trial')]
-
-        # outcomes = pd.concat(self.load_game_data())
-        # outcomes = outcomes[outcomes.block.isin(blocks)]
-        # trial_delta = outcomes.sort_values(['block','trial']).timing_sumTictocs.values
-        # choices = pd.DataFrame.from_records(map(points_to_choice,outcomes.points.values),columns=['A','B'])
-        # choices['points'] = outcomes.points.values
-        # choices['tuple'] = [a[0].upper()+'-'+b[0].upper() for a,b in zip(choices.A.values,choices.B.values)]
-
-        # self.nwb.add_trial_column(name='outcome',description='Choice pair for both players')
-        # for start,dt,choice in zip(trial_starts,trial_delta,choices.tuple.values):
-
-        #     self.nwb.add_trial(start_time=start,stop_time=start+dt,outcome=choice)
-
         return self.nwb
 
     def add_behavior(self,nev_fp,blocks,practice_incl=None):
         if nev_fp is None or not os.path.exists(nev_fp):
             raise ValueError('error in nev_fp')
+
+        start_time = self.nwb.session_start_time
+        # events = nev_to_behavior_annotation(nev_fp,practice_incl=practice_incl)
+        # events.set_timestamps(events.timestamps-start_time.timestamp())
 
         nev = load_nev(nev_fp)
         ev = pd.DataFrame.from_records(nev_as_records(nev),index='TimeStamp')
@@ -327,7 +316,6 @@ class Participant(object):
         if practice_incl:
             n_ttls-=5
 
-        start_time = self.nwb.session_start_time
         ev_ts = np.array([t.timestamp() for t in ev.time]) - start_time.timestamp()
 
         events = AnnotationSeries(name='ttl', data=ev.label.values[:n_ttls], timestamps=ev_ts[:n_ttls])
