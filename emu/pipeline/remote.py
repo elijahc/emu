@@ -65,8 +65,8 @@ class RemoteCSV(RemoteFile):
         if not hasattr(self,'content'):
             raise ValueError('No changes made')
 
-        with self.output().temporary_path() as temp_path:
-            self.content.to_csv(temp_path,index=False)
+        with self.output().temporary_path() as self.temp_output_path:
+            self.content.to_csv(self.temp_output_path,index=False)
 
 class RemoteNLX(RemoteFile):
     """
@@ -125,6 +125,13 @@ class RemotePatientManifest(RemoteCSV):
 
     def generate_id(self,firstname,lastname):
         return generate_id(firstname,lastname)
+
+    def register_study_root(self,firstname,lastname,study,folder_id=None,path=None,order=0):
+        output = self.register_folder(
+            firstname,lastname,study,
+            data_type='study_root',folder_id=folder_id,path=path,patient_order=order)
+
+        return output
 
 class RemoteStudyManifest(RemoteCSV):
     study = luigi.Parameter()
