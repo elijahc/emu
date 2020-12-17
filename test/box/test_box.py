@@ -1,6 +1,6 @@
 import pandas as pd
-from src.auth import jwt,DEFAULT_CONFIG_FP
-from src.luigi.box import *
+from emu.auth import jwt,DEFAULT_CONFIG_FP
+from emu.luigi.box import *
 
 client = jwt()
 
