@@ -3,40 +3,28 @@ import luigi
 import io
 import pandas as pd
 import numpy as np
-from src.auth import jwt, DEFAULT_ROOT
-from src.pipeline.io import FileManifest
-from src.pipeline.download import Channel, Raw, check_or_create
-from src.pipeline.utils import file_ids_by_channel
-from src.luigi.box import BoxTarget
+import tempfile
+from emu.auth import jwt, DEFAULT_ROOT
+from emu.pipeline.download import FileManifest
+from emu.pipeline.download import Raw, check_or_create, BehaviorRaw
+from emu.pipeline.utils import file_ids_by_channel
+from emu.luigi.box import BoxTarget
 
 root_dir = DEFAULT_ROOT
 
-def test_check_or_create():
-    test_path = os.path.join(root_dir, 'path','to','dir')
+files = [
+    '562127657379',
+    '562128317953',
+]
 
+def test_check_or_create():
+    temp_dir = tempfile.mkdtemp()
+    check_or_create(temp_dir)
+
+    test_path = os.path.join(root_dir, 'path','to','dir')
     check_or_create(test_path)
 
-def test_download_by_channel():
-    # Make sure we have the FileManifest for patient 1
-    pre_tasks = [FileManifest(patient_id=1)]
-    luigi.build(pre_tasks, local_scheduler=True)
-
-    fm_output = pre_tasks[0].output()
-    with fm_output.open('r') as infile:
-        files = pd.read_csv(infile,dtype={'filename':str,'type':str, 'id':np.int,'path':str})
-
-    ch_files = file_ids_by_channel(files,channel_ids=[6])
-    target_dir = os.path.join(DEFAULT_ROOT,'pt{}'.format(1),'sEEG','raw')
-    fetch_channels = []
-    for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
-        fetch_channels.append(Raw(file_id=fid,save_to=target_dir,file_name=fn))
-
-    print('Queing up Raw download jobs: ')
-    for f in fetch_channels:
-        print(f)
-    print()
-
-    luigi.build(fetch_channels, local_scheduler=True, workers=5)
+    assert(os.path.exists(test_path)==True)
 
 def get_file_manifest():
     # Make sure we have the FileManifest for patient 1
@@ -49,16 +37,18 @@ def get_file_manifest():
 
     return files
 
-def test_download_first_interval():
-    files = get_file_manifest()
+def test_Raw():
+    temp_dir = tempfile.mkdtemp()
+    fn = 'test_file.txt'
+    lj = Raw(file_id=files[0], save_to=temp_dir, file_name=fn)
 
-    # interval_files = file_ids_by_channel(files,channel_ids=[6])
-    # target_dir = os.path.join(DEFAULT_ROOT,'pt{}'.format(1),'sEEG','raw') 
+    assert(lj.file_id==files[0])
+    assert(lj.save_to==temp_dir)
+    assert(lj.file_name==fn)
+    assert(lj.output().path==os.path.join(temp_dir,fn))
 
-    # fetch_channels = []
-    # for fid,fn in zip(ch_files.id.values,ch_files.filename.values):
-    #     fetch_channels.append(Raw(file_id=fid,save_to=target_dir,file_name=fn))
-
+def test_BehaviorRaw():
+    assert(False==True)
 
 if __name__ == "__main__":
     # test_check_or_create()
