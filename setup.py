@@ -62,6 +62,7 @@ setup(
     ],
     install_requires=[
         'boxsdk',
+        'boxsdk[jwt]',
         'luigi',
         'numpy',
         'scipy',

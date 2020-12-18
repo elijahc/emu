@@ -29,4 +29,4 @@ def test_box_target(test_path=pt_manifest):
     path_target = BoxTarget(path=test_path)
     assert(path_target.exists()==True)
 
-    fid_target = BoxTarget(fid=pt_fid)
+    fid_target = BoxTarget(file_id=pt_fid)
