@@ -1,1 +1,5 @@
+recursive-include ci *.ini
+recursive-include ci *.py
+recursive-include test *.md
+recursive-include test *.py
 graft src

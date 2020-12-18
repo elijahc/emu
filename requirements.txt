@@ -1,6 +1,7 @@
 boxsdk
 boxsdk[jwt]
 luigi
+tox
 numpy
 scipy
 neo
