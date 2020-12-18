@@ -1,5 +1,7 @@
 boxsdk
-boxsdk[jwt]
+'boxsdk[jwt]'
+pynwb
+setuptools_scm
 luigi
 numpy
 scipy

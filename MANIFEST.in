@@ -1,0 +1,10 @@
+include *.rst
+include *.md
+include *.sh
+include *.txt
+recursive-include tests *.md
+recursive-include tests *.py
+recursive-include ci *.ini
+recursive-include ci *.py
+graft src
+    include *.py

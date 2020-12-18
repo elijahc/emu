@@ -1,20 +1,23 @@
-import os
-import luigi
-import re
-import pandas as pd
-import numpy as np
-import scipy.io as sio
 import glob
+import os
+import re
 import warnings
+
+import luigi
+import numpy as np
+import pandas as pd
+import scipy.io as sio
+from pynwb.file import Subject
+from pynwb.misc import AnnotationSeries
+
 from .. import neuralynx_io as nlx
+from ..neuralynx_io import load_nev
+from ..neuralynx_io import nev_as_records
 from ..pipeline.process import PDilTask
 from ..pipeline.remote import RemoteCSV
 from ..pipeline.download import Raw, check_or_create, BehaviorRaw, ExperimentManifest,cache_fp,NLXRaw
-from ..utils import Experiment, _parse_ch
-from ..neuralynx_io import nev_as_records, load_nev
 from ..nwb import nlx_to_nwb, ncs_to_nwb,label_blockstart,nev_to_behavior_annotation
-from pynwb.file import Subject
-from pynwb.misc import AnnotationSeries
+from ..utils import Experiment, _parse_ch
 
 PAYOFF_DICT = {
     6: ('defect','copperate'),
