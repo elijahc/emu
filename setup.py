@@ -22,7 +22,7 @@ def read(*names, **kwargs):
 
 setup(
     name='emu',
-    version='0.2',
+    version='0.2.3',
     license='BSD-2-Clause',
     description='Library for processing large recordings from epilepsy monitoring units',
     long_description='%s\n%s' % (
