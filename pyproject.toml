@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "emu"
-version = "0.2.3"
+version = "0.2.4"
 description = ""
 authors = ["Elijah Christensen <ejd.christensen@gmail.com>"]
 license = "BSD-2-Clause"
@@ -16,6 +16,7 @@ tqdm = "^4.54.0"
 pandas = "^1.1.0"
 click = "^7.1.2"
 datajoint = "^0.13.2"
+pynwb = "^1.4.0"
 
 [tool.poetry.dev-dependencies]
 

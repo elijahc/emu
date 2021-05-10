@@ -68,7 +68,6 @@ setup(
         'scipy',
         'neo',
         'tqdm',
-# boxsdk[jwt]
         'pandas',
         'click',
     ],
