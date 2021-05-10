@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "emu"
+version = "0.2.3"
+description = ""
+authors = ["Elijah Christensen <ejd.christensen@gmail.com>"]
+license = "BSD-2-Clause"
+
+[tool.poetry.dependencies]
+python = "^3.7.1"
+boxsdk = {extras = ["jwt"], version = "^2.10.0"}
+luigi = "^3.0.2"
+numpy = "^1.19.0"
+scipy = "^1.5.1"
+neo = "^0.9.0"
+tqdm = "^4.54.0"
+pandas = "^1.1.0"
+click = "^7.1.2"
+datajoint = "^0.13.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
