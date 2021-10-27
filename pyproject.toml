@@ -1,9 +1,14 @@
 [tool.poetry]
 name = "emu"
 version = "0.2.4"
-description = ""
+readme='README.md'
+description="Library for processing large recordings from epilepsy monitoring units"
 authors = ["Elijah Christensen <ejd.christensen@gmail.com>"]
 license = "BSD-2-Clause"
+repository='https://github.com/elijahc/emu'
+packages = [
+    { include = "emu", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.7.1"
@@ -19,6 +24,8 @@ datajoint = "^0.13.2"
 pynwb = "^1.4.0"
 
 [tool.poetry.dev-dependencies]
+jupyter = "^1.0.0"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
