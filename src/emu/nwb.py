@@ -74,7 +74,8 @@ def ncs_to_timeseries(ncs,data_time_len,downsample=4):
         'rate':rate,
         'data':data.astype(np.float16),
         'conversion':1.0/10**6,
-        'comments': ncs['header']['AcqEntName']
+        'comments': ncs['header']['AcqEntName'],
+        'unit':'uV',
     }
 
     return TimeSeries(**ts_kwargs)

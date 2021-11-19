@@ -107,6 +107,22 @@ class Levetiracetam(Drug):
         da = DrugAdministration(cls, doses, times, weight)
         return da
 
+class Lacosamide(Drug):
+    _name_ = 'Lacosamide'
+    # https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/022253s042lbl.pdf
+    F = 1.0
+    CL_dist = gen_norm_dist(0.00594,0.03779999999) # L/hr/kg
+    Tmax_dist = gen_norm_dist(1,4) # (1.4-4.8)
+
+    _Vd = 0.6         # L/kg
+    _CL = CL_dist.mean()
+    _Tmax = Tmax_dist.mean()
+
+    @classmethod
+    def create_administration(cls, doses, times, weight):
+        da = DrugAdministration(cls, doses, times, weight)
+        return da
+
 class Lamotrigine(Drug):
     _name_ = 'Lamotrigine'
     # https://www.accessdata.fda.gov/drugsatfda_docs/label/2006/020241s10s21s25s26s27,020764s3s14s18s19s20lbl.pdf
