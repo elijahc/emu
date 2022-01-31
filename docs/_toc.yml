@@ -22,4 +22,5 @@ parts:
 
 - caption: extras
   chapters:
+  - file: api.rst
   - file: markdown
