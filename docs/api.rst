@@ -9,3 +9,4 @@ API documentation
    emu.nwb
    emu.pipeline
    emu.pdil
+   emu.meds
