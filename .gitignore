@@ -101,6 +101,11 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# Sphinx documentation
+docs/_build
+examples/_build
+jupyter_book/book_template/_build
+
 # Environments
 .env
 .venv
