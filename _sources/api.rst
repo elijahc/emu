@@ -1,5 +1,11 @@
-API Reference
-=============
+API documentation
+=================
 
-.. automodule:: emu.pipeline
-    :members:
+.. autosummary::
+   :toctree: _autosummary
+   :recursive:
+
+   emu.luigi
+   emu.nwb
+   emu.pipeline
+   emu.pdil

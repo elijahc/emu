@@ -1,0 +1,636 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>emu.names &#8212; EMU Documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">EMU Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../intro.html">
+   EMU Documentation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Under the hood
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../box_integration.html">
+   emu Box SDK
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  PDil project
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  AED project
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../aed_load.html">
+   AED Load
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Examples
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../pt6305-day2-preprocessing.html">
+   Pipeline preprocessing example
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  extras
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../api.html">
+   API documentation
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../_autosummary/emu.luigi.html">
+     emu.luigi
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+    <label for="toctree-checkbox-2">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/emu.luigi.box.html">
+       emu.luigi.box
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/emu.nwb.html">
+     emu.nwb
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../_autosummary/emu.pipeline.html">
+     emu.pipeline
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/emu.pipeline.download.html">
+       emu.pipeline.download
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/emu.pipeline.process.html">
+       emu.pipeline.process
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/emu.pipeline.remote.html">
+       emu.pipeline.remote
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/emu.pipeline.timestamps.html">
+       emu.pipeline.timestamps
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/emu.pipeline.utils.html">
+       emu.pipeline.utils
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../_autosummary/emu.pdil.html">
+     emu.pdil
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/emu.pdil.raw.html">
+       emu.pdil.raw
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../markdown.html">
+   Markdown Files
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../../_sources/autoapi/emu/names/index.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/elijahc/emu"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/elijahc/emu/issues/new?title=Issue%20on%20page%20%2Fautoapi/emu/names/index.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#package-contents">
+   Package Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.names.FEDERATION_STARSHIPS">
+       FEDERATION_STARSHIPS
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.names.federation_starships">
+       federation_starships
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>emu.names</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#package-contents">
+   Package Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.names.FEDERATION_STARSHIPS">
+       FEDERATION_STARSHIPS
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.names.federation_starships">
+       federation_starships
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="module-emu.names">
+<span id="emu-names"></span><h1><a class="reference internal" href="#module-emu.names" title="emu.names"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.names</span></code></a><a class="headerlink" href="#module-emu.names" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.names.federation_starships" title="emu.names.federation_starships"><code class="xref py py-obj docutils literal notranslate"><span class="pre">federation_starships</span></code></a>(short=True)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.names.FEDERATION_STARSHIPS" title="emu.names.FEDERATION_STARSHIPS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FEDERATION_STARSHIPS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="emu.names.FEDERATION_STARSHIPS">
+<span class="sig-prename descclassname"><span class="pre">emu.names.</span></span><span class="sig-name descname"><span class="pre">FEDERATION_STARSHIPS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Multiline-String</span></em><a class="headerlink" href="#emu.names.FEDERATION_STARSHIPS" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><details><summary>Show Value</summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span>name,full_name
+<span class="linenos">  2</span>Prometheus,USS Prometheus
+<span class="linenos">  3</span>Botany Bay,USS Botany Bay
+<span class="linenos">  4</span>Stargazer,USS Stargazer
+<span class="linenos">  5</span>Adelphi,USS Adelphi
+<span class="linenos">  6</span>Agamemnon,USS Agamemnon
+<span class="linenos">  7</span>Ahwahnee,USS Ahwahnee
+<span class="linenos">  8</span>Akagi,USS Akagi
+<span class="linenos">  9</span>Antares,USS Antares
+<span class="linenos"> 10</span>Arcos,USS Arcos
+<span class="linenos"> 11</span>Ariel,USS Ariel
+<span class="linenos"> 12</span>Aries,USS Aries
+<span class="linenos"> 13</span>Artemis,USS Artemis
+<span class="linenos"> 14</span>Augyn,USS Augyn
+<span class="linenos"> 15</span>Aurora,USS Aurora
+<span class="linenos"> 16</span>Beagle,USS Beagle
+<span class="linenos"> 17</span>Bellerophon,USS Bellerophon
+<span class="linenos"> 18</span>Billings,USS Billings
+<span class="linenos"> 19</span>Bonchune,USS Bonchune
+<span class="linenos"> 20</span>Bounty,USS Bounty
+<span class="linenos"> 21</span>Bozeman,USS Bozeman
+<span class="linenos"> 22</span>Brattain,USS Brattain
+<span class="linenos"> 23</span>Buran,USS Buran
+<span class="linenos"> 24</span>Carolina,USS Carolina
+<span class="linenos"> 25</span>Centaur,USS Centaur
+<span class="linenos"> 26</span>Clavin,USS Clavin
+<span class="linenos"> 27</span>Concord,USS Concord
+<span class="linenos"> 28</span>Constellation,USS Constellation
+<span class="linenos"> 29</span>Constitution,USS Constitution
+<span class="linenos"> 30</span>Copernicus,USS Copernicus
+<span class="linenos"> 31</span>Destiny,USS Destiny
+<span class="linenos"> 32</span>Defiant,USS Defiant
+<span class="linenos"> 33</span>Drake,USS Drake
+<span class="linenos"> 34</span>Enterprise,USS Enterprise
+<span class="linenos"> 35</span>Eagle,USS Eagle
+<span class="linenos"> 36</span>Elkins,USS Elkins
+<span class="linenos"> 37</span>Endeavour,USS Endeavour
+<span class="linenos"> 38</span>Equinox,USS Equinox
+<span class="linenos"> 39</span>Excalibur,USS Excalibur
+<span class="linenos"> 40</span>Excelsior,USS Excelsior
+<span class="linenos"> 41</span>Fearless,USS Fearless
+<span class="linenos"> 42</span>Firebrand,USS Firebrand
+<span class="linenos"> 43</span>Gallico,USS Gallico
+<span class="linenos"> 44</span>Gander,USS Gander
+<span class="linenos"> 45</span>Ganges,USS Ganges
+<span class="linenos"> 46</span>Greyhound,USS Greyhound
+<span class="linenos"> 47</span>Grissom,USS Grissom
+<span class="linenos"> 48</span>Hathaway,USS Hathaway
+<span class="linenos"> 49</span>Hatteras,USS Hatteras
+<span class="linenos"> 50</span>Helin,USS Helin
+<span class="linenos"> 51</span>Hera,USS Hera
+<span class="linenos"> 52</span>Hermes,USS Hermes
+<span class="linenos"> 53</span>Hispaniola,USS Hispaniola
+<span class="linenos"> 54</span>Honshu,USS Honshu
+<span class="linenos"> 55</span>Hood,USS Hood
+<span class="linenos"> 56</span>Horatio,USS Horatio
+<span class="linenos"> 57</span>Horizon,USS Horizon
+<span class="linenos"> 58</span>Hornet,USS Hornet
+<span class="linenos"> 59</span>Huron,USS Huron
+<span class="linenos"> 60</span>Intrepid,USS Intrepid
+<span class="linenos"> 61</span>Kearsarge,USS Kearsarge
+<span class="linenos"> 62</span>Kelvin,USS Kelvin
+<span class="linenos"> 63</span>Kongo,USS Kongo
+<span class="linenos"> 64</span>Korolev,USS Korolev
+<span class="linenos"> 65</span>Kyushu,USS Kyushu
+<span class="linenos"> 66</span>Lalo,USS Lalo
+<span class="linenos"> 67</span>Lantree,USS Lantree
+<span class="linenos"> 68</span>Lexington,USS Lexington
+<span class="linenos"> 69</span>Liberator,USS Liberator
+<span class="linenos"> 70</span>Livingston,USS Livingston
+<span class="linenos"> 71</span>Magellan,USS Magellan
+<span class="linenos"> 72</span>Majestic,USS Majestic
+<span class="linenos"> 73</span>Malinche,USS Malinche
+<span class="linenos"> 74</span>Mayflower,USS Mayflower
+<span class="linenos"> 75</span>Mekong,USS Mekong
+<span class="linenos"> 76</span>Merrimac,USS Merrimac
+<span class="linenos"> 77</span>Muleskinner,USS Muleskinner
+<span class="linenos"> 78</span>Nash,USS Nash
+<span class="linenos"> 79</span>Nautilus,USS Nautilus
+<span class="linenos"> 80</span>Nebula,USS Nebula
+<span class="linenos"> 81</span>Noble,USS Noble
+<span class="linenos"> 82</span>Norkova,USS Norkova
+<span class="linenos"> 83</span>Northridge,USS Northridge
+<span class="linenos"> 84</span>Nova,USS Nova
+<span class="linenos"> 85</span>Oberth,USS Oberth
+<span class="linenos"> 86</span>Odin,USS Odin
+<span class="linenos"> 87</span>Odyssey,USS Odyssey
+<span class="linenos"> 88</span>Orinoco,USS Orinoco
+<span class="linenos"> 89</span>Pasteur,USS Pasteur
+<span class="linenos"> 90</span>Potemkin,USS Potemkin
+<span class="linenos"> 91</span>Proxima,USS Proxima
+<span class="linenos"> 92</span>Pueblo,USS Pueblo
+<span class="linenos"> 93</span>Raven,USS Raven
+<span class="linenos"> 94</span>Reliant,USS Reliant
+<span class="linenos"> 95</span>Renegade,USS Renegade
+<span class="linenos"> 96</span>Republic,USS Republic
+<span class="linenos"> 97</span>Repulse,USS Repulse
+<span class="linenos"> 98</span>Revere,USS Revere
+<span class="linenos"> 99</span>Rubicon,USS Rubicon
+<span class="linenos">100</span>Rutledge,USS Rutledge
+<span class="linenos">101</span>Saratoga,USS Saratoga
+<span class="linenos">102</span>Scovil,USS Scovil
+<span class="linenos">103</span>Seaquest,USS Seaquest
+<span class="linenos">104</span>Seaview,USS Seaview
+<span class="linenos">105</span>Sentinel,USS Sentinel
+<span class="linenos">106</span>Shepard,USS Shepard
+<span class="linenos">107</span>Shirkahr,USS Shirkahr
+<span class="linenos">108</span>Silversides,USS Silversides
+<span class="linenos">109</span>Sitak,USS Sitak
+<span class="linenos">110</span>Strata,USS Strata
+<span class="linenos">111</span>Syracuse,USS Syracuse
+<span class="linenos">112</span>Thunderchild,USS Thunderchild
+<span class="linenos">113</span>Titan,USS Titan
+<span class="linenos">114</span>Tombaugh,USS Tombaugh
+<span class="linenos">115</span>Trieste,USS Trieste
+<span class="linenos">116</span>Valiant,USS Valiant
+<span class="linenos">117</span>Venture,USS Venture
+<span class="linenos">118</span>Victory,USS Victory
+<span class="linenos">119</span>Volga,USS Volga
+<span class="linenos">120</span>Voyager,USS Voyager
+<span class="linenos">121</span>Yamato,USS Yamato
+<span class="linenos">122</span>Yorktown,USS Yorktown
+</pre></div>
+</div>
+</details></div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.names.federation_starships">
+<span class="sig-prename descclassname"><span class="pre">emu.names.</span></span><span class="sig-name descname"><span class="pre">federation_starships</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">short</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.names.federation_starships" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./autoapi/emu/names"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Elijah C.<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

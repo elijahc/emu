@@ -1,0 +1,1242 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>emu.luigi.box &#8212; EMU Documentation</title>
+    
+  <link href="../../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/togglebutton.js"></script>
+    <script src="../../../../_static/clipboard.min.js"></script>
+    <script src="../../../../_static/copybutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">EMU Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../../intro.html">
+   EMU Documentation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Under the hood
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../../box_integration.html">
+   emu Box SDK
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  PDil project
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../../notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  AED project
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../../aed_load.html">
+   AED Load
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Examples
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../../pt6305-day2-preprocessing.html">
+   Pipeline preprocessing example
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  extras
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../../api.html">
+   API documentation
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../../_autosummary/emu.luigi.html">
+     emu.luigi
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+    <label for="toctree-checkbox-2">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../../_autosummary/emu.luigi.box.html">
+       emu.luigi.box
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../../_autosummary/emu.nwb.html">
+     emu.nwb
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../../_autosummary/emu.pipeline.html">
+     emu.pipeline
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../../_autosummary/emu.pipeline.download.html">
+       emu.pipeline.download
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../../_autosummary/emu.pipeline.process.html">
+       emu.pipeline.process
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../../_autosummary/emu.pipeline.remote.html">
+       emu.pipeline.remote
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../../_autosummary/emu.pipeline.timestamps.html">
+       emu.pipeline.timestamps
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../../_autosummary/emu.pipeline.utils.html">
+       emu.pipeline.utils
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../../_autosummary/emu.pdil.html">
+     emu.pdil
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../../_autosummary/emu.pdil.raw.html">
+       emu.pdil.raw
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../../markdown.html">
+   Markdown Files
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../../../_sources/autoapi/emu/luigi/box/index.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/elijahc/emu"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/elijahc/emu/issues/new?title=Issue%20on%20page%20%2Fautoapi/emu/luigi/box/index.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-contents">
+   Module Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#classes">
+     Classes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.DEFAULT_CONFIG_FP">
+       DEFAULT_CONFIG_FP
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.logger">
+       logger
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.accept_trailing_slash_in_existing_dirpaths">
+       accept_trailing_slash_in_existing_dirpaths
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.accept_trailing_slash">
+       accept_trailing_slash
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient">
+       BoxClient
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.file">
+         file
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.folder">
+         folder
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.file_id_to_path">
+         file_id_to_path
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.path_to_fid">
+         path_to_fid
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.exists">
+         exists
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.isdir">
+         isdir
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.mkdir">
+         mkdir
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.remove">
+         remove
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.download_as_bytes">
+         download_as_bytes
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.upload">
+         upload
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient._exists_and_is_dir">
+         _exists_and_is_dir
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile">
+       ReadableBoxFile
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.read">
+         read
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.download_to_tmp">
+         download_to_tmp
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.__enter__">
+         __enter__
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.__exit__">
+         __exit__
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.__del__">
+         __del__
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.close">
+         close
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.readable">
+         readable
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.writable">
+         writable
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.seekable">
+         seekable
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.AtomicWritableBoxFile">
+       AtomicWritableBoxFile
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.AtomicWritableBoxFile.move_to_final_destination">
+         move_to_final_destination
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.obj_to_path">
+       obj_to_path
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.path_to_root">
+       path_to_root
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.file_id_to_path">
+       file_id_to_path
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.folder_id_to_path">
+       folder_id_to_path
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.path_to_obj">
+       path_to_obj
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.path_to_fid">
+       path_to_fid
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget">
+       BoxTarget
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.fs">
+         fs
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.temporary_path">
+         temporary_path
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.temporary_file">
+         temporary_file
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.open">
+         open
+        </a>
+       </li>
+      </ul>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>emu.luigi.box</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-contents">
+   Module Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#classes">
+     Classes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.DEFAULT_CONFIG_FP">
+       DEFAULT_CONFIG_FP
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.logger">
+       logger
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.accept_trailing_slash_in_existing_dirpaths">
+       accept_trailing_slash_in_existing_dirpaths
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.accept_trailing_slash">
+       accept_trailing_slash
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient">
+       BoxClient
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.file">
+         file
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.folder">
+         folder
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.file_id_to_path">
+         file_id_to_path
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.path_to_fid">
+         path_to_fid
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.exists">
+         exists
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.isdir">
+         isdir
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.mkdir">
+         mkdir
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.remove">
+         remove
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.download_as_bytes">
+         download_as_bytes
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient.upload">
+         upload
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxClient._exists_and_is_dir">
+         _exists_and_is_dir
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile">
+       ReadableBoxFile
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.read">
+         read
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.download_to_tmp">
+         download_to_tmp
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.__enter__">
+         __enter__
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.__exit__">
+         __exit__
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.__del__">
+         __del__
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.close">
+         close
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.readable">
+         readable
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.writable">
+         writable
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.ReadableBoxFile.seekable">
+         seekable
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.AtomicWritableBoxFile">
+       AtomicWritableBoxFile
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.AtomicWritableBoxFile.move_to_final_destination">
+         move_to_final_destination
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.obj_to_path">
+       obj_to_path
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.path_to_root">
+       path_to_root
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.file_id_to_path">
+       file_id_to_path
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.folder_id_to_path">
+       folder_id_to_path
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.path_to_obj">
+       path_to_obj
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.path_to_fid">
+       path_to_fid
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget">
+       BoxTarget
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.fs">
+         fs
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.temporary_path">
+         temporary_path
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.temporary_file">
+         temporary_file
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#emu.luigi.box.BoxTarget.open">
+         open
+        </a>
+       </li>
+      </ul>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="module-emu.luigi.box">
+<span id="emu-luigi-box"></span><h1><a class="reference internal" href="#module-emu.luigi.box" title="emu.luigi.box"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.luigi.box</span></code></a><a class="headerlink" href="#module-emu.luigi.box" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.luigi.box.BoxClient" title="emu.luigi.box.BoxClient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoxClient</span></code></a></p></td>
+<td><p>Box client for authentication, designed to be used by the <a class="reference internal" href="#emu.luigi.box.BoxTarget" title="emu.luigi.box.BoxTarget"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoxTarget</span></code></a> class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.luigi.box.ReadableBoxFile" title="emu.luigi.box.ReadableBoxFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReadableBoxFile</span></code></a></p></td>
+<td><p>Represents a file inside the Box cloud which will be read</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.luigi.box.AtomicWritableBoxFile" title="emu.luigi.box.AtomicWritableBoxFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicWritableBoxFile</span></code></a></p></td>
+<td><p>Represents a file that will be created inside the Box cloud</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.luigi.box.BoxTarget" title="emu.luigi.box.BoxTarget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoxTarget</span></code></a></p></td>
+<td><p>Base class for FileSystem Targets like <code class="xref py py-class docutils literal notranslate"><span class="pre">LocalTarget</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">HdfsTarget</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.luigi.box.accept_trailing_slash_in_existing_dirpaths" title="emu.luigi.box.accept_trailing_slash_in_existing_dirpaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accept_trailing_slash_in_existing_dirpaths</span></code></a>(func)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.luigi.box.accept_trailing_slash" title="emu.luigi.box.accept_trailing_slash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accept_trailing_slash</span></code></a>(func)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.luigi.box.obj_to_path" title="emu.luigi.box.obj_to_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obj_to_path</span></code></a>(obj)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.luigi.box.path_to_root" title="emu.luigi.box.path_to_root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_to_root</span></code></a>(obj)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.luigi.box.file_id_to_path" title="emu.luigi.box.file_id_to_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file_id_to_path</span></code></a>(file_id, client=None)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.luigi.box.folder_id_to_path" title="emu.luigi.box.folder_id_to_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">folder_id_to_path</span></code></a>(folder_id, client=None)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.luigi.box.path_to_obj" title="emu.luigi.box.path_to_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_to_obj</span></code></a>(client, path)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.luigi.box.path_to_fid" title="emu.luigi.box.path_to_fid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path_to_fid</span></code></a>(path, client)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.luigi.box.DEFAULT_CONFIG_FP" title="emu.luigi.box.DEFAULT_CONFIG_FP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FP</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.luigi.box.logger" title="emu.luigi.box.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="emu.luigi.box.DEFAULT_CONFIG_FP">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_CONFIG_FP</span></span><a class="headerlink" href="#emu.luigi.box.DEFAULT_CONFIG_FP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="emu.luigi.box.logger">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#emu.luigi.box.logger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.accept_trailing_slash_in_existing_dirpaths">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">accept_trailing_slash_in_existing_dirpaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.accept_trailing_slash_in_existing_dirpaths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.accept_trailing_slash">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">accept_trailing_slash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.accept_trailing_slash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">BoxClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_CONFIG_FP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_agent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Luigi'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">luigi.target.FileSystem</span></code></p>
+<p>Box client for authentication, designed to be used by the <a class="reference internal" href="#emu.luigi.box.BoxTarget" title="emu.luigi.box.BoxTarget"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoxTarget</span></code></a> class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.file">
+<span class="sig-name descname"><span class="pre">file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.folder">
+<span class="sig-name descname"><span class="pre">folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.file_id_to_path">
+<span class="sig-name descname"><span class="pre">file_id_to_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.file_id_to_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.path_to_fid">
+<span class="sig-name descname"><span class="pre">path_to_fid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.path_to_fid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.exists">
+<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if file or directory at <code class="docutils literal notranslate"><span class="pre">path</span></code> exist, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – a path within the FileSystem to check for existence.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.isdir">
+<span class="sig-name descname"><span class="pre">isdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.isdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the location at <code class="docutils literal notranslate"><span class="pre">path</span></code> is a directory. If not, return <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – a path within the FileSystem to check as a directory.</p>
+</dd>
+</dl>
+<p><em>Note</em>: This method is optional, not all FileSystem subclasses implements it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_if_exists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create directory at location <code class="docutils literal notranslate"><span class="pre">path</span></code></p>
+<p>Creates the directory at <code class="docutils literal notranslate"><span class="pre">path</span></code> and implicitly create parent
+directories if they do not already exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – a path within the FileSystem to create as a directory.</p></li>
+<li><p><strong>parents</strong> (<em>bool</em>) – Create parent directories when necessary. When
+parents=False and the parent directory doesn’t
+exist, raise luigi.target.MissingParentDirectory</p></li>
+<li><p><strong>raise_if_exists</strong> (<em>bool</em>) – raise luigi.target.FileAlreadyExists if
+the folder already exists.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_trash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove file or directory at location <code class="docutils literal notranslate"><span class="pre">path</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – a path within the FileSystem to remove.</p></li>
+<li><p><strong>recursive</strong> (<em>bool</em>) – if the path is a directory, recursively remove the directory and all
+of its descendants. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.download_as_bytes">
+<span class="sig-name descname"><span class="pre">download_as_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.download_as_bytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient.upload" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxClient._exists_and_is_dir">
+<span class="sig-name descname"><span class="pre">_exists_and_is_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxClient._exists_and_is_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Auxiliary method, used by the ‘accept_trailing_slash’ and ‘accept_trailing_slash_in_existing_dirpaths’ decorators
+:param path: a Dropbox path that does NOT ends with a ‘/’ (even if it is a directory)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">ReadableBoxFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a file inside the Box cloud which will be read</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.download_to_tmp">
+<span class="sig-name descname"><span class="pre">download_to_tmp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.download_to_tmp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.__enter__">
+<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.__enter__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.__exit__">
+<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.__exit__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.__del__">
+<span class="sig-name descname"><span class="pre">__del__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.__del__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.readable">
+<span class="sig-name descname"><span class="pre">readable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.readable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.writable">
+<span class="sig-name descname"><span class="pre">writable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.writable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.ReadableBoxFile.seekable">
+<span class="sig-name descname"><span class="pre">seekable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.ReadableBoxFile.seekable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="emu.luigi.box.AtomicWritableBoxFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">AtomicWritableBoxFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.AtomicWritableBoxFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">luigi.target.AtomicLocalFile</span></code></p>
+<p>Represents a file that will be created inside the Box cloud</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Destination path inside Box cloud</p></li>
+<li><p><strong>client</strong> (<a class="reference internal" href="#emu.luigi.box.BoxClient" title="emu.luigi.box.BoxClient"><em>BoxClient</em></a>) – a BoxClient object (initialized with a valid token, for the desired account)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.AtomicWritableBoxFile.move_to_final_destination">
+<span class="sig-name descname"><span class="pre">move_to_final_destination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.AtomicWritableBoxFile.move_to_final_destination" title="Permalink to this definition">¶</a></dt>
+<dd><p>After editing the file locally, this function uploads it to the Dropbox cloud</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.obj_to_path">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">obj_to_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.obj_to_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.path_to_root">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">path_to_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.path_to_root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.file_id_to_path">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">file_id_to_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.file_id_to_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.folder_id_to_path">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">folder_id_to_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.folder_id_to_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.path_to_obj">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">path_to_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.path_to_obj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="emu.luigi.box.path_to_fid">
+<span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">path_to_fid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.path_to_fid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxTarget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">emu.luigi.box.</span></span><span class="sig-name descname"><span class="pre">BoxTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_CONFIG_FP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_agent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Luigi'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxTarget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">luigi.target.FileSystemTarget</span></code></p>
+<p>Base class for FileSystem Targets like <code class="xref py py-class docutils literal notranslate"><span class="pre">LocalTarget</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">HdfsTarget</span></code>.</p>
+<p>A FileSystemTarget has an associated <code class="xref py py-class docutils literal notranslate"><span class="pre">FileSystem</span></code> to which certain operations can be
+delegated. By default, <code class="xref py py-meth docutils literal notranslate"><span class="pre">exists()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">remove()</span></code> are delegated to the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FileSystem</span></code>, which is determined by the <a class="reference internal" href="#emu.luigi.box.BoxTarget.fs" title="emu.luigi.box.BoxTarget.fs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fs</span></code></a> property.</p>
+<p>Methods of FileSystemTarget raise <code class="xref py py-class docutils literal notranslate"><span class="pre">FileSystemException</span></code> if there is a problem
+completing the operation.</p>
+<dl>
+<dt>Usage:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">FileSystemTarget</span><span class="p">(</span><span class="s1">&#39;~/some_file.txt&#39;</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">FileSystemTarget</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;some_file.txt&#39;</span><span class="p">)</span>
+<span class="n">target</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>  <span class="c1"># False</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxTarget.fs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxTarget.fs" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">FileSystem</span></code> associated with this FileSystemTarget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxTarget.temporary_path">
+<span class="sig-name descname"><span class="pre">temporary_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxTarget.temporary_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>A context manager that enables a reasonably short, general and
+magic-less way to solve the <span class="xref std std-ref">AtomicWrites</span>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>On <em>entering</em>, it will create the parent directories so the
+temporary_path is writeable right away.
+This step uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">FileSystem.mkdir()</span></code>.</p></li>
+<li><p>On <em>exiting</em>, it will move the temporary file if there was no exception thrown.
+This step uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">FileSystem.rename_dont_move()</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>The file system operations will be carried out by calling them on <a class="reference internal" href="#emu.luigi.box.BoxTarget.fs" title="emu.luigi.box.BoxTarget.fs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fs</span></code></a>.</p>
+<p>The typical use case looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">luigi</span><span class="o">.</span><span class="n">Task</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">MyFileSystemTarget</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">()</span><span class="o">.</span><span class="n">temporary_path</span><span class="p">()</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_output_path</span><span class="p">:</span>
+            <span class="n">run_some_external_command</span><span class="p">(</span><span class="n">output_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_output_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxTarget.temporary_file">
+<span class="sig-name descname"><span class="pre">temporary_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxTarget.temporary_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="emu.luigi.box.BoxTarget.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.luigi.box.BoxTarget.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the FileSystem target.</p>
+<p>This method returns a file-like object which can either be read from or written to depending
+on the specified mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mode</strong> (<em>str</em>) – the mode <cite>r</cite> opens the FileSystemTarget in read-only mode, whereas <cite>w</cite> will
+open the FileSystemTarget in write mode. Subclasses can implement
+additional options. Using <cite>b</cite> is not supported; initialize with
+<cite>format=Nop</cite> instead.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./autoapi/emu/luigi/box"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Elijah C.<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
