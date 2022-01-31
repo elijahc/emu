@@ -1,0 +1,1156 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pipeline preprocessing example &#8212; EMU Documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Markdown Files" href="markdown.html" />
+    <link rel="prev" title="AED Load" href="aed_load.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">EMU Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro.html">
+   EMU Documentation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Under the hood
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="box_integration.html">
+   emu Box SDK
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  PDil project
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  AED project
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="aed_load.html">
+   AED Load
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Examples
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Pipeline preprocessing example
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  extras
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="markdown.html">
+   Markdown Files
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/pt6305-day2-preprocessing.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/elijahc/emu"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/elijahc/emu/issues/new?title=Issue%20on%20page%20%2Fpt6305-day2-preprocessing.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/elijahc/emu/master?urlpath=tree/docs/pt6305-day2-preprocessing.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Pipeline preprocessing example</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="pipeline-preprocessing-example">
+<h1>Pipeline preprocessing example<a class="headerlink" href="#pipeline-preprocessing-example" title="Permalink to this headline">¶</a></h1>
+<p>End-to-end example convertinng pt6305 raw data to nwb</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">luigi</span>
+<span class="kn">import</span> <span class="nn">emu.neuralynx_io</span> <span class="k">as</span> <span class="nn">nlx</span>
+<span class="kn">from</span> <span class="nn">emu.pdil.raw</span> <span class="kn">import</span> <span class="n">Electrophysiology</span><span class="p">,</span><span class="n">Participant</span><span class="p">,</span><span class="n">points_to_choice</span>
+<span class="kn">from</span> <span class="nn">emu.neuralynx_io</span> <span class="kn">import</span> <span class="n">nev_as_records</span>
+<span class="kn">from</span> <span class="nn">emu.nwb</span> <span class="kn">import</span> <span class="n">nlx_to_nwb</span>
+<span class="kn">from</span> <span class="nn">emu.pipeline.remote</span> <span class="kn">import</span> <span class="n">RemoteCSV</span>
+<span class="kn">from</span> <span class="nn">emu.pipeline.download</span> <span class="kn">import</span> <span class="n">ExperimentManifest</span>
+<span class="kn">from</span> <span class="nn">pynwb</span> <span class="kn">import</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">NWBFile</span><span class="p">,</span><span class="n">NWBHDF5IO</span>
+<span class="kn">from</span> <span class="nn">pynwb.ecephys</span> <span class="kn">import</span> <span class="n">ElectricalSeries</span>
+<span class="kn">from</span> <span class="nn">pynwb.misc</span> <span class="kn">import</span> <span class="n">AnnotationSeries</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm_notebook</span> <span class="k">as</span> <span class="n">tqdm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_files</span> <span class="o">=</span> <span class="n">ExperimentManifest</span><span class="p">(</span><span class="n">study</span><span class="o">=</span><span class="s1">&#39;pdil&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="mi">0</span><span class="n">j</span><span class="o">/</span><span class="n">jtnrvl8d6hd01616xysk3g1h0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_80213</span><span class="o">/</span><span class="mf">3165165981.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">all_files</span> <span class="o">=</span> <span class="n">ExperimentManifest</span><span class="p">(</span><span class="n">study</span><span class="o">=</span><span class="s1">&#39;pdil&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="ne">AttributeError</span>: &#39;ExperimentManifest&#39; object has no attribute &#39;load&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">seeg_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;/home/elijahc/.emu/pdil/pt_6305/SEEG/raw&#39;</span><span class="p">)</span>
+
+<span class="n">nev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.Events.nev&#39;</span><span class="p">)</span>
+<span class="n">ncs_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seeg_root</span><span class="p">,</span><span class="s1">&#39;PO_Day_02.*.ncs&#39;</span><span class="p">)))</span>
+
+<span class="c1"># ncs = nlx.load_ncs()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;nev path: &#39;</span><span class="p">,</span><span class="n">nev_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ncs_paths:&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ncs_paths</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nev path:  /home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.Events.nev
+ncs_paths:
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC100_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC101_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC102_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC103_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC104_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC105_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC106_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC107_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC108_0007.ncs
+/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC109_0007.ncs
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">Participant</span><span class="p">(</span><span class="n">patient_id</span><span class="o">=</span><span class="mi">6305</span><span class="p">,</span><span class="n">raw_files</span><span class="o">=</span><span class="n">all_files</span><span class="p">,</span><span class="n">seeg_raw_path</span><span class="o">=</span><span class="n">seeg_root</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <a class="reference external" href="https://github.com/elijahc/emu/blob/3b240fbe8bfd4363ceadcf152dc6811c63493a3a/emu/pdil/raw.py#L221">Participant</a> class provides helper functions for managing all the raw data collected from a single patient</p>
+<p><code class="docutils literal notranslate"><span class="pre">Participant.cache_behavior()</span></code> returns a list of BehaviorRaw luigi tasks to fetch every raw behavior data.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BehaviorRaw.output().path</span></code> stores the path to where its file <em>should</em> exist locally.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BehaviorRaw.output().exists()</span></code> with retrn True if the file specified by <code class="docutils literal notranslate"><span class="pre">path</span></code> exists.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cache_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">behavior_files</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">BehaviorRaw</span><span class="p">(</span>
+            <span class="n">patient_id</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">patient_id</span><span class="p">,</span>
+            <span class="n">file_id</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">file_name</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">save_to</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">behavior_raw_path</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">yield</span> <span class="n">t</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Participant.load_game_data()</span></code> and <code class="docutils literal notranslate"><span class="pre">Participant.load_pdil_events()</span></code> will load mat files containing outcomes from the <a class="reference external" href="https://github.com/elijahc/emu/tree/master/PDil">pdil game</a> implemented in psych toolbox as well as tic-toc timing of each screen and keypress which we’ll sync to ephys data.</p></li>
+</ul>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Participant.load_pdil_events()</span></code> and <code class="docutils literal notranslate"><span class="pre">Participant.load_game_data()</span></code> are generators that both use <code class="docutils literal notranslate"><span class="pre">cache_behavior()</span></code> to ensure all behavior files have been downloaded before trying to extract data from them.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">load_pdil_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_behavior</span><span class="p">())</span>
+    <span class="n">missing_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">output</span><span class="p">()</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> missing tasks&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">missing_tasks</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_tasks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">luigi</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">missing_tasks</span><span class="p">,</span><span class="n">local_scheduler</span><span class="o">=</span><span class="n">local_scheduler</span><span class="p">)</span>
+
+   <span class="o">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Both behavior load functions are python generators which will <code class="docutils literal notranslate"><span class="pre">yield</span></code> a pandas DataFrame for each block</p></li>
+<li><p>If you wrap the function call in pd.concat(), to get a combined DataFrame across all blocks</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">behavior_files</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>filename</th>
+      <th>id</th>
+      <th>type</th>
+      <th>folder</th>
+      <th>patient_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>749</th>
+      <td>749</td>
+      <td>pt01_blockNum_1_computerTT_coop_taskoutput.mat</td>
+      <td>628721484958</td>
+      <td>Behavior</td>
+      <td>pt_01_postOpDay2_PDil</td>
+      <td>6305</td>
+    </tr>
+    <tr>
+      <th>750</th>
+      <td>750</td>
+      <td>pt01_blockNum_2_humanTT_coop_taskoutput.mat</td>
+      <td>628728186668</td>
+      <td>Behavior</td>
+      <td>pt_01_postOpDay2_PDil</td>
+      <td>6305</td>
+    </tr>
+    <tr>
+      <th>751</th>
+      <td>751</td>
+      <td>pt01_PRACTICE_blockNum_0 _taskoutput.mat</td>
+      <td>628698648907</td>
+      <td>Behavior</td>
+      <td>pt_01_postOpDay2_PDil</td>
+      <td>6305</td>
+    </tr>
+    <tr>
+      <th>754</th>
+      <td>754</td>
+      <td>pt01_blockNum_3_computerTT_defect_taskoutput.mat</td>
+      <td>629615908637</td>
+      <td>Behavior</td>
+      <td>pt_01_postOpDay4_PDil</td>
+      <td>6305</td>
+    </tr>
+    <tr>
+      <th>755</th>
+      <td>755</td>
+      <td>pt01_blockNum_4_humanTT_defect_taskoutput.mat</td>
+      <td>629620274728</td>
+      <td>Behavior</td>
+      <td>pt_01_postOpDay4_PDil</td>
+      <td>6305</td>
+    </tr>
+    <tr>
+      <th>756</th>
+      <td>756</td>
+      <td>pt01_blockNum_5_humanTT_coop_taskoutput.mat</td>
+      <td>629611713944</td>
+      <td>Behavior</td>
+      <td>pt_01_postOpDay4_PDil</td>
+      <td>6305</td>
+    </tr>
+    <tr>
+      <th>757</th>
+      <td>757</td>
+      <td>pt01_blockNum_6_computerTT_coop_taskoutput.mat</td>
+      <td>629611688205</td>
+      <td>Behavior</td>
+      <td>pt_01_postOpDay4_PDil</td>
+      <td>6305</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">load_pdil_events</span><span class="p">(</span><span class="n">local_scheduler</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 missing tasks
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>event</th>
+      <th>event_delta</th>
+      <th>screen</th>
+      <th>trial</th>
+      <th>block</th>
+      <th>ttl_delta</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>trial_start</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>render_screen1</td>
+      <td>1.568142</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1.568142</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>keypress1</td>
+      <td>1.951420</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3.519562</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>render_screen2</td>
+      <td>1.564397</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>5.083959</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>keypress2</td>
+      <td>2.274455</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>7.358413</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Participant.cache_nev()</span></code> and <code class="docutils literal notranslate"><span class="pre">Participant.cache_ncs()</span></code> are the sEEG analogues of <code class="docutils literal notranslate"><span class="pre">cache_behavior()</span></code> and basically do the same thing for the neuralynx channel files (.ncs) which store lfp traces and event files (.nev) which store timestamped ttls sent by the pdil task.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">load_pdil_events</span><span class="p">(</span><span class="n">local_scheduler</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 missing tasks
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>event</th>
+      <th>event_delta</th>
+      <th>screen</th>
+      <th>trial</th>
+      <th>block</th>
+      <th>ttl_delta</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>trial_start</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>render_screen1</td>
+      <td>1.568142</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1.568142</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>keypress1</td>
+      <td>1.951420</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3.519562</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>render_screen2</td>
+      <td>1.564397</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>5.083959</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>keypress2</td>
+      <td>2.274455</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>7.358413</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>146</th>
+      <td>keypress3</td>
+      <td>1.901004</td>
+      <td>3</td>
+      <td>15</td>
+      <td>6</td>
+      <td>222.419018</td>
+    </tr>
+    <tr>
+      <th>147</th>
+      <td>render_screen4</td>
+      <td>1.548549</td>
+      <td>4</td>
+      <td>15</td>
+      <td>6</td>
+      <td>223.967568</td>
+    </tr>
+    <tr>
+      <th>148</th>
+      <td>keypress4</td>
+      <td>1.110800</td>
+      <td>4</td>
+      <td>15</td>
+      <td>6</td>
+      <td>225.078367</td>
+    </tr>
+    <tr>
+      <th>149</th>
+      <td>render_screen5</td>
+      <td>1.588783</td>
+      <td>5</td>
+      <td>15</td>
+      <td>6</td>
+      <td>226.667150</td>
+    </tr>
+    <tr>
+      <th>150</th>
+      <td>keypress5</td>
+      <td>0.914512</td>
+      <td>5</td>
+      <td>15</td>
+      <td>6</td>
+      <td>227.581662</td>
+    </tr>
+  </tbody>
+</table>
+<p>987 rows × 6 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a list of download tasks for the POD2 ncs files</span>
+<span class="c1"># These files have a _0007 </span>
+<span class="n">d2_ncs_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">cache_ncs</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;PO_Day_02&#39;</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">file_name</span> <span class="ow">and</span> <span class="s1">&#39;0007&#39;</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">file_name</span><span class="p">]</span>
+<span class="n">d2_ncs_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">output</span><span class="p">()</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">d2_ncs_tasks</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">([</span><span class="n">t</span><span class="o">.</span><span class="n">file_name</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">d2_ncs_tasks</span><span class="p">[:</span><span class="mi">10</span><span class="p">]],</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># Create a list of download tasks for the POD4 nev files</span>
+<span class="n">d2_nev</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">cache_nev</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;PO_Day_02&#39;</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">file_name</span> <span class="ow">and</span> <span class="s1">&#39;0007&#39;</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">file_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">d2_nev</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;PO_Day_02.CSC100_0007.ncs&#39;, &#39;PO_Day_02.CSC101_0007.ncs&#39;, &#39;PO_Day_02.CSC102_0007.ncs&#39;, &#39;PO_Day_02.CSC103_0007.ncs&#39;, &#39;PO_Day_02.CSC104_0007.ncs&#39;, &#39;PO_Day_02.CSC105_0007.ncs&#39;, &#39;PO_Day_02.CSC106_0007.ncs&#39;, &#39;PO_Day_02.CSC107_0007.ncs&#39;, &#39;PO_Day_02.CSC108_0007.ncs&#39;, &#39;PO_Day_02.CSC109_0007.ncs&#39;] 
+
+NLXRaw(file=/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.Events_0007.nev)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">luigi</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">d2_ncs_tasks</span><span class="o">+</span><span class="p">[</span><span class="n">d2_nev</span><span class="p">],</span><span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">d2_ncs_paths</span> <span class="k">if</span> <span class="s1">&#39;CSC105&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;/home/elijahc/.emu/pdil/pt_6305/SEEG/raw/PO_Day_02.CSC105_0007.ncs&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">electrode_locations</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>chan_num</th>
+      <th>electrode</th>
+      <th>wire_num</th>
+      <th>anat_sh</th>
+      <th>anat_lg</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>LOF</td>
+      <td>L.Orbital.Frontal</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>2</td>
+      <td>1</td>
+      <td>LOF</td>
+      <td>L.Orbital.Frontal</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>LOF</td>
+      <td>L.Orbital.Frontal</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>4</td>
+      <td>1</td>
+      <td>LOF</td>
+      <td>L.Orbital.Frontal</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>5</td>
+      <td>1</td>
+      <td>LOF</td>
+      <td>L.Orbital.Frontal</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>173</th>
+      <td>174</td>
+      <td>4</td>
+      <td>15</td>
+      <td>RPT</td>
+      <td>R.Par.Temp</td>
+    </tr>
+    <tr>
+      <th>174</th>
+      <td>175</td>
+      <td>5</td>
+      <td>15</td>
+      <td>RPT</td>
+      <td>R.Par.Temp</td>
+    </tr>
+    <tr>
+      <th>175</th>
+      <td>176</td>
+      <td>6</td>
+      <td>15</td>
+      <td>RPT</td>
+      <td>R.Par.Temp</td>
+    </tr>
+    <tr>
+      <th>176</th>
+      <td>177</td>
+      <td>7</td>
+      <td>15</td>
+      <td>RPT</td>
+      <td>R.Par.Temp</td>
+    </tr>
+    <tr>
+      <th>177</th>
+      <td>178</td>
+      <td>8</td>
+      <td>15</td>
+      <td>RPT</td>
+      <td>R.Par.Temp</td>
+    </tr>
+  </tbody>
+</table>
+<p>178 rows × 5 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">emu.nwb</span> <span class="kn">import</span> <span class="n">ncs_to_nwb_raw</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># nwb = p.create_nwb(d2_nev.output().path,d2_ncs_paths,blocks=[0,1,2],desc=&#39;Patient 1 | Post-op Day 2&#39;)</span>
+<span class="n">nwb</span> <span class="o">=</span> <span class="n">ncs_to_nwb_raw</span><span class="p">(</span><span class="n">d2_ncs_paths</span><span class="p">,</span> <span class="n">nev_fp</span><span class="o">=</span><span class="n">d2_nev</span><span class="o">.</span><span class="n">output</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> 
+                     <span class="n">electrode_locations</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">electrode_locations</span><span class="p">,</span> 
+                     <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;[RAW] Patient 1 | Post-op Day 2&#39;</span><span class="p">,</span>
+                     <span class="n">fs</span><span class="o">=</span><span class="mi">4000</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 15/15 [00:10&lt;00:00,  1.43it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 10/10 [00:06&lt;00:00,  1.56it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 12/12 [00:07&lt;00:00,  1.52it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 16/16 [00:10&lt;00:00,  1.56it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 10/10 [00:06&lt;00:00,  1.56it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 10/10 [00:06&lt;00:00,  1.56it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 8/8 [00:05&lt;00:00,  1.56it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 16/16 [00:10&lt;00:00,  1.56it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 16/16 [00:10&lt;00:00,  1.56it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 10/10 [00:06&lt;00:00,  1.52it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 12/12 [00:07&lt;00:00,  1.57it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 14/14 [00:10&lt;00:00,  1.39it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 10/10 [00:07&lt;00:00,  1.39it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 10/10 [00:06&lt;00:00,  1.45it/s]
+compressing channels to &lt;class &#39;numpy.float16&#39;&gt; 4000Hz: 100%|██████████| 8/8 [00:06&lt;00:00,  1.19it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adf</span>
+<span class="n">nwb</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">ipykernel_21877</span><span class="o">/</span><span class="mf">49923281.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">adf</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">nwb</span>
+
+<span class="ne">NameError</span>: name &#39;adf&#39; is not defined
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nwb</span><span class="o">.</span><span class="n">trials</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nwb</span><span class="o">.</span><span class="n">processing</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ecephys&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data_interfaces</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nwb</span><span class="o">.</span><span class="n">processing</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ecephys&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data_interfaces</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">nwb</span><span class="o">.</span><span class="n">processing</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ecephys&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">dd</span><span class="p">)</span> <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">NWBHDF5IO</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/home/elijahc/.emu/pdil/pt_6305/SEEG&#39;</span><span class="p">,</span><span class="s1">&#39;PO_Day_02_raw.nwb&#39;</span><span class="p">),</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">io</span><span class="p">:</span>
+    <span class="n">io</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nwb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/elijahc/.pyenv/versions/emu_p38/lib/python3.8/site-packages/hdmf/build/objectmapper.py:256: DtypeConversionWarning: Spec &#39;ElectricalSeries/electrodes&#39;: Value with data type uint32 is being converted to data type int32 as specified.
+  warnings.warn(full_warning_msg, DtypeConversionWarning)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">emu.luigi.box</span> <span class="kn">import</span> <span class="n">BoxClient</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_channel_id</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;CSC&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">fn</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.ncs&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ephys</span> <span class="o">=</span> <span class="n">nwb</span><span class="o">.</span><span class="n">processing</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ecephys&#39;</span><span class="p">)</span>
+<span class="n">ephys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LFP&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">electrical_series</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wire_9_electrode_6&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">channels</span> <span class="o">=</span> <span class="p">[</span><span class="n">ch</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">nwb</span><span class="o">.</span><span class="n">acquisition</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">ch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;channel&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;wire&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">[(</span><span class="n">nwb</span><span class="o">.</span><span class="n">acquisition</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nwb_to_mat</span><span class="p">(</span><span class="n">out_mat</span><span class="p">,</span><span class="n">compress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="c1">#     channels = [ch for ch in nwb.acquisition.keys() if ch.startswith(&#39;channel&#39;)]</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">nwb</span><span class="o">.</span><span class="n">processing</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ecephys&#39;</span><span class="p">)</span>
+    
+    <span class="n">mdict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">mod</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mod</span><span class="o">.</span><span class="n">data_interfaces</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+    <span class="n">sio</span><span class="o">.</span><span class="n">savemat</span><span class="p">(</span><span class="n">out_mat</span><span class="p">,</span><span class="n">mdict</span><span class="p">,</span><span class="n">do_compression</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">md</span> <span class="o">=</span> <span class="n">nwb_to_mat</span><span class="p">(</span><span class="s1">&#39;/home/elijahc/.emu/pdil/pt_6305/SEEG/processed/PO_Day_02.mat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">emu.luigi.box</span> <span class="kn">import</span> <span class="n">BoxClient</span><span class="p">,</span><span class="n">file_id_to_path</span>
+<span class="n">box</span> <span class="o">=</span> <span class="n">BoxClient</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file_id_to_path</span><span class="p">(</span><span class="mi">633031167652</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mat_path</span> <span class="o">=</span> <span class="s1">&#39;/home/elijahc/.emu/pdil/pt_01/SEEG/processed/PO_Day_02.mat&#39;</span>
+<span class="n">nwb_path</span> <span class="o">=</span> <span class="s1">&#39;/home/elijahc/.emu/pdil/pt_01/SEEG/processed/PO_Day_02.nwb&#39;</span>
+<span class="n">box</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s1">&#39;/EMU/STUDY_PDil/PT_01/SEEG/processed&#39;</span><span class="p">,</span><span class="n">mat_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">emu.pipeline.remote</span> <span class="kn">import</span> <span class="n">RemoteCSV</span>
+<span class="n">RemoteCSV</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;/EMU/STUDY_PDil/PT_01/SEEG/electrode_locations.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="aed_load.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">AED Load</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="markdown.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Markdown Files</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Elijah C.<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
