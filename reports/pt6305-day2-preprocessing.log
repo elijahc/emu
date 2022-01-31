@@ -22,7 +22,7 @@ all_files = ExperimentManifest(study='pdil').load()
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mAttributeError[0m                            Traceback (most recent call last)
-[0;32m/var/folders/0j/jtnrvl8d6hd01616xysk3g1h0000gn/T/ipykernel_80213/3165165981.py[0m in [0;36m<module>[0;34m[0m
+[0;32m/var/folders/0j/jtnrvl8d6hd01616xysk3g1h0000gn/T/ipykernel_85116/3165165981.py[0m in [0;36m<module>[0;34m[0m
 [0;32m----> 1[0;31m [0mall_files[0m [0;34m=[0m [0mExperimentManifest[0m[0;34m([0m[0mstudy[0m[0;34m=[0m[0;34m'pdil'[0m[0;34m)[0m[0;34m.[0m[0mload[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 [0m
 [0;31mAttributeError[0m: 'ExperimentManifest' object has no attribute 'load'
