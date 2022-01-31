@@ -163,13 +163,13 @@ class BoxClient(FileSystem):
             return False
 
 class ReadableBoxFile(object):
+    """
+    Represents a file inside the Box cloud which will be read
+    """
     def __init__(self, file_id, client):
         """
-        Represents a file inside the Dropbox cloud which will be read
-
-        :param str path: Dropbpx path of the file to be read (always starting with /)
-        :param DropboxClient client: a DropboxClient object (initialized with a valid token)
-
+        :param str file_id: Box File ID to be read
+        :param BoxClient client: a BoxClient object (initialized with a valid token)
         """
         self.fid = file_id
 
@@ -214,10 +214,14 @@ class ReadableBoxFile(object):
         return False
 
 class AtomicWritableBoxFile(AtomicLocalFile):
+    """
+    Represents a file that will be created inside the Box cloud
+
+    :param str path: Destination path inside Box cloud
+    :param BoxClient client: a BoxClient object (initialized with a valid token, for the desired account)
+    """
     def __init__(self, path, client):
         """
-        Represents a file that will be created inside the Box cloud
-
         :param str path: Destination path inside Box cloud
         :param BoxClient client: a BoxClient object (initialized with a valid token, for the desired account)
         """

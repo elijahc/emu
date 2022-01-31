@@ -2,7 +2,6 @@ import luigi
 import os
 import pandas as pd
 import numpy as np
-import src.neuralynx_io
 import scipy.signal as signal
 from tqdm import tqdm
 import warnings

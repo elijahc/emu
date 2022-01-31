@@ -34,3 +34,14 @@ html:
 sphinx:
   extra_extensions:
   - 'sphinx.ext.autodoc'
+  - 'autoapi.extension'
+    # - 'sphinx.ext.autosummary'
+    # - 'sphinx.ext.napoleon'
+    # - 'sphinx.ext.viewcode'
+  config:
+    autodoc_typehints: 'description'
+    autoapi_dirs: ['../src']
+      # autosummary_generate: True
+      # add_module_names: False
+      # templates_path: [ '_templates' ]
+      # exclude_patterns: ['_build', '_templates']

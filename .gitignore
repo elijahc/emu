@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Sphinx documentation
 docs/_build
+docs/_autosummary
 examples/_build
 jupyter_book/book_template/_build
 

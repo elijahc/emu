@@ -27,6 +27,7 @@ pynwb = "^1.4.0"
 jupyter = "^1.0.0"
 jupyter-book = "^0.12.1"
 ghp-import = "^2.0.2"
+sphinx-autoapi = "^1.8.4"
 
 
 [build-system]
