@@ -37,12 +37,14 @@ sphinx:
   - 'autoapi.extension'
   - 'sphinx.ext.napoleon'
   - 'myst_nb'
-    # - 'sphinx.ext.autosummary'
-    # - 'sphinx.ext.viewcode'
+  # - 'sphinx.ext.autosummary'
+  # - 'sphinx.ext.viewcode'
   config:
     autodoc_typehints: 'description'
     autoapi_dirs: ['../src']
-      # autosummary_generate: True
+    autoapi_add_toctree_entry: False
+    # autosummary_generate: True
+    # autoapi_generate_api_docs: False
       # add_module_names: False
       # templates_path: [ '_templates' ]
       # exclude_patterns: ['_build', '_templates']

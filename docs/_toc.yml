@@ -8,19 +8,13 @@ parts:
   chapters:
   - file: box_integration
 
-- caption: PDil project
+- caption: Project Examples
   chapters: 
   - file: notebooks
-
-- caption: AED project
-  chapters:
   - file: aed_load
-
-- caption: Examples
-  chapters:
   - file: pt6305-day2-preprocessing
 
-- caption: extras
+- caption: Reference
   chapters:
   - file: api.rst
   - file: markdown

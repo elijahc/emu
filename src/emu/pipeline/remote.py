@@ -5,7 +5,8 @@ import numpy as np
 import pandas as pd
 from ..auth import jwt, DEFAULT_ROOT
 from ..luigi.box import BoxTarget
-from ..utils import is_url,generate_id, md5_16,get_file_manifest
+from ..utils import is_url,generate_id, md5_16
+from ..backend import get_file_manifest
 from ..neuralynx_io import read_header, read_records, parse_header
 
 class RemoteFile(luigi.ExternalTask):
@@ -81,7 +82,7 @@ class RemoteNLX(RemoteFile):
     def raw_header(self):
         with self.output().open('rb') as f:
             self.raw_header = read_header(f)
-        return raw_header
+        return self.raw_header
 
     def header(self):
         return parse_header(self.raw_header())

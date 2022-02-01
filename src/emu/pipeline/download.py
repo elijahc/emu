@@ -1,13 +1,25 @@
 import luigi
 import os
 import io
+import hashlib
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from ..auth import jwt, DEFAULT_ROOT
-from .utils import file_ids_by_channel
-from ..utils import get_file_manifest,DEFAULT_MANIFEST_FID
+# from .utils import file_ids_by_channel
+from ..backend import get_file_manifest as get_folder_files
+from ..utils import DEFAULT_MANIFEST_FID
 from ..luigi.box import BoxTarget
 from .remote import RemotePatientManifest
+
+def sha1(filename):
+    h  = hashlib.sha1()
+    b  = bytearray(128*1024)
+    mv = memoryview(b)
+    with open(filename, 'rb', buffering=0) as f:
+        for n in iter(lambda : f.readinto(mv), 0):
+            h.update(mv[:n])
+    return h.hexdigest()
 
 def check_or_create(dir_path):
     if dir_path == DEFAULT_ROOT:
@@ -40,7 +52,7 @@ class FileManifest(luigi.Task):
         print(patients)
         pt_rec = patients.query('patient_id == {}'.format(self.patient_id)).iloc[0]
         folder = client.folder(pt_rec.folder_id)
-        file_recs = list(get_file_manifest(folder))
+        file_recs = list(get_folder_files(folder))
         files = pd.DataFrame.from_records(file_recs)
         files.to_csv(fp,index=False)
 
@@ -96,8 +108,25 @@ class Raw(luigi.Task):
     def out_dir(self):
         return self.save_to
 
+    def is_intact(self):
+        client = self.get_client()
+        exists = os.path.exists(self.output().path)
+        
+        if exists:
+            self.local_sha1 = sha1(self.output().path)
+            self.remote_sha1 = client.file(self.file_id).get().sha1
+            return self.local_sha1 == self.remote_sha1
+        else:
+            return False
+        
+    def get_client(self):
+        if not hasattr(self,'client'):
+            self.client = jwt()
+            
+        return self.client
+    
     def download(self):
-        client = jwt()
+        client = self.get_client()
         file = client.file(self.file_id)
         fp = os.path.join(self.out_dir(),self.file_name)
 
@@ -162,26 +191,98 @@ class ExperimentManifest(luigi.Task):
         client = jwt()
         records = []
         with self.input().open('r') as f:
-            patient_manifest = pd.read_csv(f)
+            patient_manifest = pd.read_csv(f).astype({'folder_id':int})
         patient_folders = patient_manifest.query('patient_id > 0 & study == "{}"'.format(self.study))
         # patient_folders = patient_manifest.query('patient_id == {}'.format(self.patient_id))
         patient_ids = []
         for i,row in patient_folders.iterrows():
             fold = row.folder_id
             root = client.folder(fold)
-            folder_files = list(get_file_manifest(root))
+            folder_files = list(get_folder_files(root))
             
             records.extend(folder_files)
             patient_ids.extend([row.patient_id]*len(folder_files))
         files = pd.DataFrame.from_records(records)
         files['patient_id'] = patient_ids
-        return files
+        return files.astype({'patient_id':int, 'id':int})
 
     def run(self):
         check_or_create(self.out_dir())
         out = self.create()
         out.to_csv(os.path.join(self.out_dir(),self.file_name),index=False)
+        
+    def load(self, force=False):
+        if force or not self.output().exists():
+            luigi.build([self],local_scheduler=True)
+
+        with self.output().open('r') as f:
+            return pd.read_csv(f).drop_duplicates()
 
     def output(self):
         out_fp = os.path.join(self.out_dir(),self.file_name)
-        return luigi.LocalTarget(out_fp) 
+        return luigi.LocalTarget(out_fp)
+    
+class CollectionBuilder(object):
+    def __init__(self, study, data_root=None):
+        self.study = study
+        self.data_root = data_root or os.path.expanduser('~/.emu')
+    
+    
+    @classmethod
+    def from_dataframe(cls, df, study, data_root=None):
+        cols = df.columns.values
+        obj = cls(study)
+        obj.df = df
+        return obj
+
+    def _create_seeg_path(self,patient_id, study=None):
+        study = study or self.study
+        return os.path.join(self.data_root,study,'pt_{}'.format(str(patient_id)),'SEEG','raw')
+
+    def gen_ncs(self,):
+            """
+            Yields
+            ------
+            luigi.Task
+                Yields a NLXRaw task for downloading a single ncs file from box
+            """
+            for i,row in self.df.iterrows():
+                if row.filename.endswith('.ncs'):
+                    t = NLXRaw(
+                        study=self.study,
+                        patient_id = row.patient_id,
+                        file_id = row.id,
+                        file_name=row.folder+'.'+row.filename,
+                        save_to=self._create_seeg_path(row.patient_id),
+                    )
+                    yield t
+                    
+    def nev(self):
+        """
+        Yields
+        ------
+        luigi.Task
+            Yields a NLXRaw task for downloading a single ncs file from box
+        """
+        for i,row in self.df.iterrows():
+            if row.filename.endswith('.nev'):
+                t = NLXRaw(study=self.study,
+                           patient_id = row.patient_id,
+                           file_id = row.id,
+                           file_name=row.folder+'.'+row.filename,
+                           save_to=self._create_seeg_path(row.patient_id),)
+                
+                yield t
+                    
+    def clean(self, jobs, dry_run=False):
+        for j in tqdm(jobs):
+            if not j.output().exists():
+                pass
+            elif not j.is_intact():
+                print('checksum error for {}'.format(j.file_name))
+                print('{} vs {}\n'.format(j.local_sha1,j.remote_sha1))
+                    
+                if not dry_run:
+                    print('removing file:')
+                    print('{}'.format(j.output().path))
+                    os.remove(j.output().path)

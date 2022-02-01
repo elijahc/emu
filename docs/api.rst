@@ -1,12 +1,5 @@
-API documentation
+API
 =================
 
-.. autosummary::
-   :toctree: _autosummary
-   :recursive:
-
-   emu.luigi
-   emu.nwb
-   emu.pipeline
-   emu.pdil
-   emu.meds
+.. toctree::
+   autoapi/emu/index
