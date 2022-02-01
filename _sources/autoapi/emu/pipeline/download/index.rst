@@ -20,6 +20,7 @@ Classes
    emu.pipeline.download.BehaviorRaw
    emu.pipeline.download.NLXRaw
    emu.pipeline.download.ExperimentManifest
+   emu.pipeline.download.CollectionBuilder
 
 
 
@@ -28,9 +29,13 @@ Functions
 
 .. autoapisummary::
 
+   emu.pipeline.download.sha1
    emu.pipeline.download.check_or_create
    emu.pipeline.download.cache_fp
 
+
+
+.. py:function:: sha1(filename)
 
 
 .. py:function:: check_or_create(dir_path)
@@ -341,6 +346,12 @@ Functions
    .. py:method:: out_dir(self)
 
 
+   .. py:method:: is_intact(self)
+
+
+   .. py:method:: get_client(self)
+
+
    .. py:method:: download(self)
 
 
@@ -538,6 +549,9 @@ Functions
       See :ref:`Task.run`
 
 
+   .. py:method:: load(self, force=False)
+
+
    .. py:method:: output(self)
 
       The output that this Task produces.
@@ -553,6 +567,31 @@ Functions
         the same output since they don't see the work done by other workers.
 
       See :ref:`Task.output`
+
+
+
+.. py:class:: CollectionBuilder(study, data_root=None)
+
+   Bases: :py:obj:`object`
+
+   .. py:method:: from_dataframe(cls, df, study, data_root=None)
+      :classmethod:
+
+
+   .. py:method:: _create_seeg_path(self, patient_id, study=None)
+
+
+   .. py:method:: gen_ncs(self)
+
+      :Yields: *luigi.Task* -- Yields a NLXRaw task for downloading a single ncs file from box
+
+
+   .. py:method:: nev(self)
+
+      :Yields: *luigi.Task* -- Yields a NLXRaw task for downloading a single ncs file from box
+
+
+   .. py:method:: clean(self, jobs, dry_run=False)
 
 
 

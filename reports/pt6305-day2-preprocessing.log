@@ -17,14 +17,63 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-all_files = ExperimentManifest(study='pdil').load()
+import os
+import warnings
+import numpy as np
+import luigi
+import emu.neuralynx_io as nlx
+from emu.pdil.raw import Electrophysiology,Participant,points_to_choice
+from emu.neuralynx_io import nev_as_records
+from emu.nwb import nlx_to_nwb
+from emu.pipeline.remote import RemoteCSV
+from emu.pipeline.download import ExperimentManifest
+from pynwb import TimeSeries, NWBFile,NWBHDF5IO
+from pynwb.ecephys import ElectricalSeries
+from pynwb.misc import AnnotationSeries
+import pandas as pd
+import datetime
+import glob
+
+from tqdm import tqdm_notebook as tqdm
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mAttributeError[0m                            Traceback (most recent call last)
-[0;32m/var/folders/0j/jtnrvl8d6hd01616xysk3g1h0000gn/T/ipykernel_91649/3165165981.py[0m in [0;36m<module>[0;34m[0m
-[0;32m----> 1[0;31m [0mall_files[0m [0;34m=[0m [0mExperimentManifest[0m[0;34m([0m[0mstudy[0m[0;34m=[0m[0;34m'pdil'[0m[0;34m)[0m[0;34m.[0m[0mload[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m
-[0;31mAttributeError[0m: 'ExperimentManifest' object has no attribute 'load'
-AttributeError: 'ExperimentManifest' object has no attribute 'load'
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+[0;32m/var/folders/0j/jtnrvl8d6hd01616xysk3g1h0000gn/T/ipykernel_4121/3219390234.py[0m in [0;36m<module>[0;34m[0m
+[1;32m      4[0m [0;32mimport[0m [0mluigi[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      5[0m [0;32mimport[0m [0memu[0m[0;34m.[0m[0mneuralynx_io[0m [0;32mas[0m [0mnlx[0m[0;34m[0m[0;34m[0m[0m
+[0;32m----> 6[0;31m [0;32mfrom[0m [0memu[0m[0;34m.[0m[0mpdil[0m[0;34m.[0m[0mraw[0m [0;32mimport[0m [0mElectrophysiology[0m[0;34m,[0m[0mParticipant[0m[0;34m,[0m[0mpoints_to_choice[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      7[0m [0;32mfrom[0m [0memu[0m[0;34m.[0m[0mneuralynx_io[0m [0;32mimport[0m [0mnev_as_records[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      8[0m [0;32mfrom[0m [0memu[0m[0;34m.[0m[0mnwb[0m [0;32mimport[0m [0mnlx_to_nwb[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/dev/emu/src/emu/pdil/raw.py[0m in [0;36m<module>[0;34m[0m
+[1;32m     14[0m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mneuralynx_io[0m [0;32mimport[0m [0mload_nev[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     15[0m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mneuralynx_io[0m [0;32mimport[0m [0mnev_as_records[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 16[0;31m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mpipeline[0m[0;34m.[0m[0mprocess[0m [0;32mimport[0m [0mPDilTask[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     17[0m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mpipeline[0m[0;34m.[0m[0mremote[0m [0;32mimport[0m [0mRemoteCSV[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     18[0m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mpipeline[0m[0;34m.[0m[0mdownload[0m [0;32mimport[0m [0mRaw[0m[0;34m,[0m [0mcheck_or_create[0m[0;34m,[0m [0mBehaviorRaw[0m[0;34m,[0m [0mExperimentManifest[0m[0;34m,[0m[0mcache_fp[0m[0;34m,[0m[0mNLXRaw[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/dev/emu/src/emu/pipeline/process.py[0m in [0;36m<module>[0;34m[0m
+[1;32m     10[0m [0;32mfrom[0m [0mpynwb[0m [0;32mimport[0m [0mNWBFile[0m[0;34m,[0m [0mTimeSeries[0m[0;34m,[0m[0mNWBHDF5IO[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     11[0m [0;34m[0m[0m
+[0;32m---> 12[0;31m [0;32mfrom[0m [0;34m.[0m[0mdownload[0m [0;32mimport[0m [0mFileManifest[0m[0;34m,[0m[0mRaw[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     13[0m [0;32mfrom[0m [0;34m.[0m[0mremote[0m [0;32mimport[0m [0mRemotePatientManifest[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     14[0m [0;32mfrom[0m [0;34m.[0m[0mutils[0m [0;32mimport[0m [0mfile_ids_by_channel[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/dev/emu/src/emu/pipeline/download.py[0m in [0;36m<module>[0;34m[0m
+[1;32m      8[0m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mauth[0m [0;32mimport[0m [0mjwt[0m[0;34m,[0m [0mDEFAULT_ROOT[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      9[0m [0;31m# from .utils import file_ids_by_channel[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 10[0;31m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mbackend[0m [0;32mimport[0m [0mget_file_manifest[0m [0;32mas[0m [0mget_folder_files[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     11[0m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mutils[0m [0;32mimport[0m [0mDEFAULT_MANIFEST_FID[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     12[0m [0;32mfrom[0m [0;34m.[0m[0;34m.[0m[0mluigi[0m[0;34m.[0m[0mbox[0m [0;32mimport[0m [0mBoxTarget[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/dev/emu/src/emu/backend.py[0m in [0;36m<module>[0;34m[0m
+[0;32m----> 1[0;31m [0;32mimport[0m [0mtyper[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      2[0m [0;32mimport[0m [0mclick_spinner[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      3[0m [0;32mfrom[0m [0mtabulate[0m [0;32mimport[0m [0mtabulate[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      4[0m [0;32mfrom[0m [0mboxsdk[0m[0;34m.[0m[0mobject[0m[0;34m.[0m[0mfile[0m [0;32mimport[0m [0mFile[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      5[0m [0;32mfrom[0m [0mboxsdk[0m[0;34m.[0m[0mobject[0m[0;34m.[0m[0mfolder[0m [0;32mimport[0m [0mFolder[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mModuleNotFoundError[0m: No module named 'typer'
+ModuleNotFoundError: No module named 'typer'
 

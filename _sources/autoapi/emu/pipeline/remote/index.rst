@@ -33,11 +33,10 @@ Attributes
 
    Bases: :py:obj:`luigi.ExternalTask`
 
-   Parameters
-   ----------
-   file_id : int
-   file_path : str
-
+   :param file_id:
+   :type file_id: int
+   :param file_path:
+   :type file_path: str
 
    .. py:attribute:: file_id
       
@@ -71,10 +70,10 @@ Attributes
 
    Bases: :py:obj:`RemoteFile`
 
-   Parameters
-   ----------
-   file_id : int
-   file_path : str
+   :param file_id:
+   :type file_id: int
+   :param file_path:
+   :type file_path: str
 
    .. py:attribute:: file_id
       
@@ -88,13 +87,10 @@ Attributes
 
    .. py:method:: load(self, parse_func=pd.read_csv, force=False)
 
-      Parameters
-      ----------
-      parse_func : func
-          Default is pd.read_csv
-
-      force : bool
-          Force a reload from the server, Default is False
+      :param parse_func: Default is pd.read_csv
+      :type parse_func: func
+      :param force: Force a reload from the server, Default is False
+      :type force: bool
 
 
    .. py:method:: append(self, row)
@@ -108,10 +104,10 @@ Attributes
 
    Bases: :py:obj:`RemoteFile`
 
-   Parameters
-   ----------
-   file_id : int
-   file_path : str
+   :param file_id:
+   :type file_id: int
+   :param file_path:
+   :type file_path: str
 
    .. py:attribute:: file_id
       
@@ -129,10 +125,10 @@ Attributes
 
    Bases: :py:obj:`RemoteCSV`
 
-   Parameters
-   ----------
-   file_id : int
-   file_path : str
+   :param file_id:
+   :type file_id: int
+   :param file_path:
+   :type file_path: str
 
    .. py:method:: output(self)
 
@@ -165,10 +161,10 @@ Attributes
 
    Bases: :py:obj:`RemoteCSV`
 
-   Parameters
-   ----------
-   file_id : int
-   file_path : str
+   :param file_id:
+   :type file_id: int
+   :param file_path:
+   :type file_path: str
 
    .. py:attribute:: study
       

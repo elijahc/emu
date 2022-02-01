@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>emu.neuralynx_io &#8212; EMU Documentation</title>
+    <title>emu.backend &#8212; EMU Documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -52,8 +52,8 @@
     <script async="async" src="../../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="emu.nwb" href="../nwb/index.html" />
-    <link rel="prev" title="emu.meds" href="../meds/index.html" />
+    <link rel="next" title="emu.cli" href="../cli/index.html" />
+    <link rel="prev" title="emu.auth" href="../auth/index.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -290,8 +290,8 @@
        </code>
       </a>
      </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../backend/index.html">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
        <code class="xref py py-mod docutils literal notranslate">
         <span class="pre">
          emu.backend
@@ -326,8 +326,8 @@
        </code>
       </a>
      </li>
-     <li class="toctree-l3 current active">
-      <a class="current reference internal" href="#">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../neuralynx_io/index.html">
        <code class="xref py py-mod docutils literal notranslate">
         <span class="pre">
          emu.neuralynx_io
@@ -412,7 +412,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../../_sources/autoapi/emu/neuralynx_io/index.rst"><button type="button"
+        <a class="dropdown-buttons" href="../../../_sources/autoapi/emu/backend/index.rst"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
@@ -432,7 +432,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/elijahc/emu/issues/new?title=Issue%20on%20page%20%2Fautoapi/emu/neuralynx_io/index.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/elijahc/emu/issues/new?title=Issue%20on%20page%20%2Fautoapi/emu/backend/index.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -474,83 +474,23 @@
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.HEADER_LENGTH">
-       HEADER_LENGTH
+      <a class="reference internal nav-link" href="#emu.backend.folder_app">
+       folder_app
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.NCS_SAMPLES_PER_RECORD">
-       NCS_SAMPLES_PER_RECORD
+      <a class="reference internal nav-link" href="#emu.backend.list">
+       list
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.NCS_RECORD">
-       NCS_RECORD
+      <a class="reference internal nav-link" href="#emu.backend.add_collaborator">
+       add_collaborator
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.NEV_RECORD">
-       NEV_RECORD
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.VOLT_SCALING">
-       VOLT_SCALING
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.MILLIVOLT_SCALING">
-       MILLIVOLT_SCALING
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.MICROVOLT_SCALING">
-       MICROVOLT_SCALING
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.read_header">
-       read_header
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.parse_header">
-       parse_header
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.read_records">
-       read_records
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.estimate_record_count">
-       estimate_record_count
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.parse_neuralynx_time_string">
-       parse_neuralynx_time_string
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.check_ncs_records">
-       check_ncs_records
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.load_ncs">
-       load_ncs
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.load_nev">
-       load_nev
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.nev_as_records">
-       nev_as_records
+      <a class="reference internal nav-link" href="#emu.backend.get_file_manifest">
+       get_file_manifest
       </a>
      </li>
     </ul>
@@ -567,7 +507,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>emu.neuralynx_io</h1>
+                <h1>emu.backend</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -593,83 +533,23 @@
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.HEADER_LENGTH">
-       HEADER_LENGTH
+      <a class="reference internal nav-link" href="#emu.backend.folder_app">
+       folder_app
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.NCS_SAMPLES_PER_RECORD">
-       NCS_SAMPLES_PER_RECORD
+      <a class="reference internal nav-link" href="#emu.backend.list">
+       list
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.NCS_RECORD">
-       NCS_RECORD
+      <a class="reference internal nav-link" href="#emu.backend.add_collaborator">
+       add_collaborator
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.NEV_RECORD">
-       NEV_RECORD
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.VOLT_SCALING">
-       VOLT_SCALING
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.MILLIVOLT_SCALING">
-       MILLIVOLT_SCALING
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.MICROVOLT_SCALING">
-       MICROVOLT_SCALING
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.read_header">
-       read_header
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.parse_header">
-       parse_header
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.read_records">
-       read_records
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.estimate_record_count">
-       estimate_record_count
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.parse_neuralynx_time_string">
-       parse_neuralynx_time_string
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.check_ncs_records">
-       check_ncs_records
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.load_ncs">
-       load_ncs
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.load_nev">
-       load_nev
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#emu.neuralynx_io.nev_as_records">
-       nev_as_records
+      <a class="reference internal nav-link" href="#emu.backend.get_file_manifest">
+       get_file_manifest
       </a>
      </li>
     </ul>
@@ -685,8 +565,8 @@
             
               <div>
                 
-  <div class="section" id="module-emu.neuralynx_io">
-<span id="emu-neuralynx-io"></span><h1><a class="reference internal" href="#module-emu.neuralynx_io" title="emu.neuralynx_io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.neuralynx_io</span></code></a><a class="headerlink" href="#module-emu.neuralynx_io" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-emu.backend">
+<span id="emu-backend"></span><h1><a class="reference internal" href="#module-emu.backend" title="emu.backend"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.backend</span></code></a><a class="headerlink" href="#module-emu.backend" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="functions">
@@ -697,31 +577,13 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.read_header" title="emu.neuralynx_io.read_header"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_header</span></code></a>(fid)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.backend.list" title="emu.backend.list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a>(id = typer.Argument(...))</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#emu.neuralynx_io.parse_header" title="emu.neuralynx_io.parse_header"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_header</span></code></a>(raw_hdr)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#emu.backend.add_collaborator" title="emu.backend.add_collaborator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_collaborator</span></code></a>(id = typer.Argument(...), role = CollaborationRole.EDITOR, collaborator = typer.Argument(..., help='collaborator to add. May be a User, Group, or email address (unicode string)'), notify = False, can_view_path = False)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.read_records" title="emu.neuralynx_io.read_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_records</span></code></a>(fid, record_dtype, record_skip=0, count=None)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#emu.neuralynx_io.estimate_record_count" title="emu.neuralynx_io.estimate_record_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_record_count</span></code></a>(file_path, record_dtype)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.parse_neuralynx_time_string" title="emu.neuralynx_io.parse_neuralynx_time_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_neuralynx_time_string</span></code></a>(time_string)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#emu.neuralynx_io.check_ncs_records" title="emu.neuralynx_io.check_ncs_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_ncs_records</span></code></a>(records)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.load_ncs" title="emu.neuralynx_io.load_ncs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_ncs</span></code></a>(file_path, load_time=True, rescale_data=True, signal_scaling=MICROVOLT_SCALING)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#emu.neuralynx_io.load_nev" title="emu.neuralynx_io.load_nev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_nev</span></code></a>(file_path)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.nev_as_records" title="emu.neuralynx_io.nev_as_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nev_as_records</span></code></a>(n)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.backend.get_file_manifest" title="emu.backend.get_file_manifest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_file_manifest</span></code></a>(folder, prog_bar=False, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -735,107 +597,45 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.HEADER_LENGTH" title="emu.neuralynx_io.HEADER_LENGTH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEADER_LENGTH</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#emu.neuralynx_io.NCS_SAMPLES_PER_RECORD" title="emu.neuralynx_io.NCS_SAMPLES_PER_RECORD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NCS_SAMPLES_PER_RECORD</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.NCS_RECORD" title="emu.neuralynx_io.NCS_RECORD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NCS_RECORD</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#emu.neuralynx_io.NEV_RECORD" title="emu.neuralynx_io.NEV_RECORD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NEV_RECORD</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.VOLT_SCALING" title="emu.neuralynx_io.VOLT_SCALING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VOLT_SCALING</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#emu.neuralynx_io.MILLIVOLT_SCALING" title="emu.neuralynx_io.MILLIVOLT_SCALING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MILLIVOLT_SCALING</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#emu.neuralynx_io.MICROVOLT_SCALING" title="emu.neuralynx_io.MICROVOLT_SCALING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MICROVOLT_SCALING</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#emu.backend.folder_app" title="emu.backend.folder_app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">folder_app</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py data">
-<dt class="sig sig-object py" id="emu.neuralynx_io.HEADER_LENGTH">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">HEADER_LENGTH</span></span><a class="headerlink" href="#emu.neuralynx_io.HEADER_LENGTH" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="emu.neuralynx_io.NCS_SAMPLES_PER_RECORD">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">NCS_SAMPLES_PER_RECORD</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">512</span></em><a class="headerlink" href="#emu.neuralynx_io.NCS_SAMPLES_PER_RECORD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="emu.neuralynx_io.NCS_RECORD">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">NCS_RECORD</span></span><a class="headerlink" href="#emu.neuralynx_io.NCS_RECORD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="emu.neuralynx_io.NEV_RECORD">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">NEV_RECORD</span></span><a class="headerlink" href="#emu.neuralynx_io.NEV_RECORD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="emu.neuralynx_io.VOLT_SCALING">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">VOLT_SCALING</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">[1,</span> <span class="pre">'V']</span></em><a class="headerlink" href="#emu.neuralynx_io.VOLT_SCALING" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="emu.neuralynx_io.MILLIVOLT_SCALING">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">MILLIVOLT_SCALING</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">[1000,</span> <span class="pre">'mV']</span></em><a class="headerlink" href="#emu.neuralynx_io.MILLIVOLT_SCALING" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="emu.neuralynx_io.MICROVOLT_SCALING">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">MICROVOLT_SCALING</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">[1000000,</span> <span class="pre">'µV']</span></em><a class="headerlink" href="#emu.neuralynx_io.MICROVOLT_SCALING" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="emu.backend.folder_app">
+<span class="sig-prename descclassname"><span class="pre">emu.backend.</span></span><span class="sig-name descname"><span class="pre">folder_app</span></span><a class="headerlink" href="#emu.backend.folder_app" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.read_header">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">read_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.read_header" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="emu.backend.list">
+<span class="sig-prename descclassname"><span class="pre">emu.backend.</span></span><span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">typer.Argument(...)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.backend.list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>int</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.parse_header">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">parse_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_hdr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.parse_header" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="emu.backend.add_collaborator">
+<span class="sig-prename descclassname"><span class="pre">emu.backend.</span></span><span class="sig-name descname"><span class="pre">add_collaborator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">typer.Argument(...)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">CollaborationRole.EDITOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collaborator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">typer.Argument(...,</span> <span class="pre">help='collaborator</span> <span class="pre">to</span> <span class="pre">add.</span> <span class="pre">May</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">User,</span> <span class="pre">Group,</span> <span class="pre">or</span> <span class="pre">email</span> <span class="pre">address</span> <span class="pre">(unicode</span> <span class="pre">string)')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">can_view_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.backend.add_collaborator" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – </p></li>
+<li><p><strong>role</strong> (<em>boxsdk.object.collaboration.CollaborationRole</em>) – </p></li>
+<li><p><strong>collaborator</strong> (<em>str</em>) – </p></li>
+<li><p><strong>notify</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>can_view_path</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.read_records">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">read_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.read_records" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.estimate_record_count">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">estimate_record_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.estimate_record_count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.parse_neuralynx_time_string">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">parse_neuralynx_time_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.parse_neuralynx_time_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.check_ncs_records">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">check_ncs_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.check_ncs_records" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.load_ncs">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">load_ncs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MICROVOLT_SCALING</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.load_ncs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.load_nev">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">load_nev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.load_nev" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="emu.neuralynx_io.nev_as_records">
-<span class="sig-prename descclassname"><span class="pre">emu.neuralynx_io.</span></span><span class="sig-name descname"><span class="pre">nev_as_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.neuralynx_io.nev_as_records" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="emu.backend.get_file_manifest">
+<span class="sig-prename descclassname"><span class="pre">emu.backend.</span></span><span class="sig-name descname"><span class="pre">get_file_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prog_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#emu.backend.get_file_manifest" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -855,7 +655,7 @@
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./autoapi/emu/neuralynx_io"
+            path: "./autoapi/emu/backend"
         },
         predefinedOutput: true
     }
@@ -867,17 +667,17 @@
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../meds/index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../auth/index.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.meds</span></code></p>
+            <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.auth</span></code></p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../nwb/index.html" title="next page">
+    <a class='right-next' id="next-link" href="../cli/index.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.nwb</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">emu.cli</span></code></p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

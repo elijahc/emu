@@ -1,5 +1,0 @@
-﻿emu
-===
-
-.. automodule:: emu
-    :members:

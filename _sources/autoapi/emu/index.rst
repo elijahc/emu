@@ -23,6 +23,7 @@ Submodules
    :maxdepth: 1
 
    auth/index.rst
+   backend/index.rst
    cli/index.rst
    download/index.rst
    meds/index.rst

@@ -81,26 +81,17 @@ Attributes
 
    .. py:method:: cache_behavior(self, verbose=False)
 
-      Yields
-      ------
-      luigi.Task
-          Yields a BehaviorRaw task for downloading a single behavior file
+      :Yields: *luigi.Task* -- Yields a BehaviorRaw task for downloading a single behavior file
 
 
    .. py:method:: cache_nev(self, study='pdil', verbose=False)
 
-      Yields
-      ------
-      luigi.Task
-          Yields a NLXRaw task for downloading a single nev file from box
+      :Yields: *luigi.Task* -- Yields a NLXRaw task for downloading a single nev file from box
 
 
    .. py:method:: cache_ncs(self, study='pdil', verbose=False)
 
-      Yields
-      ------
-      luigi.Task
-          Yields a NLXRaw task for downloading a single ncs file from box
+      :Yields: *luigi.Task* -- Yields a NLXRaw task for downloading a single ncs file from box
 
 
    .. py:method:: load_game_data(self, local_scheduler=False)
